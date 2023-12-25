@@ -1,8 +1,10 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from structure_check import check_essential_files_in_git
+from src.structure_check import check_essential_files_in_git
 
 class TestStructureCheck(unittest.TestCase):
+
+    REPO_PATH = '/fake/repo'
 
     @patch('structure_check.Repo')
     def test_all_files_present(self, mock_repo):
@@ -11,7 +13,7 @@ class TestStructureCheck(unittest.TestCase):
 
         with patch('structure_check.os.path.exists', return_value=True):
             with self.assertLogs() as captured_logs:
-                check_essential_files_in_git('/fake/repo')
+                check_essential_files_in_git(REPO_PATH)
                 self.assertIn("All essential files are present.", captured_logs.output[0])
 
     @patch('structure_check.Repo')
