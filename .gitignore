@@ -67,3 +67,8 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Coverage reports
+.coverage
+coverage.xml
+htmlcov/
