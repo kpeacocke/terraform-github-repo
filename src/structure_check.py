@@ -9,19 +9,17 @@ def check_essential_files_in_git(repo_path):
     # List to store the names of missing files
     missing_files = []
 
-    # Try to create a Repo object. If an error occurs (e.g., the repository doesn't exist), print the error and return
+    # Try to create a Repo object. If an error occurs (e.g., the repository doesn't exist), return an error message
     try:
         repo = Repo(repo_path)
     except Exception as e:
-        print(f"Error: {e}")
-        return
+        return f"Error: {e}"
 
     # Get the latest commit in the current branch
     try:
         latest_commit = next(repo.iter_commits())
     except StopIteration:
-        print("Error: No commits found.")
-        return
+        return "Error: No commits found."
 
     # For each essential file, check if it's present in the latest commit
     for file in essential_files:
@@ -31,15 +29,9 @@ def check_essential_files_in_git(repo_path):
         if file_path not in (item.a_path for item in latest_commit.diff(None)):
             missing_files.append(file)
 
-    # If there are any missing files, print them
+    # If there are any missing files, return a message indicating the missing files
     if missing_files:
-        print("Missing essential files:", ", ".join(missing_files))
-    # Otherwise, print a message indicating that all essential files are present
+        return "Missing essential files: " + ", ".join(missing_files)
+    # Otherwise, return a message indicating that all essential files are present
     else:
-        print("All essential files are present.")
-
-# Example usage
-# Replace with the path to your Git repository
-repo_path = '/path/to/your/repo'  
-# Call the function with the path to your repository
-check_essential_files_in_git(repo_path)
+        return "All essential files are present."
