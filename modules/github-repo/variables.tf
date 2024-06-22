@@ -69,3 +69,32 @@ variable "enable_weekly_reporting" {
   type        = bool
   default     = false
 }
+
+# modules/github-repo/main.tf
+
+resource "github_repository" "this" {
+  name        = var.name
+  visibility  = var.visibility
+  description = "Managed by Terraform."
+  auto_init   = true
+  has_issues  = true
+  has_wiki    = true
+  has_projects = true
+  owner       = var.owner
+}
+
+resource "github_repository_file" "bootstrap_docs" {
+  for_each = var.bootstrap_with_templates ? {
+    "README.md"        = "# ${var.name}\n\nProject initialized via Terraform."
+    "LICENSE"          = "MIT License"
+    "SECURITY.md"      = "# Security Policy\n\nPlease report vulnerabilities..."
+    "CONTRIBUTING.md"  = "# Contributing\n\nHow to contribute to this project."
+    "CODE_OF_CONDUCT.md" = "# Code of Conduct\n\nBe excellent to each other."
+  } : {}
+
+  repository = github_repository.this.name
+  file       = each.key
+  content    = each.value
+  overwrite_on_create = true
+  commit_message      = "Add ${each.key} via Terraform bootstrap"
+}
