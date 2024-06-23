@@ -126,3 +126,31 @@ resource "github_branch_protection" "main" {
   allows_deletions       = false
   allows_force_pushes    = false
 }
+
+resource "github_repository_file" "branch_naming_action" {
+  count = var.enforce_gitflow ? 1 : 0
+
+  repository         = github_repository.this.name
+  file               = ".github/workflows/enforce-branch-naming.yml"
+  content            = <<-EOT
+    name: Enforce Branch Naming
+
+    on:
+      pull_request:
+        types: [opened, edited, reopened]
+
+    jobs:
+      check-branch-name:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Validate branch name
+            run: |
+              BRANCH_NAME=${GITHUB_HEAD_REF}
+              if [[ ! $BRANCH_NAME =~ ^(feature|bugfix|hotfix|release)\/.*$ ]]; then
+                echo "Branch name '$BRANCH_NAME' does not follow GitFlow naming conventions."
+                exit 1
+              fi
+  EOT
+  overwrite_on_create = true
+  commit_message      = "Add GitFlow branch naming enforcement"
+}
