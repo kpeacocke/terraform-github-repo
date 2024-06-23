@@ -98,3 +98,31 @@ resource "github_repository_file" "bootstrap_docs" {
   overwrite_on_create = true
   commit_message      = "Add ${each.key} via Terraform bootstrap"
 }
+
+resource "github_branch_protection" "main" {
+  count = var.enforce_gitflow ? 1 : 0
+
+  repository_id = github_repository.this.node_id
+  pattern       = "main"
+
+  required_status_checks {
+    strict   = true
+    contexts = [] # Add CI contexts here when available
+  }
+
+  enforce_admins = true
+
+  required_pull_request_reviews {
+    dismiss_stale_reviews           = true
+    required_approving_review_count = 1
+  }
+
+  restrictions {
+    users = []
+    teams = []
+  }
+
+  require_signed_commits = true
+  allows_deletions       = false
+  allows_force_pushes    = false
+}
