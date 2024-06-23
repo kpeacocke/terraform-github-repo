@@ -69,3 +69,72 @@ variable "enable_weekly_reporting" {
   type        = bool
   default     = false
 }
+
+# .gitignore managed via Terraform
+
+resource "github_repository_file" ".gitignore" {
+  count = var.bootstrap_with_templates ? 1 : 0
+
+  repository = github_repository.this.name
+  file       = ".gitignore"
+  content    = <<-EOT
+    # === Terraform ===
+    *.tfstate
+    *.tfstate.*
+    .terraform/
+    .terraform.lock.hcl
+    crash.log
+    *.backup
+
+    # === Terratest / Test Artifacts ===
+    *.out
+    *.test
+    *.log
+    test/__pycache__/
+    test/tmp/
+    test/fixtures/.terraform/
+
+    # === VSCode / IDEs ===
+    .vscode/
+    .idea/
+    *.swp
+
+    # === OS Artifacts ===
+    .DS_Store
+    Thumbs.db
+
+    # === Go ===
+    vendor/
+    *.exe
+    *.exe~
+    *.dll
+    *.so
+    *.dylib
+    *.test
+    *.tmp
+    *.coverprofile
+    *.log
+    *.mod
+    *.sum
+
+    # === Node (if used for scripts) ===
+    node_modules/
+    npm-debug.log*
+    yarn-debug.log*
+    yarn-error.log*
+
+    # === GitHub Actions artifacts ===
+    .github/workflows/.DS_Store
+
+    # === Local credentials or environment ===
+    .env
+    .env.*
+    *.env.local
+    .envrc
+
+    # === Test binary ===
+    test/bin/
+  EOT
+  overwrite_on_create = true
+  commit_message      = "Add .gitignore for Terraform + testing"
+}
