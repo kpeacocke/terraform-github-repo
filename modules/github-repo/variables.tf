@@ -1,3 +1,21 @@
+# Advanced branch protection variables (for documentation/future use)
+variable "branch_protection_users" {
+  description = "List of users allowed to push/merge to protected branches (not currently supported by provider)"
+  type        = list(string)
+  default     = []
+}
+
+variable "branch_protection_teams" {
+  description = "List of teams allowed to push/merge to protected branches (not currently supported by provider)"
+  type        = list(string)
+  default     = []
+}
+
+variable "branch_protection_apps" {
+  description = "List of apps allowed to push/merge to protected branches (not currently supported by provider)"
+  type        = list(string)
+  default     = []
+}
 # modules/github-repo/variables.tf
 
 variable "name" {

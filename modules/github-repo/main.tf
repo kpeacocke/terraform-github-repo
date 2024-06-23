@@ -1,3 +1,31 @@
+# --- UNSUPPORTED/ADVANCED: Dependabot security updates ---
+# The GitHub Terraform provider does not support managing Dependabot security updates directly.
+# Workaround: Add a GitHub Actions workflow to enable Dependabot security updates.
+resource "github_repository_file" "dependabot_security_updates" {
+  count      = var.enforce_security ? 1 : 0
+  repository = github_repository.this.name
+  file       = ".github/workflows/dependabot-auto-approve.yml"
+  content    = <<-EOT
+name: Enable Dependabot Security Updates
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+jobs:
+  auto-approve:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Auto-approve Dependabot PR
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: $${{ secrets.GITHUB_TOKEN }}
+  EOT
+  overwrite_on_create = true
+  commit_message      = "Add workflow to auto-approve Dependabot security updates"
+}
 
 resource "github_repository" "this" {
   name         = var.name
@@ -97,10 +125,23 @@ resource "github_branch_protection" "main" {
   repository_id = github_repository.this.node_id
   pattern       = "main"
 
+
   required_status_checks {
     strict   = true
     contexts = []
   }
+
+  # --- UNSUPPORTED/ADVANCED: Branch protection restrictions ---
+  # The following blocks are not supported by the Terraform provider as of 2025-05,
+  # but are included for documentation and future support. Uncomment if provider adds support.
+  #
+  # restrictions {
+  #   users = var.branch_protection_users
+  #   teams = var.branch_protection_teams
+  #   apps  = var.branch_protection_apps
+  # }
+
+  # Workaround: Document in README and/or add as manual step.
 
   enforce_admins = true
 
@@ -113,6 +154,9 @@ resource "github_branch_protection" "main" {
   require_signed_commits = true
   allows_deletions       = false
   allows_force_pushes    = false
+
+
+
 }
 
 resource "github_repository_file" "branch_naming_action" {
