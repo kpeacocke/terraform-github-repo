@@ -1,5 +1,3 @@
-# test/fixtures/minimal_repo.tf
-
 module "repo" {
   source = "../../modules/github-repo"
 

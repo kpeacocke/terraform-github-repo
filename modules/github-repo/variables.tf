@@ -1,5 +1,3 @@
-# modules/github-repo/variables.tf
-
 variable "name" {
   description = "Name of the GitHub repository"
   type        = string
