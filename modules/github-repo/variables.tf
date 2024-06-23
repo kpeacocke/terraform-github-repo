@@ -185,3 +185,60 @@ resource "github_repository_file" "test_enforcement_action" {
   overwrite_on_create = true
   commit_message      = "Add test enforcement workflow"
 }
+
+resource "github_repository_file" "codeql_action" {
+  count = var.enforce_security ? 1 : 0
+
+  repository         = github_repository.this.name
+  file               = ".github/workflows/codeql-analysis.yml"
+  content            = <<-EOT
+    name: CodeQL
+
+    on:
+      push:
+        branches: [ main ]
+      pull_request:
+        branches: [ main ]
+      schedule:
+        - cron: '0 0 * * 0'
+
+    jobs:
+      analyze:
+        name: Analyze
+        runs-on: ubuntu-latest
+
+        permissions:
+          actions: read
+          contents: read
+          security-events: write
+
+        strategy:
+          fail-fast: false
+          matrix:
+            language: [ 'javascript', 'python' ]
+
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v3
+
+          - name: Initialize CodeQL
+            uses: github/codeql-action/init@v2
+            with:
+              languages: ${{ matrix.language }}
+
+          - name: Autobuild
+            uses: github/codeql-action/autobuild@v2
+
+          - name: Perform CodeQL Analysis
+            uses: github/codeql-action/analyze@v2
+  EOT
+  overwrite_on_create = true
+  commit_message      = "Add CodeQL analysis workflow"
+}
+
+resource "github_dependabot_security_updates" "this" {
+  count = var.enforce_security ? 1 : 0
+
+  repository = github_repository.this.name
+  enabled    = true
+}
