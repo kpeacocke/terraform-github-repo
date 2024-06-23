@@ -9,7 +9,6 @@ import (
 )
 
 func TestMinimalRepo(t *testing.T) {
-	t.Parallel()
 
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
@@ -30,6 +29,8 @@ func TestMinimalRepo(t *testing.T) {
 			"name":         "terratest-minimal",
 			"github_owner": owner,
 		},
+		MaxRetries:         15,                 // Increase retries for slow API
+		TimeBetweenRetries: 15 * 1_000_000_000, // 15 seconds
 	}
 
 	defer terraform.Destroy(t, terraformOptions)

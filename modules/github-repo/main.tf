@@ -120,6 +120,15 @@ resource "github_repository_file" "gitignore_file" {
 }
 
 resource "github_branch_protection" "main" {
+
+  # --- Branch protection restrictions (not supported by provider as of 2025-05) ---
+  # Uncomment the following block if/when the provider adds support:
+  # restrictions {
+  #   users = var.branch_protection_users
+  #   teams = var.branch_protection_teams
+  #   apps  = var.branch_protection_apps
+  # }
+  # See: https://github.com/integrations/terraform-provider-github/issues/828
   count = var.enforce_gitflow ? 1 : 0
 
   repository_id = github_repository.this.node_id
