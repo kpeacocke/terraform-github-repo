@@ -1,6 +1,7 @@
 package test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -10,10 +11,24 @@ import (
 func TestMinimalRepo(t *testing.T) {
 	t.Parallel()
 
+	token := os.Getenv("GITHUB_TOKEN")
+	if token == "" {
+		t.Fatal("GITHUB_TOKEN is not set in the environment")
+	}
+
+	owner := os.Getenv("GITHUB_OWNER")
+	if owner == "" {
+		t.Fatal("GITHUB_OWNER is not set in the environment")
+	}
+
 	terraformOptions := &terraform.Options{
 		TerraformDir: "../test/fixtures/minimal_repo",
 		EnvVars: map[string]string{
-			"GITHUB_TOKEN": "your_token_here",
+			"GITHUB_TOKEN": token,
+		},
+		Vars: map[string]interface{}{
+			"name":         "terratest-minimal",
+			"github_owner": owner,
 		},
 	}
 

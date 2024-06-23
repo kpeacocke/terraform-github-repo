@@ -1,0 +1,12 @@
+version: '3'
+
+tasks:
+  test:
+    desc: Run all Terratest cases
+    cmds:
+      - go test ./test/...
+    env:
+      GITHUB_TOKEN: $GITHUB_TOKEN
+  fmt:
+    cmds:
+      - terraform fmt -recursive

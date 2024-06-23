@@ -5,6 +5,7 @@
 .terraform.lock.hcl
 crash.log
 *.backup
+*.tfvars
 
 # === Terratest / Test Artifacts ===
 *.out
