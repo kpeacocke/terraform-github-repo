@@ -154,3 +154,34 @@ resource "github_repository_file" "branch_naming_action" {
   overwrite_on_create = true
   commit_message      = "Add GitFlow branch naming enforcement"
 }
+
+resource "github_repository_file" "test_enforcement_action" {
+  count = var.enforce_tests ? 1 : 0
+
+  repository         = github_repository.this.name
+  file               = ".github/workflows/enforce-tests.yml"
+  content            = <<-EOT
+    name: Enforce Test Presence
+
+    on:
+      pull_request:
+        types: [opened, synchronize, reopened]
+
+    jobs:
+      check-tests:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+
+          - name: Check for test changes
+            run: |
+              git fetch origin main
+              git diff --name-only origin/main...HEAD | grep -E 'test|spec' || {
+                echo "No test files added or changed. PR must include test coverage." >&2
+                exit 1
+              }
+  EOT
+  overwrite_on_create = true
+  commit_message      = "Add test enforcement workflow"
+}
