@@ -114,3 +114,18 @@ resource "github_repository_file" "license" {
   commit_message      = "chore: add LICENSE (${var.license})"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "readme" {
+  count = var.bootstrap_with_templates ? 1 : 0
+
+  repository     = github_repository.this.name
+  branch         = "main"
+  file           = "README.md"
+  content        = templatefile("${path.module}/templates/README.md.tmpl", {
+    repo_name = var.name,
+    owner     = var.owners[0], # or var.owner if you still support single
+    license   = var.license
+  })
+  commit_message = "docs: add README"
+  overwrite_on_create = true
+}
