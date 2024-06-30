@@ -3,9 +3,9 @@ variable "name" {
   type        = string
 }
 
-variable "owner" {
-  description = "The GitHub organization or user account that will own the repository."
-  type        = string
+variable "owners" {
+  description = "List of GitHub users or teams who should be set as CODEOWNERS."
+  type        = list(string)
 }
 
 variable "visibility" {

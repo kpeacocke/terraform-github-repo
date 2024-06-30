@@ -68,3 +68,16 @@ resource "github_repository_file" "scorecard" {
   commit_message      = "chore: add scorecard workflow"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "codeowners" {
+  count = var.bootstrap_with_templates ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/CODEOWNERS"
+  content             = templatefile("${path.module}/templates/CODEOWNERS.tmpl", {
+    owners = var.owners
+  })
+  commit_message      = "chore: add CODEOWNERS"
+  overwrite_on_create = true
+}
