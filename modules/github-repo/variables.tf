@@ -6,6 +6,11 @@ variable "name" {
 variable "owners" {
   description = "List of GitHub users or teams who should be set as CODEOWNERS."
   type        = list(string)
+
+  validation {
+    condition     = length(var.owners) > 0
+    error_message = "You must provide at least one CODEOWNER."
+  }
 }
 
 variable "visibility" {
