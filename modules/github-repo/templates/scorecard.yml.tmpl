@@ -1,0 +1,30 @@
+name: "Scorecards Supply Chain Security"
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "30 1 * * 0"
+
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+
+      - name: "Run scorecard analysis"
+        uses: ossf/scorecard-action@v2
+        with:
+          results_file: results.sarif
+          results_format: sarif
+
+      - name: "Upload scorecard results to GitHub code scanning"
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: results.sarif

@@ -1,15 +1,15 @@
 variable "name" {
-  description = "Name of the GitHub repository."
+  description = "The name of the GitHub repository to create."
   type        = string
 }
 
 variable "owner" {
-  description = "GitHub user or organization that will own the repository."
+  description = "The GitHub organization or user account that will own the repository."
   type        = string
 }
 
 variable "visibility" {
-  description = "Visibility of the repository."
+  description = "Whether the repository should be 'private' or 'public'."
   type        = string
   default     = "private"
 
@@ -20,55 +20,55 @@ variable "visibility" {
 }
 
 variable "enforce_gitflow" {
-  description = "Enforce GitFlow-based branch protection and naming policies."
+  description = "Whether to enforce GitFlow naming and branch protection rules."
   type        = bool
   default     = false
 }
 
 variable "enforce_tests" {
-  description = "Require test presence and validation on PRs."
+  description = "Require test coverage or validation before merging PRs."
   type        = bool
   default     = false
 }
 
 variable "enforce_security" {
-  description = "Enable security policies (CodeQL, Dependabot, etc.)."
+  description = "Enable security tools such as CodeQL scanning and Dependabot alerts."
   type        = bool
   default     = false
 }
 
 variable "enforce_docs" {
-  description = "Require documentation updates in PRs."
+  description = "Require documentation updates (README, markdown files, etc.) in PRs."
   type        = bool
   default     = false
 }
 
 variable "bootstrap_with_templates" {
-  description = "Bootstrap repo with README, LICENSE, and SECURITY files."
+  description = "If true, initialize the repo with standard files like README.md, LICENSE, SECURITY.md."
   type        = bool
   default     = true
 }
 
 variable "enforce_issue_integration" {
-  description = "Require PRs to reference issues."
+  description = "Require PRs to reference GitHub issues (e.g. via #issue-number)."
   type        = bool
   default     = false
 }
 
 variable "enforce_project_board" {
-  description = "Enable project board enforcement."
+  description = "Attach issues/PRs to GitHub Projects if set to true."
   type        = bool
   default     = false
 }
 
 variable "traceability_enabled" {
-  description = "Enable traceability checks and tagging."
+  description = "Enable traceability enforcement such as issue states, assignments, or labels."
   type        = bool
   default     = false
 }
 
 variable "enable_weekly_reporting" {
-  description = "Enable automation for stale issues, repo scorecard, etc."
+  description = "If true, adds stale issue management and OpenSSF Scorecard workflows."
   type        = bool
   default     = false
 }
