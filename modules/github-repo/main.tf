@@ -81,3 +81,36 @@ resource "github_repository_file" "codeowners" {
   commit_message      = "chore: add CODEOWNERS"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "traceability" {
+  count = var.traceability_enabled ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/traceability.yml"
+  content             = templatefile("${path.module}/templates/traceability.yml.tmpl", {})
+  commit_message      = "chore: add traceability enforcement workflow"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "security" {
+  count = var.bootstrap_with_templates ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = "SECURITY.md"
+  content             = templatefile("${path.module}/templates/SECURITY.md.tmpl", {})
+  commit_message      = "chore: add SECURITY policy"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "license" {
+  count = var.bootstrap_with_templates ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = "LICENSE"
+  content             = templatefile("${path.module}/templates/LICENSE.${var.license}.tmpl", {})
+  commit_message      = "chore: add LICENSE (${var.license})"
+  overwrite_on_create = true
+}
