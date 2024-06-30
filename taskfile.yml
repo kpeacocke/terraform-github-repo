@@ -10,3 +10,7 @@ tasks:
   fmt:
     cmds:
       - terraform fmt -recursive
+  husky:
+    desc: Setup Git hooks for local dev
+    cmds:
+      - npx husky install

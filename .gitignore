@@ -55,3 +55,9 @@ yarn-error.log*
 
 # === Test binary ===
 test/bin/
+
+# === Node / Semantic Release / Husky ===
+node_modules/
+npm-debug.log*
+package-lock.json
+.husky/_/        # ✅ ignore only internal Husky binaries
