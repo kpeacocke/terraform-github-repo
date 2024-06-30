@@ -91,3 +91,9 @@ variable "license" {
     error_message = "License must be one of: MIT, Apache-2.0, GPL-3.0, BSD-3-Clause, MPL-2.0"
   }
 }
+
+variable "security_contact" {
+  description = "Email or contact address to report security issues."
+  type        = string
+  default     = "security@your-org.com"
+}

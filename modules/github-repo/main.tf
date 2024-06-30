@@ -129,3 +129,18 @@ resource "github_repository_file" "readme" {
   commit_message = "docs: add README"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "security" {
+  count = var.bootstrap_with_templates ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = "SECURITY.md"
+  content             = templatefile("${path.module}/templates/SECURITY.md.tmpl", {
+    security_contact = var.security_contact,
+    owner            = var.owners[0],
+    repo_name        = var.name
+  })
+  commit_message      = "docs: add SECURITY policy"
+  overwrite_on_create = true
+}
