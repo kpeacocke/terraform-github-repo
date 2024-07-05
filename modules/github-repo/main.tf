@@ -178,3 +178,36 @@ resource "github_repository_file" "release" {
   commit_message      = "ci: add release workflow"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "editorconfig" {
+  count = var.bootstrap_with_templates ? 1 : 0
+
+  repository     = github_repository.this.name
+  branch         = "main"
+  file           = ".editorconfig"
+  content        = templatefile("${path.module}/templates/.editorconfig.tmpl", {})
+  commit_message = "chore: add editor config"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "nvmrc" {
+  count = var.bootstrap_with_templates ? 1 : 0
+
+  repository     = github_repository.this.name
+  branch         = "main"
+  file           = ".nvmrc"
+  content        = templatefile("${path.module}/templates/.nvmrc.tmpl", {})
+  commit_message = "chore: add Node.js version lock"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "contributing" {
+  count = var.bootstrap_with_templates ? 1 : 0
+
+  repository     = github_repository.this.name
+  branch         = "main"
+  file           = "CONTRIBUTING.md"
+  content        = templatefile("${path.module}/templates/CONTRIBUTING.md.tmpl", {})
+  commit_message = "docs: add contributing guide"
+  overwrite_on_create = true
+}

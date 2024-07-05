@@ -4,7 +4,7 @@ output "repository_name" {
 }
 
 output "repository_full_name" {
-  description = "The full name (owner/repo) of the GitHub repository."
+  description = "The full name (e.g., owner/repo) of the GitHub repository."
   value       = github_repository.this.full_name
 }
 
@@ -14,16 +14,16 @@ output "repository_url" {
 }
 
 output "repository_ssh_clone_url" {
-  description = "The SSH URL to clone the GitHub repository."
+  description = "The SSH URL of the GitHub repository."
   value       = github_repository.this.ssh_clone_url
 }
 
 output "repository_http_clone_url" {
-  description = "The HTTPS URL to clone the GitHub repository."
+  description = "The HTTP(S) clone URL of the GitHub repository."
   value       = github_repository.this.clone_url
 }
 
 output "default_branch" {
-  description = "The default branch of the created GitHub repository."
+  description = "The default branch of the GitHub repository."
   value       = github_repository.this.default_branch
 }
