@@ -211,3 +211,58 @@ resource "github_repository_file" "contributing" {
   commit_message = "docs: add contributing guide"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "pull_request_template" {
+  count = var.bootstrap_with_templates ? 1 : 0
+
+  repository     = github_repository.this.name
+  branch         = "main"
+  file           = ".github/PULL_REQUEST_TEMPLATE.md"
+  content        = file("${path.module}/templates/.github/PULL_REQUEST_TEMPLATE.md")
+  commit_message = "docs: add PR template"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "issue_template_bug" {
+  count = var.bootstrap_with_templates ? 1 : 0
+
+  repository     = github_repository.this.name
+  branch         = "main"
+  file           = ".github/ISSUE_TEMPLATE/bug_report.yml"
+  content        = file("${path.module}/templates/.github/ISSUE_TEMPLATE_bug_report.yml")
+  commit_message = "docs: add bug report issue template"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "pr_labeler_workflow" {
+  count = var.enable_auto_labeling ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/labeler.yml"
+  content             = file("${path.module}/templates/.github/workflows/labeler.yml.tmpl")
+  commit_message      = "ci: add PR labeler workflow"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "issue_labeler_workflow" {
+  count = var.enable_auto_labeling ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/autolabel-issues.yml"
+  content             = file("${path.module}/templates/.github/workflows/autolabel-issues.yml.tmpl")
+  commit_message      = "ci: add issue auto-labeling workflow"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "labeler_config" {
+  count = var.enable_auto_labeling ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/labeler.yml"
+  content             = file("${path.module}/templates/.github/labeler.yml.tmpl")
+  commit_message      = "ci: add labeler config"
+  overwrite_on_create = true
+}
