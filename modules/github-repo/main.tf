@@ -144,3 +144,37 @@ resource "github_repository_file" "security" {
   commit_message      = "docs: add SECURITY policy"
   overwrite_on_create = true
 }
+
+variable "enable_ci" {
+  description = "If true, adds build/test workflow for CI validation."
+  type        = bool
+  default     = true
+}
+
+variable "enable_release" {
+  description = "If true, adds semantic-release GitHub workflow."
+  type        = bool
+  default     = true
+}
+
+resource "github_repository_file" "build" {
+  count = var.enable_ci ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/build.yml"
+  content             = templatefile("${path.module}/templates/build.yml.tmpl", {})
+  commit_message      = "ci: add build workflow"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "release" {
+  count = var.enable_release ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/release.yml"
+  content             = templatefile("${path.module}/templates/release.yml.tmpl", {})
+  commit_message      = "ci: add release workflow"
+  overwrite_on_create = true
+}
