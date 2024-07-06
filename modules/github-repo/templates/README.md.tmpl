@@ -2,6 +2,18 @@
 
 > Managed via Terraform. Created for the [{{ owner }}](https://github.com/{{ owner }}) GitHub organization.
 
+## Badges
+
+{% if enable_ci %}
+![Build](https://github.com/{{ owner }}/{{ repo_name }}/actions/workflows/build.yml/badge.svg)
+{% endif %}
+{% if enable_release %}
+![Release](https://github.com/{{ owner }}/{{ repo_name }}/actions/workflows/release.yml/badge.svg)
+{% endif %}
+{% if enable_weekly_reporting %}
+![Scorecard](https://api.securityscorecards.dev/projects/github.com/{{ owner }}/{{ repo_name }}/badge)
+{% endif %}
+
 ## Overview
 
 This repository is bootstrapped with:
@@ -10,6 +22,10 @@ This repository is bootstrapped with:
 - Semantic-release automation
 - Weekly stale issue triage
 - Security policy and CODEOWNERS
+
+## Usage
+
+You can use this repository as a baseline to enforce best practices across multiple teams.
 
 ## License
 

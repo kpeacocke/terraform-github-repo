@@ -121,10 +121,13 @@ resource "github_repository_file" "readme" {
   repository     = github_repository.this.name
   branch         = "main"
   file           = "README.md"
-  content        = templatefile("${path.module}/templates/README.md.tmpl", {
-    repo_name = var.name,
-    owner     = var.owners[0], # or var.owner if you still support single
-    license   = var.license
+  content = templatefile("${path.module}/templates/README.md.tmpl", {
+    repo_name               = var.name,
+    owner                   = var.owners[0],
+    license                 = var.license,
+    enable_ci               = var.enable_ci,
+    enable_release          = var.enable_release,
+    enable_weekly_reporting = var.enable_weekly_reporting
   })
   commit_message = "docs: add README"
   overwrite_on_create = true
