@@ -97,3 +97,9 @@ variable "security_contact" {
   type        = string
   default     = "security@your-org.com"
 }
+
+variable "enable_auto_labeling" {
+  description = "If true, automatically labels PRs and issues based on file paths or content."
+  type        = bool
+  default     = false
+}

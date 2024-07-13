@@ -1,9 +1,28 @@
-# 📦 GitHub Repository Terraform Module
-
-Terraform module to provision GitHub repositories with enforced best practices, automation policies, and security controls.
-
+[![Terraform Registry](https://img.shields.io/badge/Terraform%20Registry-Published-blue?logo=terraform)](https://registry.terraform.io/modules/YOUR_ORG/github-repo/github)
 [![CI](https://github.com/your-org/github-repo-module/actions/workflows/test.yml/badge.svg)](https://github.com/your-org/github-repo-module/actions/workflows/test.yml)
 [![Release](https://img.shields.io/badge/release-automated-blue.svg?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+
+# terraform-github-repo
+
+A reusable module for enforcing GitHub repository best practices via Terraform.
+
+## Usage
+
+```hcl
+module "repo" {
+  source  = "your-org/github-repo/github"
+  version = "1.0.0"
+
+  name                     = "my-repo"
+  owners                   = ["my-org/team"]
+  enforce_gitflow          = true
+  enforce_security         = true
+  enforce_tests            = true
+  enforce_docs             = true
+  enforce_issue_integration = true
+  bootstrap_with_templates = true
+}
+```
 
 ---
 
@@ -19,7 +38,7 @@ Terraform module to provision GitHub repositories with enforced best practices, 
 
 ---
 
-## 🚀 Usage
+## 📦 Alternative Install (non-registry)
 
 ```hcl
 module "repo" {
@@ -41,30 +60,15 @@ module "repo" {
 
 ## 🔧 Inputs
 
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| `name` | Repository name | `string` | — |
-| `owner` | GitHub user/org | `string` | — |
-| `visibility` | `private` or `public` | `string` | `"private"` |
-| `enforce_gitflow` | Enforce branch naming + protection | `bool` | `false` |
-| `enforce_tests` | Require test changes in PRs | `bool` | `false` |
-| `enforce_security` | Enable CodeQL + Dependabot | `bool` | `false` |
-| `enforce_docs` | Require docs updates | `bool` | `false` |
-| `bootstrap_with_templates` | Add default files | `bool` | `true` |
-| `enforce_issue_integration` | Require PRs to reference issues | `bool` | `false` |
-| `enforce_project_board` | Enable project linking | `bool` | `false` |
-| `traceability_enabled` | Enforce requirements traceability | `bool` | `false` |
-| `enable_weekly_reporting` | Adds scorecard, stale bot, etc. | `bool` | `false` |
+<!-- BEGIN_TF_DOCS:inputs -->
+<!-- END_TF_DOCS:inputs -->
 
 ---
 
 ## 📤 Outputs
 
-| Name | Description |
-|------|-------------|
-| `repository_name` | The name of the created repository |
-| `repository_full_name` | Full name including org/user |
-| `repository_url` | Repository HTTPS URL |
+<!-- BEGIN_TF_DOCS:outputs -->
+<!-- END_TF_DOCS:outputs -->
 
 ---
 
