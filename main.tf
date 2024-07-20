@@ -282,3 +282,14 @@ resource "github_repository_file" "auto_project_link" {
   commit_message = "ci: add project board auto-linking"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "branch_naming_check" {
+  count = var.enforce_branch_naming ? 1 : 0
+
+  repository     = github_repository.this.name
+  branch         = "main"
+  file           = ".github/workflows/branch-naming.yml"
+  content        = file("${path.module}/templates/.github/workflows/branch-naming.yml.tmpl")
+  commit_message = "ci: add branch naming enforcement"
+  overwrite_on_create = true
+}

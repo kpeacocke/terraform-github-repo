@@ -115,3 +115,9 @@ variable "github_project_url" {
   type        = string
   default     = ""
 }
+
+variable "enforce_branch_naming" {
+  description = "If true, enables branch naming convention enforcement (e.g. feature/*)"
+  type        = bool
+  default     = false
+}
