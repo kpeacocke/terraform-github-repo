@@ -269,3 +269,16 @@ resource "github_repository_file" "labeler_config" {
   commit_message      = "ci: add labeler config"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "auto_project_link" {
+  count = var.enforce_project_board ? 1 : 0
+
+  repository     = github_repository.this.name
+  branch         = "main"
+  file           = ".github/workflows/project-board.yml"
+  content        = templatefile("${path.module}/templates/.github/workflows/project-board.yml.tmpl", {
+    project_url = var.github_project_url
+  })
+  commit_message = "ci: add project board auto-linking"
+  overwrite_on_create = true
+}

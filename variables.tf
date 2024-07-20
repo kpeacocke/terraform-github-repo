@@ -103,3 +103,15 @@ variable "enable_auto_labeling" {
   type        = bool
   default     = false
 }
+
+variable "enforce_project_board" {
+  description = "If true, link issues and PRs to a GitHub project board."
+  type        = bool
+  default     = false
+}
+
+variable "github_project_url" {
+  description = "The full URL of the GitHub project to attach issues/PRs to."
+  type        = string
+  default     = ""
+}

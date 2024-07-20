@@ -123,6 +123,19 @@ Powered by [semantic-release](https://github.com/semantic-release/semantic-relea
 
 ---
 
+## 🗂️ GitHub Project Board Integration
+
+If `enforce_project_board` is enabled, your repository must define the following:
+
+| Requirement           | Description                                                                 |
+|-----------------------|-----------------------------------------------------------------------------|
+| `github_project_url`  | Must be set via Terraform to the full URL of the GitHub Project board.     |
+
+> Example value:
+> `https://github.com/orgs/YOUR_ORG/projects/1/views/2`
+
+Terraform will inject this value into the GitHub Actions workflow when enabled.
+
 ## 📜 License
 
 [MIT](LICENSE)
