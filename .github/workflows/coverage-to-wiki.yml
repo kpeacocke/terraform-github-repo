@@ -1,0 +1,39 @@
+name: Push Coverage to Wiki
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  push-coverage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+
+      - name: Generate coverage report and badge
+        run: |
+          go test -coverprofile=coverage.out ./...
+          go tool cover -html=coverage.out -o coverage.html
+          go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//' > pct.txt
+          echo '<svg xmlns="http://www.w3.org/2000/svg" width="150" height="20"><rect width="150" height="20" fill="#555"/><rect x="70" width="80" height="20" fill="#4c1"/><text x="5" y="14" fill="#fff" font-family="Verdana" font-size="11">coverage</text><text x="75" y="14" fill="#fff" font-family="Verdana" font-size="11">'$(cat pct.txt)'%</text></svg>' > coverage.svg
+
+      - name: Push coverage to wiki
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git wiki
+          cp coverage.html coverage.svg wiki/
+          cd wiki
+          git add coverage.html coverage.svg
+          git commit -m "Update coverage report"
+          git push
