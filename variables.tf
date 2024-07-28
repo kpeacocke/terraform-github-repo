@@ -121,3 +121,9 @@ variable "enforce_branch_naming" {
   type        = bool
   default     = false
 }
+
+variable "enforce_semantic_pr_title" {
+  description = "If true, enforces semantic PR titles via GitHub Actions"
+  type        = bool
+  default     = false
+}

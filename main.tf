@@ -293,3 +293,14 @@ resource "github_repository_file" "branch_naming_check" {
   commit_message = "ci: add branch naming enforcement"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "semantic_pr_title" {
+  count = var.enforce_semantic_pr_title ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/semantic-pr-title.yml"
+  content             = templatefile("${path.module}/templates/.github/workflows/semantic-pr-title.yml.tmpl", {})
+  commit_message      = "ci: add semantic PR title check"
+  overwrite_on_create = true
+}
