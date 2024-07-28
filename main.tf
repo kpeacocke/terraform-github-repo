@@ -52,7 +52,7 @@ resource "github_repository_file" "stale" {
   repository          = github_repository.this.name
   branch              = "main"
   file                = ".github/stale.yml"
-  content             = templatefile("${path.module}/templates/stale.yml.tmpl", {})
+  content             = templatefile("${path.module}/templates/.github/workflows/stale.yml.tmpl", {})
   commit_message      = "chore: add stale workflow"
   overwrite_on_create = true
 }
@@ -64,7 +64,7 @@ resource "github_repository_file" "scorecard" {
   repository          = github_repository.this.name
   branch              = "main"
   file                = ".github/scorecard.yml"
-  content             = templatefile("${path.module}/templates/scorecard.yml.tmpl", {})
+  content             = templatefile("${path.module}/templates/.github/workflows/scorecard.yml.tmpl", {})
   commit_message      = "chore: add scorecard workflow"
   overwrite_on_create = true
 }
@@ -88,7 +88,7 @@ resource "github_repository_file" "traceability" {
   repository          = github_repository.this.name
   branch              = "main"
   file                = ".github/workflows/traceability.yml"
-  content             = templatefile("${path.module}/templates/traceability.yml.tmpl", {})
+  content             = templatefile("${path.module}/templates/.github/workflows/traceability.yml.tmpl", {})
   commit_message      = "chore: add traceability enforcement workflow"
   overwrite_on_create = true
 }
@@ -166,7 +166,7 @@ resource "github_repository_file" "build" {
   repository          = github_repository.this.name
   branch              = "main"
   file                = ".github/workflows/build.yml"
-  content             = templatefile("${path.module}/templates/build.yml.tmpl", {})
+  content             = templatefile("${path.module}/templates/.github/workflows/build.yml.tmpl", {})
   commit_message      = "ci: add build workflow"
   overwrite_on_create = true
 }
@@ -177,7 +177,7 @@ resource "github_repository_file" "release" {
   repository          = github_repository.this.name
   branch              = "main"
   file                = ".github/workflows/release.yml"
-  content             = templatefile("${path.module}/templates/release.yml.tmpl", {})
+  content             = templatefile("${path.module}/templates/.github/workflows/release.yml.tmpl", {})
   commit_message      = "ci: add release workflow"
   overwrite_on_create = true
 }

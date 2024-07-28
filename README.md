@@ -14,14 +14,16 @@ module "repo" {
   source  = "your-org/github-repo/github"
   version = "1.0.0"
 
-  name                     = "my-repo"
-  owners                   = ["my-org/team"]
-  enforce_gitflow          = true
-  enforce_security         = true
-  enforce_tests            = true
-  enforce_docs             = true
+  name                      = "my-repo"
+  owners                    = ["my-org/team"]
+  enforce_gitflow           = true
+  enforce_security          = true
+  enforce_tests             = true
+  enforce_docs              = true
   enforce_issue_integration = true
-  bootstrap_with_templates = true
+  enforce_branch_naming     = true
+  bootstrap_with_templates  = true
+  enforce_traceability      = true
 }
 ```
 
@@ -36,6 +38,8 @@ module "repo" {
 - ✅ Modular toggles for enforcement rules
 - ✅ Bootstrap standard docs (README, LICENSE, SECURITY.md)
 - ✅ Automated releases & changelogs
+- ✅ Branch naming pattern enforcement
+- ✅ Requirements traceability enforcement
 
 ---
 
@@ -135,6 +139,16 @@ If `enforce_project_board` is enabled, your repository must define the following
 > `https://github.com/orgs/YOUR_ORG/projects/1/views/2`
 
 Terraform will inject this value into the GitHub Actions workflow when enabled.
+
+## 📎 Requirements Traceability
+
+If `enforce_traceability` is enabled, this module includes a GitHub Actions workflow that ensures all pull requests are traceable to documented requirements.
+
+The traceability is enforced through:
+
+- Presence of requirement IDs in PR titles or descriptions
+- Required `requirements.yml` or similar structured documentation
+- Automated checks via `traceability.yml` workflow
 
 ## 📜 License
 
