@@ -304,3 +304,13 @@ resource "github_repository_file" "semantic_pr_title" {
   commit_message      = "ci: add semantic PR title check"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "dependabot" {
+  count               = var.enable_dependabot ? 1 : 0
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/dependabot.yml"
+  content             = templatefile("${path.module}/templates/.github/dependabot.yml.tmpl", {})
+  commit_message      = "chore: add Dependabot config"
+  overwrite_on_create = true
+}

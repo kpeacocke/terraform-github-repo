@@ -127,3 +127,9 @@ variable "enforce_semantic_pr_title" {
   type        = bool
   default     = false
 }
+
+variable "enable_dependabot" {
+  description = "If true, adds GitHub Dependabot config"
+  type        = bool
+  default     = false
+}
