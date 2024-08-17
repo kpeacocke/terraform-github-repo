@@ -1,7 +1,6 @@
-version: 2
-updates:
+# Always present
   - package-ecosystem: "github-actions"
-    directory: "/"  # Location of the workflows
+    directory: "/"
     schedule:
       interval: "weekly"
     commit-message:
@@ -9,7 +8,7 @@ updates:
       include: "scope"
 
   - package-ecosystem: "npm"
-    directory: "/"  # If you include JS tools like Husky, Commitlint
+    directory: "/"
     schedule:
       interval: "weekly"
     commit-message:
