@@ -314,3 +314,10 @@ resource "github_repository_file" "dependabot" {
   commit_message      = "chore: add Dependabot config"
   overwrite_on_create = true
 }
+
+resource "local_file" "gitignore" {
+  content  = templatefile("${path.module}/templates/gitignore.tmpl", {
+    languages = var.supported_languages
+  })
+  filename = "${path.module}/.gitignore"
+}

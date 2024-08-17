@@ -133,3 +133,19 @@ variable "enable_dependabot" {
   type        = bool
   default     = false
 }
+
+variable "languages" {
+  description = "List of programming languages used in the repository."
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition = alltrue([
+      for lang in var.languages : contains([
+        "javascript", "typescript", "python", "go", "java", "ruby",
+        "csharp", "cpp", "kotlin", "php", "rust", "swift", "perl", "terraform", "r"
+      ], lower(lang))
+    ])
+    error_message = "Each entry in `languages` must be one of: javascript, typescript, python, go, java, ruby, csharp, cpp, kotlin, php, rust, swift, perl, terraform, r."
+  }
+}
