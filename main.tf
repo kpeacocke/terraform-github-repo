@@ -321,3 +321,11 @@ resource "local_file" "gitignore" {
   })
   filename = "${path.module}/.gitignore"
 }
+
+resource "local_file" "codeql_workflow" {
+  count    = var.enable_codeql && length(var.languages) > 0 ? 1 : 0
+  content  = templatefile("${path.module}/templates/.github/workflows/codeql.yml.tmpl", {
+    languages = [for lang in var.languages : lower(trimspace(lang))]
+  })
+  filename = "${path.module}/generated/.github/workflows/codeql.yml"
+}

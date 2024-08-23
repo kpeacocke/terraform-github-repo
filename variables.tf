@@ -135,17 +135,23 @@ variable "enable_dependabot" {
 }
 
 variable "languages" {
-  description = "List of programming languages used in the repository."
+  description = "List of programming languages in use (for CodeQL, Dependabot, .gitignore)"
   type        = list(string)
   default     = []
 
   validation {
     condition = alltrue([
       for lang in var.languages : contains([
-        "javascript", "typescript", "python", "go", "java", "ruby",
-        "csharp", "cpp", "kotlin", "php", "rust", "swift", "perl", "terraform", "r"
-      ], lower(lang))
+        "javascript", "typescript", "python", "go", "java", "ruby", "csharp",
+        "cpp", "kotlin", "php", "rust", "swift", "perl", "hcl", "r"
+      ], lower(trimspace(lang)))
     ])
-    error_message = "Each entry in `languages` must be one of: javascript, typescript, python, go, java, ruby, csharp, cpp, kotlin, php, rust, swift, perl, terraform, r."
+    error_message = "Each language must be one of: javascript, typescript, python, go, java, ruby, csharp, cpp, kotlin, php, rust, swift, perl, hcl, r"
   }
+}
+
+variable "enable_codeql" {
+  description = "Enable CodeQL static analysis for supported languages"
+  type        = bool
+  default     = false
 }

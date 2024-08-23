@@ -43,6 +43,37 @@ module "repo" {
 
 ---
 
+## 🔐 CodeQL Configuration
+
+CodeQL is automatically configured when `enforce_security = true`. Supported languages include:
+
+- JavaScript/TypeScript
+- Python
+- Go
+- Java
+- Ruby
+- C#
+- C/C++
+- Kotlin
+- PHP
+- Swift
+- Rust
+- Perl
+- R
+- HCL (Terraform)
+
+Only languages listed in the `languages` variable are scanned. This ensures minimal setup and performance impact.
+
+To enable scanning:
+
+```hcl
+languages = ["python", "go"]
+```
+
+The generated GitHub Action will dynamically configure `codeql.yml` based on these settings.
+
+---
+
 ## 📦 Alternative Install (non-registry)
 
 ```hcl
