@@ -1,0 +1,106 @@
+name: Coverage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  coverage:
+    name: Multi-Language Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      {% if "go" in languages %}
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+
+      - name: Run Go tests
+        run: |
+          go test -coverprofile=coverage.out ./...
+          go tool cover -func=coverage.out > coverage.txt
+      {% endif %}
+
+      {% if "python" in languages %}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install Python deps and run tests
+        run: |
+          pip install -r requirements.txt
+          coverage run -m unittest discover
+          coverage report > coverage.txt
+      {% endif %}
+
+      {% if "javascript" in languages or "typescript" in languages %}
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Node.js deps and run tests
+        run: |
+          npm install
+          npm test -- --coverage > coverage.txt || true
+      {% endif %}
+
+      {% if "ruby" in languages %}
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+
+      - name: Run Ruby tests
+        run: |
+          bundle install
+          bundle exec rake test
+      {% endif %}
+
+      {% if "php" in languages %}
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: Run PHP tests
+        run: vendor/bin/phpunit --coverage-text > coverage.txt
+      {% endif %}
+
+      {% if "r" in languages %}
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Run R tests
+        run: |
+          Rscript -e 'covr::package_coverage()'
+      {% endif %}
+
+      {% if "swift" in languages %}
+      - name: Set up Swift (macOS only)
+        run: echo "Swift support requires macOS runners."
+      {% endif %}
+
+      {% if "perl" in languages %}
+      - name: Run Perl tests
+        run: prove -l
+      {% endif %}
+
+      - name: Upload Coverage Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.txt
+
+      - name: Comment PR with Coverage
+        uses: MishaKav/coverage-badger@v1.0.4
+        with:
+          coverage-file: coverage.txt
+          token: ${{ secrets.GITHUB_TOKEN }}

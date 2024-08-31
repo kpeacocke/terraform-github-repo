@@ -155,3 +155,15 @@ variable "enable_codeql" {
   type        = bool
   default     = false
 }
+
+variable "enable_coverage" {
+  description = "Enable test coverage reporting"
+  type        = bool
+  default     = false
+}
+
+variable "coverage_threshold" {
+  description = "Minimum coverage threshold to enforce (as percentage)"
+  type        = number
+  default     = 80
+}

@@ -329,3 +329,19 @@ resource "local_file" "codeql_workflow" {
   })
   filename = "${path.module}/generated/.github/workflows/codeql.yml"
 }
+
+resource "github_repository_file" "coverage_workflow" {
+  for_each = toset(var.languages)
+
+  repository          = github_repository.repo.name
+  file                = ".github/workflows/test-${each.value}.yml"
+  content             = templatefile("${path.module}/templates/.github/workflows/test-${each.value}.yml.tmpl", {
+    language = each.value
+  })
+  commit_message      = "chore(ci): add coverage workflow for ${each.value}"
+  overwrite_on_create = true
+
+  lifecycle {
+    ignore_changes = [content] # Prevent Terraform diffing rendered templates
+  }
+}
