@@ -1,0 +1,45 @@
+name: Test & Coverage (kotlin)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  test:
+    name: Test and Coverage - kotlin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print not implemented
+        run: echo "Test setup not implemented for kotlin" && exit 1
+
+      - name: Generate coverage badge
+        uses: tj-actions/coverage-badge@v2
+        with:
+          output: coverage-kotlin-badge.svg
+          coverage-file: coverage-kotlin.unknown
+
+      - name: Upload badge to wiki
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${ secrets.GITHUB_TOKEN }
+          publish_dir: ./
+          publish_branch: wiki
+          destination_dir: coverage
+          keep_files: true
+
+      - name: Comment PR with coverage summary
+        uses: MishaKav/jest-coverage-comment@v1
+        with:
+          coverage-summary-path: coverage-kotlin.unknown
+          token: ${ secrets.GITHUB_TOKEN }
+          title: "kotlin Coverage Summary"
+        if: github.event_name == 'pull_request'

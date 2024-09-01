@@ -1,0 +1,56 @@
+name: Test & Coverage (python)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  test:
+    name: Test and Coverage - python
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pytest pytest-cov
+
+      - name: Run tests with coverage
+        run: pytest --cov=. --cov-report=term --cov-report=xml
+
+      - name: Rename coverage file
+        run: mv coverage.xml coverage-{language}.xml
+
+      - name: Generate coverage badge
+        uses: tj-actions/coverage-badge@v2
+        with:
+          output: coverage-python-badge.svg
+          coverage-file: coverage-python.xml
+
+      - name: Upload badge to wiki
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${ secrets.GITHUB_TOKEN }
+          publish_dir: ./
+          publish_branch: wiki
+          destination_dir: coverage
+          keep_files: true
+
+      - name: Comment PR with coverage summary
+        uses: MishaKav/jest-coverage-comment@v1
+        with:
+          coverage-summary-path: coverage-python.xml
+          token: ${ secrets.GITHUB_TOKEN }
+          title: "python Coverage Summary"
+        if: github.event_name == 'pull_request'

@@ -331,17 +331,18 @@ resource "local_file" "codeql_workflow" {
 }
 
 resource "github_repository_file" "coverage_workflow" {
-  for_each = toset(var.languages)
+  for_each = var.enable_coverage ? toset(var.languages) : []
 
-  repository          = github_repository.repo.name
+  repository          = github_repository.this.name
   file                = ".github/workflows/test-${each.value}.yml"
   content             = templatefile("${path.module}/templates/.github/workflows/test-${each.value}.yml.tmpl", {
-    language = each.value
+    language            = each.value,
+    coverage_threshold  = var.coverage_threshold
   })
   commit_message      = "chore(ci): add coverage workflow for ${each.value}"
   overwrite_on_create = true
 
   lifecycle {
-    ignore_changes = [content] # Prevent Terraform diffing rendered templates
+    ignore_changes = [content]
   }
 }

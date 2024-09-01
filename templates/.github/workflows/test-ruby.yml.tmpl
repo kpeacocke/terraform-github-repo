@@ -1,0 +1,45 @@
+name: Test & Coverage (ruby)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  test:
+    name: Test and Coverage - ruby
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print not implemented
+        run: echo "Test setup not implemented for ruby" && exit 1
+
+      - name: Generate coverage badge
+        uses: tj-actions/coverage-badge@v2
+        with:
+          output: coverage-ruby-badge.svg
+          coverage-file: coverage-ruby.unknown
+
+      - name: Upload badge to wiki
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${ secrets.GITHUB_TOKEN }
+          publish_dir: ./
+          publish_branch: wiki
+          destination_dir: coverage
+          keep_files: true
+
+      - name: Comment PR with coverage summary
+        uses: MishaKav/jest-coverage-comment@v1
+        with:
+          coverage-summary-path: coverage-ruby.unknown
+          token: ${ secrets.GITHUB_TOKEN }
+          title: "ruby Coverage Summary"
+        if: github.event_name == 'pull_request'

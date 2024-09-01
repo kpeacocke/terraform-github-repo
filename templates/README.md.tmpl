@@ -13,15 +13,24 @@
 {% if enable_weekly_reporting %}
 ![Scorecard](https://api.securityscorecards.dev/projects/github.com/{{ owner }}/{{ repo_name }}/badge)
 {% endif %}
+{% if enable_coverage %}
+![Coverage](https://github.com/{{ owner }}/{{ repo_name }}/actions/workflows/test-python.yml/badge.svg)
+{% endif %}
 
 ## Overview
 
 This repository is bootstrapped with:
-- GitFlow branch protection
-- Issue and test enforcement
-- Semantic-release automation
-- Weekly stale issue triage
-- Security policy and CODEOWNERS
+- GitFlow branch protection {% if enforce_gitflow %}✅{% endif %}
+- Issue and test enforcement {% if enforce_issue_integration or enforce_tests %}✅{% endif %}
+- Semantic-release automation {% if enable_release %}✅{% endif %}
+- Weekly stale issue triage {% if enable_weekly_reporting %}✅{% endif %}
+- Security policy and CODEOWNERS {% if bootstrap_with_templates %}✅{% endif %}
+- Traceability checks {% if traceability_enabled %}✅{% endif %}
+- Semantic PR title enforcement {% if enforce_semantic_pr_title %}✅{% endif %}
+- Branch naming convention enforcement {% if enforce_branch_naming %}✅{% endif %}
+- GitHub Project board linking {% if enforce_project_board %}✅{% endif %}
+- Language-specific test coverage {% if enable_coverage %}✅{% endif %}
+- Dependabot security updates {% if enable_dependabot %}✅{% endif %}
 
 ## Usage
 
@@ -29,4 +38,4 @@ You can use this repository as a baseline to enforce best practices across multi
 
 ## License
 
-This project is licensed under the **{{ license }}** license.
+Licensed under the {{ license }} License.
