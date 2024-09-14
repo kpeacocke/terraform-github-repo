@@ -36,6 +36,22 @@ This repository is bootstrapped with:
 
 You can use this repository as a baseline to enforce best practices across multiple teams.
 
+## Examples
+
+Minimal example usage (see `examples/minimal`):
+```hcl
+module "{{ repo_name }}" {
+  source      = "github.com/{{ owner }}/{{ repo_name }}"
+  name        = "my-repo"
+  owners      = ["{{ owner }}"]
+  visibility  = "private"
+  license     = "{{ license }}"
+  languages   = {{ languages }}
+  enable_ci   = true
+  # ... other options ...
+}
+```
+
 ## License
 
 Licensed under the {{ license }} License.
