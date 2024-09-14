@@ -192,6 +192,31 @@ resource "github_repository_file" "release" {
   overwrite_on_create = true
 }
 
+// Add CHANGELOG and semantic-release config
+resource "github_repository_file" "changelog" {
+  count = var.enable_release ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = "CHANGELOG.md"
+  content             = templatefile(
+    "${path.module}/templates/CHANGELOG.md.tmpl", {}
+  )
+  commit_message      = "docs: add CHANGELOG"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "release_config" {
+  count = var.enable_release ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = "release.config.js"
+  content             = file("${path.module}/release.config.js")
+  commit_message      = "chore: add semantic-release config"
+  overwrite_on_create = true
+}
+
 resource "github_repository_file" "editorconfig" {
   count = var.bootstrap_with_templates ? 1 : 0
 

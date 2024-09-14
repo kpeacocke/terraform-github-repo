@@ -163,3 +163,23 @@ resource "github_repository_file" "security" {
   commit_message      = "docs: add SECURITY policy"
   overwrite_on_create = true
 }
+// Initialize CHANGELOG
+resource "github_repository_file" "changelog" {
+  repository          = var.repository
+  branch              = var.branch
+  file                = "CHANGELOG.md"
+  content             = templatefile(
+    "${path.module}/../templates/CHANGELOG.md.tmpl", {}
+  )
+  commit_message      = "docs: add CHANGELOG"
+  overwrite_on_create = true
+}
+// Semantic-release configuration
+resource "github_repository_file" "release_config" {
+  repository          = var.repository
+  branch              = var.branch
+  file                = "release.config.js"
+  content             = file("${path.module}/../release.config.js")
+  commit_message      = "chore: add semantic-release config"
+  overwrite_on_create = true
+}
