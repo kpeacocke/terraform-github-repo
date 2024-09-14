@@ -23,9 +23,10 @@ module "security" {
   count  = var.enforce_security ? 1 : 0
   source = "./security"
 
-  repository    = github_repository.this.name
-  enable_codeql = var.enable_codeql
-  languages     = [for lang in var.languages : lower(trimspace(lang))]
+  repository        = github_repository.this.name
+  enable_codeql     = var.enable_codeql
+  enable_dependabot = var.enable_dependabot
+  languages         = var.languages
 }
 
 # Issue integration, doc enforcement, test checks
