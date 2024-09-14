@@ -39,6 +39,24 @@ module "ci_enforcement" {
   enforce_tests             = var.enforce_tests
 }
 
+# CI enforcement workflow
+resource "github_repository_file" "ci_enforcement_workflow" {
+  count = var.enforce_issue_integration || var.enforce_docs || var.enforce_tests ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/ci-enforcement.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/ci-enforcement.yml.tmpl", {
+      enforce_issue_integration = var.enforce_issue_integration,
+      enforce_docs              = var.enforce_docs,
+      enforce_tests             = var.enforce_tests
+    }
+  )
+  commit_message      = "ci: add CI enforcement workflow"
+  overwrite_on_create = true
+}
+
 # Add stale.yml
 resource "github_repository_file" "stale" {
   count = var.enable_weekly_reporting ? 1 : 0
