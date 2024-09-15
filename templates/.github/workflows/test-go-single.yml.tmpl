@@ -12,13 +12,8 @@ permissions:
 
 jobs:
   test:
-    name: Test and Coverage - go
+    name: Test and Coverage - go (${default_version})
     runs-on: ubuntu-latest
-%{ if enable_matrix }
-    strategy:
-      matrix:
-        go_version: [${join(", ", [for v in matrix_versions: "\"${v}\""])}]
-%{ endif }
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,13 +21,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "%{ if enable_matrix }$${{ matrix.go_version }}%{ else }${default_version}%{ endif }"
+          go-version: "${default_version}"
 
       - name: Run tests
         run: go test -coverprofile=coverage.out ./...
 
-      - name: Convert to lcov format
-        run: go tool cover -func=coverage.out > coverage-{language}.txt
+      - name: Convert to coverage summary
+        run: go tool cover -func=coverage.out > coverage-go.txt
 
       - name: Generate coverage badge
         uses: tj-actions/coverage-badge@v2
@@ -43,7 +38,7 @@ jobs:
       - name: Upload badge to wiki
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${ secrets.GITHUB_TOKEN }
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
           publish_branch: wiki
           destination_dir: coverage
@@ -53,6 +48,6 @@ jobs:
         uses: MishaKav/jest-coverage-comment@v1
         with:
           coverage-summary-path: coverage-go.txt
-          token: ${ secrets.GITHUB_TOKEN }
+          token: ${{ secrets.GITHUB_TOKEN }}
           title: "go Coverage Summary"
         if: github.event_name == 'pull_request'

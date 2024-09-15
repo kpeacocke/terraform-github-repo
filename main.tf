@@ -403,21 +403,125 @@ resource "github_repository_file" "codeql_workflow" {
   overwrite_on_create = true
 }
 
-resource "github_repository_file" "coverage_workflow" {
-  for_each = var.enable_coverage ? toset(var.languages) : []
+// Test workflows: single-version or matrix per language
+resource "github_repository_file" "test_go_single" {
+  count = var.enable_coverage && !var.enable_matrix && contains(var.languages, "go") ? 1 : 0
 
   repository          = github_repository.this.name
-  file                = ".github/workflows/test-${each.value}.yml"
-  content             = templatefile("${path.module}/templates/.github/workflows/test-${each.value}.yml.tmpl", {
-    language            = each.value,
-    coverage_threshold  = var.coverage_threshold
-  })
-  commit_message      = "chore(ci): add coverage workflow for ${each.value}"
+  branch              = "main"
+  file                = ".github/workflows/test-go.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/test-go-single.yml.tmpl", {
+      default_version = lookup(var.language_default_versions, "go", "")
+    }
+  )
+  commit_message      = "ci: add Go test workflow"
   overwrite_on_create = true
+}
 
-  lifecycle {
-    ignore_changes = [content]
-  }
+resource "github_repository_file" "test_go_matrix" {
+  count = var.enable_coverage && var.enable_matrix && contains(var.languages, "go") ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/test-go-matrix.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/test-go-matrix.yml.tmpl", {
+      matrix_versions = var.language_matrix_versions["go"]
+    }
+  )
+  commit_message      = "ci: add Go test matrix workflow"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "test_python_single" {
+  count = var.enable_coverage && !var.enable_matrix && contains(var.languages, "python") ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/test-python.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/test-python-single.yml.tmpl", {
+      default_version = lookup(var.language_default_versions, "python", "")
+    }
+  )
+  commit_message      = "ci: add Python test workflow"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "test_python_matrix" {
+  count = var.enable_coverage && var.enable_matrix && contains(var.languages, "python") ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/test-python-matrix.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/test-python-matrix.yml.tmpl", {
+      matrix_versions = var.language_matrix_versions["python"]
+    }
+  )
+  commit_message      = "ci: add Python test matrix workflow"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "test_javascript_single" {
+  count = var.enable_coverage && !var.enable_matrix && contains(var.languages, "javascript") ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/test-javascript.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/test-javascript-single.yml.tmpl", {
+      default_version = lookup(var.language_default_versions, "javascript", "")
+    }
+  )
+  commit_message      = "ci: add JS test workflow"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "test_javascript_matrix" {
+  count = var.enable_coverage && var.enable_matrix && contains(var.languages, "javascript") ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/test-javascript-matrix.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/test-javascript-matrix.yml.tmpl", {
+      matrix_versions = var.language_matrix_versions["javascript"]
+    }
+  )
+  commit_message      = "ci: add JS test matrix workflow"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "test_typescript_single" {
+  count = var.enable_coverage && !var.enable_matrix && contains(var.languages, "typescript") ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/test-typescript.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/test-typescript-single.yml.tmpl", {
+      default_version = lookup(var.language_default_versions, "typescript", "")
+    }
+  )
+  commit_message      = "ci: add TS test workflow"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "test_typescript_matrix" {
+  count = var.enable_coverage && var.enable_matrix && contains(var.languages, "typescript") ? 1 : 0
+
+  repository          = github_repository.this.name
+  branch              = "main"
+  file                = ".github/workflows/test-typescript-matrix.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/test-typescript-matrix.yml.tmpl", {
+      matrix_versions = var.language_matrix_versions["typescript"]
+    }
+  )
+  commit_message      = "ci: add TS test matrix workflow"
+  overwrite_on_create = true
 }
 
 // Manage Terraform docs regeneration workflow

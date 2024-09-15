@@ -1,4 +1,4 @@
-name: Test & Coverage (typescript)
+name: Test & Coverage (python) (matrix)
 
 on:
   push:
@@ -12,39 +12,39 @@ permissions:
 
 jobs:
   test:
-    name: Test and Coverage - typescript
+    name: Test and Coverage - python (matrix)
     runs-on: ubuntu-latest
     strategy:
-    matrix:
-      node_version: [ '16', '18', '20' ]
+      matrix:
+        python_version: [${join(", ", [for v in matrix_versions: "\"${v}\""])}]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: ${{ matrix.node_version }}
+          python-version: ${{ matrix.python_version }}
 
       - name: Install dependencies
-        run: npm ci
+        run: pip install pytest pytest-cov
 
       - name: Run tests with coverage
-        run: npm run test -- --coverage
+        run: pytest --cov=. --cov-report=term --cov-report=xml
 
       - name: Rename coverage file
-        run: mv coverage/coverage-final.json coverage-{language}.json
+        run: mv coverage.xml coverage-python.xml
 
       - name: Generate coverage badge
         uses: tj-actions/coverage-badge@v2
         with:
-          output: coverage-typescript-badge.svg
-          coverage-file: coverage-typescript.json
+          output: coverage-python-badge.svg
+          coverage-file: coverage-python.xml
 
       - name: Upload badge to wiki
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${ secrets.GITHUB_TOKEN }
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
           publish_branch: wiki
           destination_dir: coverage
@@ -53,7 +53,7 @@ jobs:
       - name: Comment PR with coverage summary
         uses: MishaKav/jest-coverage-comment@v1
         with:
-          coverage-summary-path: coverage-typescript.json
-          token: ${ secrets.GITHUB_TOKEN }
-          title: "typescript Coverage Summary"
+          coverage-summary-path: coverage-python.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "python Coverage Summary"
         if: github.event_name == 'pull_request'

@@ -162,6 +162,34 @@ variable "enable_coverage" {
   default     = false
 }
 
+variable "enable_matrix" {
+  description = "If true, use a version matrix for test workflows"
+  type        = bool
+  default     = false
+}
+
+variable "language_default_versions" {
+  description = "Map of default single-version values for each language"
+  type        = map(string)
+  default = {
+    go         = "1.21"
+    python     = "3.11"
+    javascript = "20"
+    typescript = "20"
+  }
+}
+
+variable "language_matrix_versions" {
+  description = "Map of version lists for matrix testing per language"
+  type        = map(list(string))
+  default = {
+    go         = ["1.20", "1.21", "1.22"]
+    python     = ["3.9",  "3.10", "3.11"]
+    javascript = ["16",   "18",   "20"]
+    typescript = ["4.5",  "4.6",  "4.7"]
+  }
+}
+
 variable "coverage_threshold" {
   description = "Minimum coverage threshold to enforce (as percentage)"
   type        = number
