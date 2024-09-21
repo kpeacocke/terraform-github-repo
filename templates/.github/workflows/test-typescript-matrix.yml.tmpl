@@ -24,7 +24,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "$$$${{ matrix.node_version }}"
+          node-version: "$${{ matrix.node_version }}"
 
       - name: Install dependencies
         run: npm ci
@@ -44,7 +44,7 @@ jobs:
       - name: Upload badge to wiki
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: $$$${{ secrets.GITHUB_TOKEN }}
+          github_token: $${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
           publish_branch: wiki
           destination_dir: coverage
@@ -54,6 +54,6 @@ jobs:
         uses: MishaKav/jest-coverage-comment@v1
         with:
           coverage-summary-path: coverage-typescript.json
-          token: $$$${{ secrets.GITHUB_TOKEN }}
+          token: $${{ secrets.GITHUB_TOKEN }}
           title: "typescript Coverage Summary"
         if: github.event_name == 'pull_request'

@@ -20,7 +20,7 @@ variable "status_check_contexts" {
 // Protect release branches with GitFlow rules
 resource "github_branch_protection" "release" {
   for_each   = toset(var.release_branches)
-  repository = var.repository
+  repository_id = var.repository
   pattern    = each.value
 
   enforce_admins = true

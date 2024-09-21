@@ -20,10 +20,6 @@ output "repository_ssh_clone_url" {
 
 output "repository_http_clone_url" {
   description = "The HTTP(S) clone URL of the GitHub repository."
-  value       = github_repository.this.clone_url
+  value       = github_repository.this.http_clone_url
 }
 
-output "default_branch" {
-  description = "The default branch of the GitHub repository."
-  value       = github_repository.this.default_branch
-}

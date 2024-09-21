@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         language:
-%{ for lang in var.languages ~}
+%{ for lang in languages ~}
           - ${lang}
 %{ endfor }
 
@@ -32,7 +32,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
-          languages: $$$${{ matrix.language }}
+          languages: $${{ matrix.language }}
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v2

@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Check branch name
         run: |
-          BRANCH_NAME="$$$$${{ github.head_ref }}"
+          BRANCH_NAME="$${{ github.head_ref }}"
           echo "Checking branch name: $BRANCH_NAME"
           if [[ ! "$BRANCH_NAME" =~ ^(feature|fix|bugfix|hotfix|chore|docs|test|refactor)/.+$ ]]; then
             echo "::error::Branch name must follow the pattern <type>/<description> (e.g., feature/new-api)"

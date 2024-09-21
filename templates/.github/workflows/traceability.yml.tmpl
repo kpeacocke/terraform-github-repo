@@ -11,7 +11,7 @@ jobs:
       - name: "Check PR references and issue state"
         uses: actions/github-script@v7
         with:
-          github-token: $$$${{ secrets.GITHUB_TOKEN }}
+          github-token: $${{ secrets.GITHUB_TOKEN }}
           script: |
             const pr = context.payload.pull_request;
             const body = pr.body || "";
@@ -31,7 +31,7 @@ jobs:
             });
 
             if (!issue.data.assignee) {
-              core.setFailed(`Referenced issue #${issueNumber} has no assignee.`);
+              core.setFailed(`Referenced issue #` + issueNumber ` has no assignee.`);
               return;
             }
 
@@ -40,5 +40,5 @@ jobs:
             const validState = labels.some(label => acceptableStates.includes(label));
 
             if (!validState) {
-              core.setFailed(`Referenced issue #${issueNumber} must have one of these labels: ${acceptableStates.join(", ")}`);
+              core.setFailed('Referenced issue #' + issueNumber + ' must have one of these labels: ' + acceptableStates.join(', '));
             }

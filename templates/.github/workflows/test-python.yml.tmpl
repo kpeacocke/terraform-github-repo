@@ -24,7 +24,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: $$$${{"{{"}} matrix.python_version {{"}}"}}
+          python-version: ${{"{{"}} matrix.python_version {{"}}"}}
 
       - name: Install dependencies
         run: pip install pytest pytest-cov
@@ -44,7 +44,7 @@ jobs:
       - name: Upload badge to wiki
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${ secrets.GITHUB_TOKEN }
+          github_token: $${ secrets.GITHUB_TOKEN }
           publish_dir: ./
           publish_branch: wiki
           destination_dir: coverage
@@ -54,6 +54,6 @@ jobs:
         uses: MishaKav/jest-coverage-comment@v1
         with:
           coverage-summary-path: coverage-python.xml
-          token: ${ secrets.GITHUB_TOKEN }
+          token: $${ secrets.GITHUB_TOKEN }
           title: "python Coverage Summary"
         if: github.event_name == 'pull_request'

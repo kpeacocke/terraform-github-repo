@@ -258,7 +258,7 @@ resource "github_repository_file" "pull_request_template" {
   repository     = github_repository.this.name
   branch         = "main"
   file           = ".github/PULL_REQUEST_TEMPLATE.md"
-  content        = file("${path.module}/templates/.github/PULL_REQUEST_TEMPLATE.md")
+  content        = templatefile("${path.module}/templates/.github/PULL_REQUEST_TEMPLATE.md.tmpl", {})
   commit_message = "docs: add PR template"
   overwrite_on_create = true
 }
@@ -269,7 +269,7 @@ resource "github_repository_file" "issue_template_bug" {
   repository     = github_repository.this.name
   branch         = "main"
   file           = ".github/ISSUE_TEMPLATE/bug_report.yml"
-  content        = file("${path.module}/templates/.github/ISSUE_TEMPLATE_bug_report.yml")
+  content        = templatefile("${path.module}/templates/.github/ISSUE_TEMPLATE/ISSUE_TEMPLATE_bug_report.yml.tmpl", {})
   commit_message = "docs: add bug report issue template"
   overwrite_on_create = true
 }
@@ -361,7 +361,7 @@ resource "github_repository_file" "dependabot" {
   repository          = github_repository.this.name
   branch              = "main"
   file                = ".github/dependabot.yml"
-  content             = templatefile("${path.module}/templates/.github/dependabot.yml.tmpl", {})
+  content             = templatefile("${path.module}/templates/.github/workflows/dependabot.yml.tmpl", {})
   commit_message      = "chore: add Dependabot config"
   overwrite_on_create = true
 }
