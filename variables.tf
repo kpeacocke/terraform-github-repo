@@ -172,7 +172,7 @@ variable "release_branches" {
 variable "status_check_contexts" {
   description = "List of GitHub status check contexts to require before merging"
   type        = list(string)
-  default     = ["build", "ci-enforcement"]
+  default     = ["CI", "CI Enforcement", "Coverage"]
 }
 
 variable "language_default_versions" {
