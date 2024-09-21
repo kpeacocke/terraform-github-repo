@@ -1,11 +1,22 @@
 // GitFlow module: placeholder for branch protection enforcement
 
-variable "repository" { type = string }
+variable "repository" {
+  description = "The GitHub repository name"
+  type        = string
+}
+
+variable "release_branches" {
+  description = "List of branch name patterns to protect (e.g. main, develop, feature/*, hotfix/*)"
+  type        = list(string)
+  default     = ["main", "develop", "feature/*", "hotfix/*"]
+}
 
 // Enforce GitFlow branch protection for the default branch
-resource "github_branch_protection" "main" {
+// Protect release branches with GitFlow rules
+resource "github_branch_protection" "release" {
+  for_each   = toset(var.release_branches)
   repository = var.repository
-  pattern    = var.branch
+  pattern    = each.value
 
   enforce_admins = true
 
