@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: [ '1.20', '1.21', '1.22' ]
+        go_version: [ '1.20', '1.21', '1.22' ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version: $$$${{ matrix.go_version }}
 
       - name: Run tests
         run: go test -coverprofile=coverage.out ./...
@@ -41,7 +41,7 @@ jobs:
       - name: Upload badge to wiki
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: $$$${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
           publish_branch: wiki
           destination_dir: coverage
@@ -51,6 +51,6 @@ jobs:
         uses: MishaKav/jest-coverage-comment@v1
         with:
           coverage-summary-path: coverage-go.txt
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: $$$${{ secrets.GITHUB_TOKEN }}
           title: "go Coverage Summary"
         if: github.event_name == 'pull_request'

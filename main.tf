@@ -16,7 +16,8 @@ module "gitflow" {
   source = "./gitflow"
 
   repository       = github_repository.this.name
-  release_branches = var.release_branches
+  release_branches        = var.release_branches
+  status_check_contexts   = var.status_check_contexts
 }
 
 # CodeQL / Security

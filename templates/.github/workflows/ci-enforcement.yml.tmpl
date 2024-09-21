@@ -9,27 +9,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+%{ if enforce_issue_integration }
       - name: Check issue integration
-        if: {{ if enforce_issue_integration }} true {{ else }} false {{ end }}
         uses: actions/github-script@v6
         with:
-          github-token: \\${{ secrets.GITHUB_TOKEN }}
+          github-token: "$$$${{ secrets.GITHUB_TOKEN }}"
           script: |
             const pr = context.payload.pull_request;
             if (!/#\d+/.test(pr.body)) {
               core.setFailed("PR must reference an issue.");
             }
+%{ endif }
 
+%{ if enforce_docs }
       - name: Check docs changes
-        if: {{ if enforce_docs }} true {{ else }} false {{ end }}
         run: |
-          if [ -z "$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.md$')" ]; then
+          if [ -z "$(git diff --name-only $$$${{ github.event.pull_request.base.sha }} $$$${{ github.sha }} | grep '\.md$')" ]; then
             echo 'No documentation changes detected.'; exit 1
           fi
 
+%{ if enforce_tests }
       - name: Check test changes
-        if: {{ if enforce_tests }} true {{ else }} false {{ end }}
         run: |
-          if [ -z "$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep 'test/\\|\\.spec\\\\\\.\\|_test\\\\\\.')" ]; then
+          if [ -z "$(git diff --name-only $$$${{ github.event.pull_request.base.sha }} $$$${{ github.sha }} | grep 'test/\\|\\.spec\\\\\\.\\|_test\\\\\\.')" ]; then
             echo 'No test changes detected.'; exit 1
           fi

@@ -61,10 +61,11 @@ variable "enforce_issue_integration" {
 }
 
 variable "enforce_project_board" {
-  description = "Attach issues/PRs to GitHub Projects if set to true."
+  description = "If true, link issues and PRs to a GitHub project board."
   type        = bool
   default     = false
 }
+
 
 variable "traceability_enabled" {
   description = "Enable traceability enforcement such as issue states, assignments, or labels."
@@ -104,11 +105,6 @@ variable "enable_auto_labeling" {
   default     = false
 }
 
-variable "enforce_project_board" {
-  description = "If true, link issues and PRs to a GitHub project board."
-  type        = bool
-  default     = false
-}
 
 variable "github_project_url" {
   description = "The full URL of the GitHub project to attach issues/PRs to."
