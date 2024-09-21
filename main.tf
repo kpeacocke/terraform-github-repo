@@ -15,7 +15,8 @@ module "gitflow" {
   count  = var.enforce_gitflow ? 1 : 0
   source = "./gitflow"
 
-  repository = github_repository.this.name
+  repository       = github_repository.this.name
+  release_branches = var.release_branches
 }
 
 # CodeQL / Security

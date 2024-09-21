@@ -168,6 +168,17 @@ variable "enable_matrix" {
   default     = false
 }
 
+variable "release_branches" {
+  description = "List of branch patterns to protect for GitFlow (main, develop, feature/*, hotfix/*)"
+  type        = list(string)
+  default     = ["main", "develop", "feature/*", "hotfix/*"]
+}
+variable "status_check_contexts" {
+  description = "List of GitHub status check contexts to require before merging"
+  type        = list(string)
+  default     = ["build", "ci-enforcement"]
+}
+
 variable "language_default_versions" {
   description = "Map of default single-version values for each language"
   type        = map(string)

@@ -10,6 +10,11 @@ variable "release_branches" {
   type        = list(string)
   default     = ["main", "develop", "feature/*", "hotfix/*"]
 }
+// Status check contexts to require before merging
+variable "status_check_contexts" {
+  description = "List of GitHub status check contexts that must pass"
+  type        = list(string)
+}
 
 // Enforce GitFlow branch protection for the default branch
 // Protect release branches with GitFlow rules
@@ -22,7 +27,7 @@ resource "github_branch_protection" "release" {
 
   required_status_checks {
     strict   = true
-    contexts = []
+    contexts = var.status_check_contexts
   }
 
   required_pull_request_reviews {
