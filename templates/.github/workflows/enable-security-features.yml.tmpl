@@ -1,0 +1,62 @@
+name: Enable Security Features
+
+on:
+  workflow_dispatch:
+
+jobs:
+  enable-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable secret scanning
+        if: env.ENABLE_SECRET_SCANNING == 'true'
+        run: |
+          gh api \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }} \
+            -f security_and_analysis.secret_scanning.status=enabled
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable secret scanning push protection
+        if: env.ENABLE_SECRET_SCANNING_PUSH_PROTECTION == 'true'
+        run: |
+          gh api \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }} \
+            -f security_and_analysis.secret_scanning_push_protection.status=enabled
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable Dependabot alerts
+        if: env.ENABLE_DEPENDABOT_ALERTS == 'true'
+        run: |
+          gh api \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }} \
+            -f security_and_analysis.dependabot_alerts.status=enabled
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable Dependabot security updates
+        if: env.ENABLE_DEPENDABOT_SECURITY_UPDATES == 'true'
+        run: |
+          gh api \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }} \
+            -f security_and_analysis.dependabot_security_updates.status=enabled
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Ensure CodeQL workflow exists
+        if: env.REQUIRE_CODEQL_WORKFLOW == 'true'
+        run: |
+          if [ ! -f .github/workflows/codeql.yml ]; then
+            echo "CodeQL workflow missing! Please add it via Terraform or manually." && exit 1
+          fi
+
+      # Branch protection and signed commits are best managed via Terraform
+      # Optionally, you can add API calls here to double-check or enforce them

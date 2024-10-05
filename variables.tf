@@ -1,3 +1,65 @@
+variable "enable_dependabot_autoapprove" {
+  description = "Enable workflow to auto-approve and auto-merge Dependabot PRs."
+  type        = bool
+  default     = true
+}
+variable "allow_auto_merge" {
+  description = "Allow auto-merge for pull requests (including Dependabot)."
+  type        = bool
+  default     = true
+}
+
+variable "enable_dependabot_automerge_minor" {
+  description = "Enable Dependabot auto-merge for minor upgrades."
+  type        = bool
+  default     = true
+}
+## --- FLATTENED MODULE VARIABLES ---
+## These variables were merged from all submodules for single-module publishing.
+
+variable "branch" {
+  description = "The branch to commit files to."
+  type        = string
+  default     = "main"
+}
+
+## --- Variables from bootstrap ---
+## (repository, owners, license, security_contact, languages already present)
+
+## --- Variables from ci ---
+
+## --- Variables from gitflow ---
+
+## --- Variables from security ---
+variable "enable_secret_scanning" {
+  description = "Enable secret scanning for the repository via workflow."
+  type        = bool
+  default     = true
+}
+
+variable "enable_secret_scanning_push_protection" {
+  description = "Enable secret scanning push protection for the repository via workflow."
+  type        = bool
+  default     = true
+}
+
+variable "enable_dependabot_alerts" {
+  description = "Enable Dependabot alerts for the repository via workflow."
+  type        = bool
+  default     = true
+}
+
+variable "enable_dependabot_security_updates" {
+  description = "Enable Dependabot security updates for the repository via workflow."
+  type        = bool
+  default     = true
+}
+
+variable "require_codeql_workflow" {
+  description = "Require that the CodeQL workflow exists in the repository."
+  type        = bool
+  default     = true
+}
 variable "name" {
   description = "The name of the GitHub repository to create."
   type        = string
@@ -30,11 +92,6 @@ variable "enforce_gitflow" {
   default     = false
 }
 
-variable "enforce_tests" {
-  description = "Require test coverage or validation before merging PRs."
-  type        = bool
-  default     = false
-}
 
 variable "enforce_security" {
   description = "Enable security tools such as CodeQL scanning and Dependabot alerts."
@@ -42,11 +99,6 @@ variable "enforce_security" {
   default     = false
 }
 
-variable "enforce_docs" {
-  description = "Require documentation updates (README, markdown files, etc.) in PRs."
-  type        = bool
-  default     = false
-}
 
 variable "bootstrap_with_templates" {
   description = "If true, initialize the repo with standard files like README.md, LICENSE, SECURITY.md."
@@ -54,11 +106,6 @@ variable "bootstrap_with_templates" {
   default     = true
 }
 
-variable "enforce_issue_integration" {
-  description = "Require PRs to reference GitHub issues (e.g. via #issue-number)."
-  type        = bool
-  default     = false
-}
 
 variable "enforce_project_board" {
   description = "If true, link issues and PRs to a GitHub project board."
@@ -124,11 +171,6 @@ variable "enforce_semantic_pr_title" {
   default     = false
 }
 
-variable "enable_dependabot" {
-  description = "If true, adds GitHub Dependabot config"
-  type        = bool
-  default     = false
-}
 
 variable "languages" {
   description = "List of programming languages in use (for CodeQL, Dependabot, .gitignore)"
@@ -146,11 +188,6 @@ variable "languages" {
   }
 }
 
-variable "enable_codeql" {
-  description = "Enable CodeQL static analysis for supported languages"
-  type        = bool
-  default     = false
-}
 
 variable "enable_coverage" {
   description = "Enable test coverage reporting"
@@ -164,16 +201,6 @@ variable "enable_matrix" {
   default     = false
 }
 
-variable "release_branches" {
-  description = "List of branch patterns to protect for GitFlow (main, develop, feature/*, hotfix/*)"
-  type        = list(string)
-  default     = ["main", "develop", "feature/*", "hotfix/*"]
-}
-variable "status_check_contexts" {
-  description = "List of GitHub status check contexts to require before merging"
-  type        = list(string)
-  default     = ["CI", "CI Enforcement", "Coverage"]
-}
 
 variable "language_default_versions" {
   description = "Map of default single-version values for each language"

@@ -4,7 +4,15 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    {% if enable_automerge_minor %}
+    automerge: true
+    automerge-type: "minor"
+    {% endif %}
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
+    {% if enable_automerge_minor %}
+    automerge: true
+    automerge-type: "minor"
+    {% endif %}

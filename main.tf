@@ -1,3 +1,15 @@
+# Auto-approve and auto-merge Dependabot PRs workflow
+resource "github_repository_file" "auto_approve_dependabot" {
+  count = var.enable_dependabot && var.enable_dependabot_autoapprove ? 1 : 0
+  repository          = github_repository.this.name
+  branch              = var.branch
+  file                = ".github/workflows/auto-approve-dependabot.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/auto-approve-dependabot.yml.tmpl", {}
+  )
+  commit_message      = "ci: add auto-approve and auto-merge for Dependabot PRs"
+  overwrite_on_create = true
+}
 resource "github_repository" "this" {
   name        = var.name
   description = "Managed by Terraform"
@@ -6,29 +18,57 @@ resource "github_repository" "this" {
   has_issues  = true
   has_projects = true
   has_wiki    = false
+  allow_auto_merge = var.allow_auto_merge
   # Other settings you may enforce...
 }
 
+# --- CI Enforcement: Placeholder for validating issues, docs, tests ---
+# (null_resource removed, logic now handled by workflows and branch protection)
 
-# GitFlow enforcement logic (branch protection, etc.)
-module "gitflow" {
-  count  = var.enforce_gitflow ? 1 : 0
-  source = "./gitflow"
-
-  repository       = github_repository.this.name
-  release_branches        = var.release_branches
-  status_check_contexts   = var.status_check_contexts
+# --- Security: CodeQL and Dependabot ---
+resource "github_repository_file" "codeql_workflow" {
+  count = var.enable_codeql && length(var.languages) > 0 ? 1 : 0
+  repository          = github_repository.this.name
+  branch              = var.branch
+  file                = ".github/workflows/codeql.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/codeql.yml.tmpl", {
+      languages = [for lang in var.languages : lower(trimspace(lang))]
+    }
+  )
+  commit_message      = "ci: add CodeQL workflow"
+  overwrite_on_create = true
 }
 
-# CodeQL / Security
-module "security" {
-  count  = var.enforce_security ? 1 : 0
-  source = "./security"
+resource "github_repository_file" "dependabot" {
+  count = var.enable_dependabot ? 1 : 0
+  repository          = github_repository.this.name
+  branch              = var.branch
+  file                = ".github/dependabot.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/workflows/dependabot.yml.tmpl", {
+      enable_automerge_minor = var.enable_dependabot_automerge_minor
+    }
+  )
+  commit_message      = "chore: add Dependabot config"
+  overwrite_on_create = true
+}
 
-  repository        = github_repository.this.name
-  enable_codeql     = var.enable_codeql
-  enable_dependabot = var.enable_dependabot
-  languages         = var.languages
+# --- GitFlow: Branch protection enforcement ---
+resource "github_branch_protection" "release" {
+  count        = var.enforce_gitflow ? length(var.release_branches) : 0
+  repository_id = github_repository.this.name
+  pattern      = var.release_branches[count.index]
+  enforce_admins = true
+  required_status_checks {
+    strict   = true
+    contexts = var.status_check_contexts
+  }
+  required_pull_request_reviews {
+    dismiss_stale_reviews           = true
+    require_code_owner_reviews      = true
+    required_approving_review_count = 1
+  }
 }
 
 # Issue integration, doc enforcement, test checks
@@ -159,7 +199,6 @@ resource "github_repository_file" "readme" {
   overwrite_on_create = true
 }
 
-
 variable "enable_ci" {
   description = "If true, adds build/test workflow for CI validation."
   type        = bool
@@ -219,337 +258,168 @@ resource "github_repository_file" "release_config" {
   overwrite_on_create = true
 }
 
+// --- Bootstrap: Standard repository files ---
 resource "github_repository_file" "editorconfig" {
-  count = var.bootstrap_with_templates ? 1 : 0
-
-  repository     = github_repository.this.name
-  branch         = "main"
-  file           = ".editorconfig"
-  content        = templatefile("${path.module}/templates/.editorconfig.tmpl", {})
-  commit_message = "chore: add editor config"
+  repository          = github_repository.this.name
+  branch              = var.branch
+  file                = ".editorconfig"
+  content             = templatefile(
+    "${path.module}/templates/.editorconfig.tmpl", {}
+  )
+  commit_message      = "chore: add editorconfig"
   overwrite_on_create = true
 }
 
 resource "github_repository_file" "nvmrc" {
-  count = var.bootstrap_with_templates ? 1 : 0
-
-  repository     = github_repository.this.name
-  branch         = "main"
-  file           = ".nvmrc"
-  content        = templatefile("${path.module}/templates/.nvmrc.tmpl", {})
-  commit_message = "chore: add Node.js version lock"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "contributing" {
-  count = var.bootstrap_with_templates ? 1 : 0
-
-  repository     = github_repository.this.name
-  branch         = "main"
-  file           = "CONTRIBUTING.md"
-  content        = templatefile("${path.module}/templates/CONTRIBUTING.md.tmpl", {})
-  commit_message = "docs: add contributing guide"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "pull_request_template" {
-  count = var.bootstrap_with_templates ? 1 : 0
-
-  repository     = github_repository.this.name
-  branch         = "main"
-  file           = ".github/PULL_REQUEST_TEMPLATE.md"
-  content        = templatefile("${path.module}/templates/.github/PULL_REQUEST_TEMPLATE.md.tmpl", {})
-  commit_message = "docs: add PR template"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "issue_template_bug" {
-  count = var.bootstrap_with_templates ? 1 : 0
-
-  repository     = github_repository.this.name
-  branch         = "main"
-  file           = ".github/ISSUE_TEMPLATE/bug_report.yml"
-  content        = templatefile("${path.module}/templates/.github/ISSUE_TEMPLATE/ISSUE_TEMPLATE_bug_report.yml.tmpl", {})
-  commit_message = "docs: add bug report issue template"
-  overwrite_on_create = true
-}
-// Add feature request issue template
-resource "github_repository_file" "issue_template_feature" {
-  count = var.bootstrap_with_templates ? 1 : 0
-
-  repository     = github_repository.this.name
-  branch         = "main"
-  file           = ".github/ISSUE_TEMPLATE/feature_request.yml"
-  content        = templatefile(
-    "${path.module}/templates/.github/ISSUE_TEMPLATE/ISSUE_TEMPLATE_feature_request.yml.tmpl",
-    {}
-  )
-  commit_message = "docs: add feature request issue template"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "pr_labeler_workflow" {
-  count = var.enable_auto_labeling ? 1 : 0
-
   repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/labeler.yml"
-  content             = file("${path.module}/templates/.github/workflows/labeler.yml.tmpl")
-  commit_message      = "ci: add PR labeler workflow"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "issue_labeler_workflow" {
-  count = var.enable_auto_labeling ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/autolabel-issues.yml"
-  content             = file("${path.module}/templates/.github/workflows/autolabel-issues.yml.tmpl")
-  commit_message      = "ci: add issue auto-labeling workflow"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "labeler_config" {
-  count = var.enable_auto_labeling ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/labeler.yml"
-  content             = file("${path.module}/templates/.github/labeler.yml.tmpl")
-  commit_message      = "ci: add labeler config"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "auto_project_link" {
-  count = var.enforce_project_board ? 1 : 0
-
-  repository     = github_repository.this.name
-  branch         = "main"
-  file           = ".github/workflows/project-board.yml"
-  content        = templatefile("${path.module}/templates/.github/workflows/project-board.yml.tmpl", {
-    project_url = var.github_project_url
-  })
-  commit_message = "ci: add project board auto-linking"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "branch_naming_check" {
-  count = var.enforce_branch_naming ? 1 : 0
-
-  repository     = github_repository.this.name
-  branch         = "main"
-  file           = ".github/workflows/branch-naming.yml"
-  content        = file("${path.module}/templates/.github/workflows/branch-naming.yml.tmpl")
-  commit_message = "ci: add branch naming enforcement"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "semantic_pr_title" {
-  count = var.enforce_semantic_pr_title ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/semantic-pr-title.yml"
-  content             = templatefile("${path.module}/templates/.github/workflows/semantic-pr-title.yml.tmpl", {})
-  commit_message      = "ci: add semantic PR title check"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "dependabot" {
-  count               = var.enable_dependabot ? 1 : 0
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/dependabot.yml"
-  content             = templatefile("${path.module}/templates/.github/workflows/dependabot.yml.tmpl", {})
-  commit_message      = "chore: add Dependabot config"
-  overwrite_on_create = true
-}
-
-// Add pre-commit hooks configuration
-resource "github_repository_file" "pre_commit_config" {
-  count = var.bootstrap_with_templates ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".pre-commit-config.yaml"
+  branch              = var.branch
+  file                = ".nvmrc"
   content             = templatefile(
-    "${path.module}/templates/.pre-commit-config.yaml.tmpl", {}
+    "${path.module}/templates/.nvmrc.tmpl", {}
   )
-  commit_message      = "chore: add pre-commit hooks config"
+  commit_message      = "chore: add Node.js version lock"
   overwrite_on_create = true
 }
-resource "github_repository_file" "gitignore" {
-  count = var.bootstrap_with_templates ? 1 : 0
 
+resource "github_repository_file" "gitignore" {
   repository          = github_repository.this.name
-  branch              = "main"
+  branch              = var.branch
   file                = ".gitignore"
-  content             = templatefile("${path.module}/templates/gitignore.tmpl", {
-    languages = var.languages
-  })
+  content             = templatefile(
+    "${path.module}/templates/gitignore.tmpl", {
+      languages = var.languages
+    }
+  )
   commit_message      = "chore: add .gitignore"
   overwrite_on_create = true
 }
 
-resource "github_repository_file" "codeql_workflow" {
-  count = var.enable_codeql && length(var.languages) > 0 ? 1 : 0
-
+resource "github_repository_file" "contributing" {
   repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/codeql.yml"
-  content             = templatefile("${path.module}/templates/.github/workflows/codeql.yml.tmpl", {
-    languages = [for lang in var.languages : lower(trimspace(lang))]
-  })
-  commit_message      = "chore: add CodeQL workflow"
+  branch              = var.branch
+  file                = "CONTRIBUTING.md"
+  content             = templatefile(
+    "${path.module}/templates/CONTRIBUTING.md.tmpl", {}
+  )
+  commit_message      = "docs: add contributing guide"
   overwrite_on_create = true
 }
 
-// Test workflows: single-version or matrix per language
-resource "github_repository_file" "test_go_single" {
-  count = var.enable_coverage && !var.enable_matrix && contains(var.languages, "go") ? 1 : 0
-
+resource "github_repository_file" "pull_request_template" {
   repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/test-go.yml"
+  branch              = var.branch
+  file                = ".github/PULL_REQUEST_TEMPLATE.md"
   content             = templatefile(
-    "${path.module}/templates/.github/workflows/test-go-single.yml.tmpl", {
-      default_version = lookup(var.language_default_versions, "go", "")
+    "${path.module}/templates/.github/PULL_REQUEST_TEMPLATE.md.tmpl", {}
+  )
+  commit_message      = "docs: add PR template"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "issue_template_bug" {
+  repository          = github_repository.this.name
+  branch              = var.branch
+  file                = ".github/ISSUE_TEMPLATE/bug_report.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/ISSUE_TEMPLATE/ISSUE_TEMPLATE_bug_report.yml.tmpl", {}
+  )
+  commit_message      = "docs: add bug report issue template"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "issue_template_feature" {
+  repository          = github_repository.this.name
+  branch              = var.branch
+  file                = ".github/ISSUE_TEMPLATE/feature_request.yml"
+  content             = templatefile(
+    "${path.module}/templates/.github/ISSUE_TEMPLATE/ISSUE_TEMPLATE_feature_request.yml.tmpl", {}
+  )
+  commit_message      = "docs: add feature request issue template"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "codeowners" {
+  repository          = github_repository.this.name
+  branch              = var.branch
+  file                = ".github/CODEOWNERS"
+  content             = templatefile(
+    "${path.module}/templates/CODEOWNERS.tmpl", { owners = var.owners }
+  )
+  commit_message      = "chore: add CODEOWNERS"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "license" {
+  repository          = github_repository.this.name
+  branch              = var.branch
+  file                = "LICENSE"
+  content             = templatefile(
+    "${path.module}/templates/LICENSE.${var.license}.tmpl", {}
+  )
+  commit_message      = "chore: add LICENSE (${var.license})"
+  overwrite_on_create = true
+}
+
+resource "github_repository_file" "readme" {
+  repository          = github_repository.this.name
+  branch              = var.branch
+  file                = "README.md"
+  content             = templatefile(
+    "${path.module}/templates/README.md.tmpl", {
+      repo_name               = github_repository.this.name,
+      owner                   = var.owners[0],
+      license                 = var.license,
+      enable_ci               = false,
+      enable_release          = false,
+      enable_weekly_reporting = false,
+      enable_coverage         = false,
+      enforce_gitflow         = false,
+      enforce_issue_integration = false,
+      enforce_tests             = false,
+      enforce_semantic_pr_title = false,
+      enforce_branch_naming     = false,
+      enforce_project_board     = false,
+      traceability_enabled      = false,
+      bootstrap_with_templates  = true,
+      enable_dependabot         = false,
+      languages                 = var.languages
     }
   )
-  commit_message      = "ci: add Go test workflow"
+  commit_message      = "docs: add README"
   overwrite_on_create = true
 }
 
-resource "github_repository_file" "test_go_matrix" {
-  count = var.enable_coverage && var.enable_matrix && contains(var.languages, "go") ? 1 : 0
-
+resource "github_repository_file" "security" {
   repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/test-go-matrix.yml"
+  branch              = var.branch
+  file                = "SECURITY.md"
   content             = templatefile(
-    "${path.module}/templates/.github/workflows/test-go-matrix.yml.tmpl", {
-      matrix_versions = var.language_matrix_versions["go"]
+    "${path.module}/templates/SECURITY.md.tmpl", {
+      security_contact = var.security_contact,
+      owner            = var.owners[0],
+      repo_name        = github_repository.this.name
     }
   )
-  commit_message      = "ci: add Go test matrix workflow"
+  commit_message      = "docs: add SECURITY policy"
   overwrite_on_create = true
 }
 
-resource "github_repository_file" "test_python_single" {
-  count = var.enable_coverage && !var.enable_matrix && contains(var.languages, "python") ? 1 : 0
-
+resource "github_repository_file" "changelog" {
   repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/test-python.yml"
+  branch              = var.branch
+  file                = "CHANGELOG.md"
   content             = templatefile(
-    "${path.module}/templates/.github/workflows/test-python-single.yml.tmpl", {
-      default_version = lookup(var.language_default_versions, "python", "")
-    }
+    "${path.module}/templates/CHANGELOG.md.tmpl", {}
   )
-  commit_message      = "ci: add Python test workflow"
+  commit_message      = "docs: add CHANGELOG"
   overwrite_on_create = true
 }
 
-resource "github_repository_file" "test_python_matrix" {
-  count = var.enable_coverage && var.enable_matrix && contains(var.languages, "python") ? 1 : 0
-
+resource "github_repository_file" "release_config" {
   repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/test-python-matrix.yml"
-  content             = templatefile(
-    "${path.module}/templates/.github/workflows/test-python-matrix.yml.tmpl", {
-      matrix_versions = var.language_matrix_versions["python"]
-    }
-  )
-  commit_message      = "ci: add Python test matrix workflow"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "test_javascript_single" {
-  count = var.enable_coverage && !var.enable_matrix && contains(var.languages, "javascript") ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/test-javascript.yml"
-  content             = templatefile(
-    "${path.module}/templates/.github/workflows/test-javascript-single.yml.tmpl", {
-      default_version = lookup(var.language_default_versions, "javascript", "")
-    }
-  )
-  commit_message      = "ci: add JS test workflow"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "test_javascript_matrix" {
-  count = var.enable_coverage && var.enable_matrix && contains(var.languages, "javascript") ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/test-javascript-matrix.yml"
-  content             = templatefile(
-    "${path.module}/templates/.github/workflows/test-javascript-matrix.yml.tmpl", {
-      matrix_versions = var.language_matrix_versions["javascript"]
-    }
-  )
-  commit_message      = "ci: add JS test matrix workflow"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "test_typescript_single" {
-  count = var.enable_coverage && !var.enable_matrix && contains(var.languages, "typescript") ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/test-typescript.yml"
-  content             = templatefile(
-    "${path.module}/templates/.github/workflows/test-typescript-single.yml.tmpl", {
-      default_version = lookup(var.language_default_versions, "typescript", "")
-    }
-  )
-  commit_message      = "ci: add TS test workflow"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "test_typescript_matrix" {
-  count = var.enable_coverage && var.enable_matrix && contains(var.languages, "typescript") ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/test-typescript-matrix.yml"
-  content             = templatefile(
-    "${path.module}/templates/.github/workflows/test-typescript-matrix.yml.tmpl", {
-      matrix_versions = var.language_matrix_versions["typescript"]
-    }
-  )
-  commit_message      = "ci: add TS test matrix workflow"
-  overwrite_on_create = true
-}
-
-// Manage Terraform docs regeneration workflow
-resource "github_repository_file" "docs_workflow" {
-  count = var.enforce_docs ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/docs.yml"
-  content             = templatefile(
-    "${path.module}/templates/.github/workflows/docs.yml.tmpl", {}
-  )
-  commit_message      = "ci: add docs regeneration workflow"
-  overwrite_on_create = true
-}
-
-// Manage coverage-to-wiki workflow
-resource "github_repository_file" "coverage_to_wiki" {
-  count = var.enable_coverage ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/workflows/coverage-to-wiki.yml"
-  content             = templatefile(
-    "${path.module}/templates/.github/workflows/coverage-to-wiki.yml.tmpl", {}
-  )
-  commit_message      = "ci: add coverage-to-wiki workflow"
+  branch              = var.branch
+  file                = "release.config.js"
+  content             = file("${path.module}/release.config.js")
+  commit_message      = "chore: add semantic-release config"
   overwrite_on_create = true
 }
