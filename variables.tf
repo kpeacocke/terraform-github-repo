@@ -3,6 +3,47 @@ variable "enable_dependabot_autoapprove" {
   type        = bool
   default     = true
 }
+variable "enable_dependabot" {
+  description = "Enable Dependabot configuration and workflows."
+  type        = bool
+  default     = true
+}
+
+variable "enable_codeql" {
+  description = "Enable CodeQL analysis workflow."
+  type        = bool
+  default     = true
+}
+
+variable "release_branches" {
+  description = "List of branch patterns to apply branch protection rules (e.g. [\"main\", \"release/*\"])."
+  type        = list(string)
+  default     = ["main"]
+}
+
+variable "status_check_contexts" {
+  description = "List of status check contexts required for branch protection."
+  type        = list(string)
+  default     = []
+}
+
+variable "enforce_issue_integration" {
+  description = "If true, enforce that PRs are linked to issues."
+  type        = bool
+  default     = false
+}
+
+variable "enforce_docs" {
+  description = "If true, enforce documentation updates in PRs."
+  type        = bool
+  default     = false
+}
+
+variable "enforce_tests" {
+  description = "If true, enforce test updates in PRs."
+  type        = bool
+  default     = false
+}
 variable "allow_auto_merge" {
   description = "Allow auto-merge for pull requests (including Dependabot)."
   type        = bool

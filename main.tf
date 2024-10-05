@@ -4,9 +4,7 @@ resource "github_repository_file" "auto_approve_dependabot" {
   repository          = github_repository.this.name
   branch              = var.branch
   file                = ".github/workflows/auto-approve-dependabot.yml"
-  content             = templatefile(
-    "${path.module}/templates/.github/workflows/auto-approve-dependabot.yml.tmpl", {}
-  )
+  content             = file("${path.module}/templates/.github/workflows/auto-approve-dependabot.yml")
   commit_message      = "ci: add auto-approve and auto-merge for Dependabot PRs"
   overwrite_on_create = true
 }
@@ -72,15 +70,7 @@ resource "github_branch_protection" "release" {
 }
 
 # Issue integration, doc enforcement, test checks
-module "ci_enforcement" {
-  count  = (var.enforce_issue_integration || var.enforce_docs || var.enforce_tests) ? 1 : 0
-  source = "./ci"
 
-  repository = github_repository.this.name
-  enforce_issue_integration = var.enforce_issue_integration
-  enforce_docs              = var.enforce_docs
-  enforce_tests             = var.enforce_tests
-}
 
 # CI enforcement workflow
 resource "github_repository_file" "ci_enforcement_workflow" {
@@ -124,18 +114,6 @@ resource "github_repository_file" "scorecard" {
   overwrite_on_create = true
 }
 
-resource "github_repository_file" "codeowners" {
-  count = var.bootstrap_with_templates ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = ".github/CODEOWNERS"
-  content             = templatefile("${path.module}/templates/CODEOWNERS.tmpl", {
-    owners = var.owners
-  })
-  commit_message      = "chore: add CODEOWNERS"
-  overwrite_on_create = true
-}
 
 resource "github_repository_file" "traceability" {
   count = var.traceability_enabled ? 1 : 0
@@ -148,56 +126,8 @@ resource "github_repository_file" "traceability" {
   overwrite_on_create = true
 }
 
-resource "github_repository_file" "security" {
-  count = var.bootstrap_with_templates ? 1 : 0
 
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = "SECURITY.md"
-  content             = templatefile("${path.module}/templates/SECURITY.md.tmpl", {})
-  commit_message      = "chore: add SECURITY policy"
-  overwrite_on_create = true
-}
 
-resource "github_repository_file" "license" {
-  count = var.bootstrap_with_templates ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = "LICENSE"
-  content             = templatefile("${path.module}/templates/LICENSE.${var.license}.tmpl", {})
-  commit_message      = "chore: add LICENSE (${var.license})"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "readme" {
-  count = var.bootstrap_with_templates ? 1 : 0
-
-  repository     = github_repository.this.name
-  branch         = "main"
-  file           = "README.md"
-  content = templatefile("${path.module}/templates/README.md.tmpl", {
-    repo_name                 = var.name,
-    owner                     = var.owners[0],
-    license                   = var.license,
-    enable_ci                 = var.enable_ci,
-    enable_release            = var.enable_release,
-    enable_weekly_reporting   = var.enable_weekly_reporting,
-    enable_coverage           = var.enable_coverage,
-    enforce_gitflow           = var.enforce_gitflow,
-    enforce_issue_integration = var.enforce_issue_integration,
-    enforce_tests             = var.enforce_tests,
-    enforce_semantic_pr_title = var.enforce_semantic_pr_title,
-    enforce_branch_naming     = var.enforce_branch_naming,
-    enforce_project_board     = var.enforce_project_board,
-    traceability_enabled      = var.traceability_enabled,
-    bootstrap_with_templates  = var.bootstrap_with_templates,
-    enable_dependabot         = var.enable_dependabot,
-    languages                 = var.languages
-  })
-  commit_message = "docs: add README"
-  overwrite_on_create = true
-}
 
 variable "enable_ci" {
   description = "If true, adds build/test workflow for CI validation."
@@ -234,29 +164,7 @@ resource "github_repository_file" "release" {
 }
 
 // Add CHANGELOG and semantic-release config
-resource "github_repository_file" "changelog" {
-  count = var.enable_release ? 1 : 0
 
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = "CHANGELOG.md"
-  content             = templatefile(
-    "${path.module}/templates/CHANGELOG.md.tmpl", {}
-  )
-  commit_message      = "docs: add CHANGELOG"
-  overwrite_on_create = true
-}
-
-resource "github_repository_file" "release_config" {
-  count = var.enable_release ? 1 : 0
-
-  repository          = github_repository.this.name
-  branch              = "main"
-  file                = "release.config.js"
-  content             = file("${path.module}/release.config.js")
-  commit_message      = "chore: add semantic-release config"
-  overwrite_on_create = true
-}
 
 // --- Bootstrap: Standard repository files ---
 resource "github_repository_file" "editorconfig" {

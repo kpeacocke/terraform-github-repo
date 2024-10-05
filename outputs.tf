@@ -23,10 +23,6 @@ output "repository_http_clone_url" {
   value       = github_repository.this.http_clone_url
 }
 
-output "repository_default_branch" {
-  description = "The default branch of the created GitHub repository."
-  value       = github_repository.this.default_branch
-}
 
 output "repository_id" {
   description = "The GitHub repository ID."
