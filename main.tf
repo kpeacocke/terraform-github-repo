@@ -4,7 +4,7 @@ resource "github_repository_file" "auto_approve_dependabot" {
   repository          = github_repository.this.name
   branch              = var.branch
   file                = ".github/workflows/auto-approve-dependabot.yml"
-  content             = file("${path.module}/templates/.github/workflows/auto-approve-dependabot.yml")
+  content             = file("${path.module}/templates/.github/workflows/auto-approve-dependabot.yml.tmpl")
   commit_message      = "ci: add auto-approve and auto-merge for Dependabot PRs"
   overwrite_on_create = true
 }
