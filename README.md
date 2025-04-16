@@ -19,6 +19,20 @@ Terraform module for enforcing best practices on GitHub repositories.
 
 ## 🚀 Usage
 
+### Backend Configuration
+
+Recommend using a local backend in your root Terraform configuration:
+
+```hcl
+terraform {
+  backend "local" {
+    path = "terraform.tfstate"
+  }
+}
+```
+
+### Module Call
+
 ```hcl
 module "github_repo" {
   source = "github.com/your-org/terraform-github-repo"
