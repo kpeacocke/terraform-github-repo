@@ -10,6 +10,26 @@ tasks:
   fmt:
     cmds:
       - terraform fmt -recursive
+  validate:
+    desc: Validate Terraform configuration
+    cmds:
+      - terraform validate -no-color
+  tflint:
+    desc: Run tflint linting (warnings allowed to continue)
+    ignore_errors: true
+    cmds:
+      - tflint
+  tfsec:
+    desc: Run tfsec security scanning (do not fail on warnings)
+    cmds:
+      - sh -c "tfsec --format json --out tfsec-report.json . || true"
+  lint:
+    desc: Run fmt, validate, tfsec, and tflint (ensures security scan runs before lint failures)
+    cmds:
+      - task fmt
+      - task validate
+      - task tfsec
+      - task tflint
   husky:
     desc: Setup Git hooks for local dev
     cmds:

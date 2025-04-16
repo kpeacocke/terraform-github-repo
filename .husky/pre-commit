@@ -1,0 +1,3 @@
+
+echo "Running Terraform lint and security checks..."
+task lint

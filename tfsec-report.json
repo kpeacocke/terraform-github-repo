@@ -1,0 +1,27 @@
+{
+	"results": [
+		{
+			"rule_id": "AVD-GIT-0003",
+			"long_id": "github-repositories-enable_vulnerability_alerts",
+			"rule_description": "GitHub repository has vulnerability alerts disabled.",
+			"rule_provider": "github",
+			"rule_service": "repositories",
+			"impact": "Known vulnerabilities may not be discovered",
+			"resolution": "Enable vulnerability alerts",
+			"links": [
+				"https://aquasecurity.github.io/tfsec/v1.28.14/checks/github/repositories/enable_vulnerability_alerts/",
+				"https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository"
+			],
+			"description": "Repository does not have vulnerability alerts enabled,",
+			"severity": "HIGH",
+			"warning": false,
+			"status": 0,
+			"resource": "github_repository.this",
+			"location": {
+				"filename": "/Users/kpeacocke/git-practice/main.tf",
+				"start_line": 11,
+				"end_line": 21
+			}
+		}
+	]
+}

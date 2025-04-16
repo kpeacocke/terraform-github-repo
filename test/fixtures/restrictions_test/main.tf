@@ -24,16 +24,16 @@ variable "owner" {
 }
 
 variable "branch_protection_users" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
 variable "branch_protection_teams" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
 variable "branch_protection_apps" {
-  type = list(string)
+  type    = list(string)
   default = []
 }

@@ -39,9 +39,9 @@ output "branch_protection_patterns" {
   description = "List of protected branch patterns and their status."
   value = [
     for i in range(length(var.release_branches)) : {
-      pattern = var.release_branches[i]
+      pattern       = var.release_branches[i]
       protection_id = try(github_branch_protection.release[i].id, null)
-      enforced = try(github_branch_protection.release[i].enforce_admins, null) != null
+      enforced      = try(github_branch_protection.release[i].enforce_admins, null) != null
     }
   ]
 }

@@ -253,9 +253,9 @@ variable "language_matrix_versions" {
   type        = map(list(string))
   default = {
     go         = ["1.20", "1.21", "1.22"]
-    python     = ["3.9",  "3.10", "3.11"]
-    javascript = ["16",   "18",   "20"]
-    typescript = ["4.5",  "4.6",  "4.7"]
+    python     = ["3.9", "3.10", "3.11"]
+    javascript = ["16", "18", "20"]
+    typescript = ["4.5", "4.6", "4.7"]
   }
 }
 
