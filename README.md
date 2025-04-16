@@ -52,6 +52,20 @@ module "github_repo" {
 
 See [`variables.tf`](./variables.tf) for all available options.
 
+## 📝 Examples
+
+See the [examples](./examples) directory for complete usage scenarios.
+
+## Inputs
+
+<!-- BEGIN_TF_DOCS -->
+<!-- END_TF_DOCS -->
+
+## Outputs
+
+<!-- BEGIN_TF_DOCS -->
+<!-- END_TF_DOCS -->
+
 ## 🧪 Local Testing
 
 Run Terratest from the root:
