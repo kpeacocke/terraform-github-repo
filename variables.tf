@@ -55,8 +55,6 @@ variable "enable_dependabot_automerge_minor" {
   type        = bool
   default     = true
 }
-## --- FLATTENED MODULE VARIABLES ---
-## These variables were merged from all submodules for single-module publishing.
 
 variable "branch" {
   description = "The branch to commit files to."
@@ -64,14 +62,10 @@ variable "branch" {
   default     = "main"
 }
 
-## --- Variables from bootstrap ---
 ## (repository, owners, license, security_contact, languages already present)
 
-## --- Variables from ci ---
 
-## --- Variables from gitflow ---
 
-## --- Variables from security ---
 variable "enable_secret_scanning" {
   description = "Enable secret scanning for the repository via workflow."
   type        = bool
