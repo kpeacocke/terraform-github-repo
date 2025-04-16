@@ -8,6 +8,3 @@ terraform {
   required_version = ">= 1.5.0"
 }
 
-provider "github" {
-  # Configuration options (token, owner, etc.)
-}

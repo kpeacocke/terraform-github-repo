@@ -28,10 +28,7 @@ output "repository_id" {
   value       = github_repository.this.id
 }
 
-output "repository_default_branch" {
-  description = "The default branch of the GitHub repository."
-  value       = github_repository.this.default_branch
-}
+// Removed deprecated default_branch output
 
 output "repository_node_id" {
   description = "The GraphQL node ID of the GitHub repository."
@@ -75,21 +72,6 @@ locals {
 
 output "workflow_file_shas" {
   description = "Map of workflow file paths to commit SHAs."
-  value       = { for r in local.workflow_resources : r.path => try(r.sha, null) }
-}
-
-output "workflow_file_urls" {
-  description = "Map of workflow file paths to HTML URLs in the repository."
-  value       = { for r in local.workflow_resources : r.path => try(r.html_url, null) }
-}
-
-output "codeowners_file_url" {
-  description = "The HTML URL of the CODEOWNERS file."
-  value       = github_repository_file.codeowners.html_url
-}
-
-output "dependabot_config_url" {
-  description = "The HTML URL of the Dependabot configuration file."
-  value       = github_repository_file.dependabot.html_url
+  value       = { for r in local.workflow_resources : r.file => try(r.sha, null) }
 }
 
