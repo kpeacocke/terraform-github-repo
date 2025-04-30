@@ -34,3 +34,7 @@ tasks:
     desc: Setup Git hooks for local dev
     cmds:
       - npx husky install
+  docs:
+    desc: Update README with terraform-docs
+    cmds:
+      - terraform-docs . --output-file README.md --output-mode inject

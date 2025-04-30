@@ -1,3 +1,5 @@
-
 echo "Running Terraform lint and security checks..."
+  # Update README with current inputs/outputs before lint
+  echo "Updating Terraform docs in README..."
+  task docs
 task lint

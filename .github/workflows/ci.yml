@@ -1,0 +1,51 @@
+name: "CI"
+
+on:
+  pull_request:
+    paths:
+      - '**/*.tf'
+      - 'README.md'
+      - 'Taskfile.yml'
+      - '.terraform-docs.yml'
+
+jobs:
+  terraform:
+    name: "Terraform Validation"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        run: terraform validate -no-color
+
+      - name: Terraform plan
+        run: terraform plan -input=false
+
+      - name: Run TFLint
+        run: tflint
+
+      - name: Run tfsec
+        run: tfsec --format github
+
+      - name: Update Terraform docs
+        run: terraform-docs . --output-file README.md --output-mode inject
+
+      - name: Commit updated docs
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: "chore: update Terraform docs [skip ci]"
+          file_pattern: README.md
