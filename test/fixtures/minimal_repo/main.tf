@@ -4,31 +4,33 @@ output "repository_name" {
 module "repo" {
   source = "../../../"
 
-  name                      = var.name
-  owners                    = var.owners
-  visibility                = var.visibility
-  enforce_gitflow           = false
-  enforce_tests             = false
-  enforce_security          = false
-  enforce_docs              = false
-  bootstrap_with_templates  = true
-  enforce_issue_integration = false
-  enforce_project_board     = false
-  traceability_enabled      = false
-  languages                 = var.languages
-  enable_codeql             = var.enable_codeql
-  enable_weekly_reporting   = false
-  github_token              = var.github_token
-  github_owner              = var.github_owner
-  variable "github_token" {
-    description = "GitHub token for API access (used in provisioning wait step)"
-    type        = string
-  }
+  name                               = var.name
+  owners                             = var.owners
+  visibility                         = var.visibility
+  enforce_gitflow                    = false
+  enforce_tests                      = false
+  enforce_security                   = false
+  enforce_docs                       = false
+  bootstrap_with_templates           = true
+  enforce_issue_integration          = false
+  enforce_project_board              = false
+  traceability_enabled               = false
+  languages                          = var.languages
+  enable_codeql                      = var.enable_codeql
+  enable_weekly_reporting            = false
+  disable_actions_until_provisioning = true # Keep actions disabled to avoid permissions issues
+  github_token                       = var.github_token
+  github_owner                       = var.github_owner
+}
 
-  variable "github_owner" {
-    description = "GitHub owner (user or org) for API access (used in provisioning wait step)"
-    type        = string
-  }
+variable "github_token" {
+  description = "GitHub token for API access (used in provisioning wait step)"
+  type        = string
+}
+
+variable "github_owner" {
+  description = "GitHub owner (user or org) for API access (used in provisioning wait step)"
+  type        = string
 }
 
 variable "name" {
