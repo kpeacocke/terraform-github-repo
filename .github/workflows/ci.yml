@@ -7,6 +7,7 @@ on:
       - 'README.md'
       - 'Taskfile.yml'
       - '.terraform-docs.yml'
+      - 'policy/**'
 
 jobs:
   terraform:
@@ -39,6 +40,23 @@ jobs:
 
       - name: Terraform plan (JSON)
         run: terraform plan -input=false -refresh=false -out=tfplan.binary && terraform show -json tfplan.binary > ci-tfplan.json
+
+      - name: Install conftest
+        run: |
+          wget https://github.com/open-policy-agent/conftest/releases/download/v0.51.0/conftest_0.51.0_Linux_x86_64.tar.gz
+          tar xzf conftest_0.51.0_Linux_x86_64.tar.gz
+          sudo mv conftest /usr/local/bin/
+
+      - name: Run OPA guardrails (conftest)
+        run: conftest test --policy policy/ ci-tfplan.json
+      - name: Install OPA
+        run: |
+          wget https://github.com/open-policy-agent/opa/releases/download/v1.5.1/opa_linux_amd64 -O opa
+          chmod +x opa
+          sudo mv opa /usr/local/bin/
+
+      - name: Lint OPA policies
+        run: opa fmt -w policy/ && opa lint policy/
 
       - name: Check for drift (no unexpected resource changes)
         run: bash scripts/ci-check-drift.sh

@@ -3,3 +3,6 @@ echo "Running Terraform lint and security checks..."
   echo "Updating Terraform docs in README..."
   task docs
 task lint
+
+echo "Running OPA policy syntax checks..."
+opa check policy/

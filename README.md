@@ -262,3 +262,58 @@ kitchen test
 ## 📜 License
 
 [MIT](LICENSE)
+
+## 🛡️ Compliance Guardrails & Policy Enforcement
+
+This module enforces best-practice compliance guardrails using static analysis and policy-as-code in CI:
+
+- **tfsec** and **tflint**: Run automatically in CI for static security and lint checks.
+- **OPA (Open Policy Agent) with conftest**: Custom Rego policies in `policy/` directory enforce organization guardrails on every PR.
+
+### Guardrails Enforced
+- S3 buckets and RDS instances must be encrypted, versioned, and tagged (Owner, Environment)
+- No public S3 buckets or open security groups (0.0.0.0/0)
+- No IAM users or inline IAM policies
+- RDS must have backup retention and monitoring
+- All providers must be version-pinned (no wildcards)
+- No hardcoded secrets in code
+- Resource names must include environment (prod/dev/staging)
+- All variables must have descriptions
+- No deprecated resources (e.g., discourage direct aws_instance)
+- Logging required for S3, monitoring for RDS
+- Cost estimation enforced (fail if Infracost > $1000)
+- No public IPs on EC2
+- MFA required for IAM users
+- IAM policies must not allow Action: * or Resource: *
+- Only approved AWS regions allowed (configurable in `policy/extra-guardrails.rego`)
+- All endpoints must use HTTPS
+
+### How it works
+- On every PR, CI runs `terraform plan -json`, then runs `conftest` with all policies in `policy/`.
+- Any violation fails the build and prints a clear message.
+
+### Local Policy Testing
+
+You can test policies locally before pushing:
+
+```sh
+# Install conftest if needed
+wget https://github.com/open-policy-agent/conftest/releases/download/v0.51.0/conftest_0.51.0_$(uname -s)_x86_64.tar.gz
+ tar xzf conftest_0.51.0_$(uname -s)_x86_64.tar.gz
+ sudo mv conftest /usr/local/bin/
+
+# Generate a Terraform plan in JSON
+terraform plan -out=tfplan.binary
+terraform show -json tfplan.binary > plan.json
+
+# Run all OPA policies
+conftest test --policy policy/ plan.json
+```
+
+Edit `policy/extra-guardrails.rego` to configure allowed AWS regions or add more rules.
+
+### Custom Policies
+- Add new `.rego` files to the `policy/` directory to enforce additional org-specific rules.
+- See [Open Policy Agent docs](https://www.openpolicyagent.org/docs/latest/) for more examples.
+
+---
