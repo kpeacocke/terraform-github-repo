@@ -21,6 +21,12 @@ variable "release_branches" {
   default     = ["main"]
 }
 
+variable "languages" {
+  description = "List of languages for CodeQL analysis and templates."
+  type        = list(string)
+  default     = []
+}
+
 variable "status_check_contexts" {
   description = "List of status check contexts required for branch protection."
   type        = list(string)
@@ -100,6 +106,8 @@ variable "name" {
   type        = string
 }
 
+
+
 variable "owners" {
   description = "List of GitHub users or teams who should be set as CODEOWNERS."
   type        = list(string)
@@ -124,7 +132,7 @@ variable "visibility" {
 variable "enforce_gitflow" {
   description = "Whether to enforce GitFlow naming and branch protection rules."
   type        = bool
-  default     = false
+  default     = true
 }
 
 
@@ -207,21 +215,6 @@ variable "enforce_semantic_pr_title" {
 }
 
 
-variable "languages" {
-  description = "List of programming languages in use (for CodeQL, Dependabot, .gitignore)"
-  type        = list(string)
-  default     = []
-
-  validation {
-    condition = alltrue([
-      for lang in var.languages : contains([
-        "javascript", "typescript", "python", "go", "java", "ruby", "csharp",
-        "cpp", "kotlin", "php", "rust", "swift", "perl", "hcl", "r"
-      ], lower(trimspace(lang)))
-    ])
-    error_message = "Each language must be one of: javascript, typescript, python, go, java, ruby, csharp, cpp, kotlin, php, rust, swift, perl, hcl, r"
-  }
-}
 
 
 variable "enable_coverage" {

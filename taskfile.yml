@@ -4,7 +4,7 @@ tasks:
   test:
     desc: Run all Terratest cases
     cmds:
-      - go test ./test/...
+      - set -a; source .env; set +a; go test ./test/... -timeout 10m -v
     env:
       GITHUB_TOKEN: $GITHUB_TOKEN
   fmt:
@@ -16,7 +16,6 @@ tasks:
       - terraform validate -no-color
   tflint:
     desc: Run tflint linting (warnings allowed to continue)
-    ignore_errors: true
     cmds:
       - tflint
   tfsec:

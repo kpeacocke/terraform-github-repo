@@ -95,13 +95,14 @@ See the [examples](./examples) directory for complete usage scenarios.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
-| <a name="requirement_github"></a> [github](#requirement\_github) | ~> 6.0 |
+| <a name="requirement_github"></a> [github](#requirement\_github) | ~> 6.6 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_github"></a> [github](#provider\_github) | 6.6.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
 
 ## Modules
 
@@ -135,6 +136,7 @@ No modules.
 | [github_repository_file.security](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
 | [github_repository_file.stale](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
 | [github_repository_file.traceability](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
+| [null_resource.files_created](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 
 ## Inputs
 
@@ -160,7 +162,7 @@ No modules.
 | <a name="input_enable_weekly_reporting"></a> [enable\_weekly\_reporting](#input\_enable\_weekly\_reporting) | If true, adds stale issue management and OpenSSF Scorecard workflows. | `bool` | `false` | no |
 | <a name="input_enforce_branch_naming"></a> [enforce\_branch\_naming](#input\_enforce\_branch\_naming) | If true, enables branch naming convention enforcement (e.g. feature/*) | `bool` | `false` | no |
 | <a name="input_enforce_docs"></a> [enforce\_docs](#input\_enforce\_docs) | If true, enforce documentation updates in PRs. | `bool` | `false` | no |
-| <a name="input_enforce_gitflow"></a> [enforce\_gitflow](#input\_enforce\_gitflow) | Whether to enforce GitFlow naming and branch protection rules. | `bool` | `false` | no |
+| <a name="input_enforce_gitflow"></a> [enforce\_gitflow](#input\_enforce\_gitflow) | Whether to enforce GitFlow naming and branch protection rules. | `bool` | `true` | no |
 | <a name="input_enforce_issue_integration"></a> [enforce\_issue\_integration](#input\_enforce\_issue\_integration) | If true, enforce that PRs are linked to issues. | `bool` | `false` | no |
 | <a name="input_enforce_project_board"></a> [enforce\_project\_board](#input\_enforce\_project\_board) | If true, link issues and PRs to a GitHub project board. | `bool` | `false` | no |
 | <a name="input_enforce_security"></a> [enforce\_security](#input\_enforce\_security) | Enable security tools such as CodeQL scanning and Dependabot alerts. | `bool` | `false` | no |
@@ -169,7 +171,7 @@ No modules.
 | <a name="input_github_project_url"></a> [github\_project\_url](#input\_github\_project\_url) | The full URL of the GitHub project to attach issues/PRs to. | `string` | `""` | no |
 | <a name="input_language_default_versions"></a> [language\_default\_versions](#input\_language\_default\_versions) | Map of default single-version values for each language | `map(string)` | <pre>{<br/>  "go": "1.21",<br/>  "javascript": "20",<br/>  "python": "3.11",<br/>  "typescript": "20"<br/>}</pre> | no |
 | <a name="input_language_matrix_versions"></a> [language\_matrix\_versions](#input\_language\_matrix\_versions) | Map of version lists for matrix testing per language | `map(list(string))` | <pre>{<br/>  "go": [<br/>    "1.20",<br/>    "1.21",<br/>    "1.22"<br/>  ],<br/>  "javascript": [<br/>    "16",<br/>    "18",<br/>    "20"<br/>  ],<br/>  "python": [<br/>    "3.9",<br/>    "3.10",<br/>    "3.11"<br/>  ],<br/>  "typescript": [<br/>    "4.5",<br/>    "4.6",<br/>    "4.7"<br/>  ]<br/>}</pre> | no |
-| <a name="input_languages"></a> [languages](#input\_languages) | List of programming languages in use (for CodeQL, Dependabot, .gitignore) | `list(string)` | `[]` | no |
+| <a name="input_languages"></a> [languages](#input\_languages) | List of languages for CodeQL analysis and templates. | `list(string)` | `[]` | no |
 | <a name="input_license"></a> [license](#input\_license) | The open source license to apply (MIT, Apache-2.0, GPL-3.0, BSD-3-Clause, MPL-2.0). | `string` | `"MIT"` | no |
 | <a name="input_name"></a> [name](#input\_name) | The name of the GitHub repository to create. | `string` | n/a | yes |
 | <a name="input_owners"></a> [owners](#input\_owners) | List of GitHub users or teams who should be set as CODEOWNERS. | `list(string)` | n/a | yes |

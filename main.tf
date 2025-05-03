@@ -9,15 +9,16 @@ resource "github_repository_file" "auto_approve_dependabot" {
   overwrite_on_create = true
 }
 resource "github_repository" "this" {
-  name             = var.name
-  description      = "Managed by Terraform"
-  visibility       = var.visibility
+  name        = var.name
+  description = "Managed by Terraform"
+  visibility  = var.visibility
+  # Set the default branch to the configured branch variable to ensure branch exists
+  default_branch   = var.branch
   auto_init        = true
   has_issues       = true
   has_projects     = true
   has_wiki         = false
   allow_auto_merge = var.allow_auto_merge
-  # Other settings you may enforce...
 }
 
 # --- CI Enforcement: Placeholder for validating issues, docs, tests ---
@@ -52,29 +53,14 @@ resource "github_repository_file" "dependabot" {
   overwrite_on_create = true
 }
 
-# --- GitFlow: Branch protection enforcement ---
-resource "github_branch_protection" "release" {
-  count          = var.enforce_gitflow ? length(var.release_branches) : 0
-  repository_id  = github_repository.this.name
-  pattern        = var.release_branches[count.index]
-  enforce_admins = true
-  required_status_checks {
-    strict   = true
-    contexts = var.status_check_contexts
-  }
-  required_pull_request_reviews {
-    dismiss_stale_reviews           = true
-    require_code_owner_reviews      = true
-    required_approving_review_count = 1
-  }
-}
 
 # Issue integration, doc enforcement, test checks
 
 
 # CI enforcement workflow
 resource "github_repository_file" "ci_enforcement_workflow" {
-  count = var.enforce_issue_integration || var.enforce_docs || var.enforce_tests ? 1 : 0
+  # Always include CI enforcement workflow when CI is enabled
+  count = var.enable_ci ? 1 : 0
 
   repository = github_repository.this.name
   branch     = "main"
@@ -250,8 +236,11 @@ resource "github_repository_file" "codeowners" {
   repository = github_repository.this.name
   branch     = var.branch
   file       = ".github/CODEOWNERS"
-  content = templatefile(
-    "${path.module}/templates/CODEOWNERS.tmpl", { owners = var.owners }
+  # Render CODEOWNERS from template and append explicit owners line for visibility
+  content = format(
+    "%s\n%s",
+    templatefile("${path.module}/templates/CODEOWNERS.tmpl", { owners = var.owners }),
+    join("\n", var.owners)
   )
   commit_message      = "chore: add CODEOWNERS"
   overwrite_on_create = true
@@ -330,4 +319,50 @@ resource "github_repository_file" "release_config" {
   content             = file("${path.module}/release.config.js")
   commit_message      = "chore: add semantic-release config"
   overwrite_on_create = true
+}
+
+// Barrier to wait for all initial files
+resource "null_resource" "files_created" {
+  depends_on = [
+    github_repository_file.auto_approve_dependabot,
+    github_repository_file.codeql_workflow,
+    github_repository_file.dependabot,
+    github_repository_file.ci_enforcement_workflow,
+    github_repository_file.stale,
+    github_repository_file.scorecard,
+    github_repository_file.traceability,
+    github_repository_file.build,
+    github_repository_file.release,
+    github_repository_file.editorconfig,
+    github_repository_file.nvmrc,
+    github_repository_file.gitignore,
+    github_repository_file.contributing,
+    github_repository_file.pull_request_template,
+    github_repository_file.issue_template_bug,
+    github_repository_file.issue_template_feature,
+    github_repository_file.codeowners,
+    github_repository_file.license,
+    github_repository_file.readme,
+    github_repository_file.security,
+    github_repository_file.changelog,
+    github_repository_file.release_config
+  ]
+}
+
+resource "github_branch_protection" "release" {
+  # ensure files are all created first
+  depends_on     = [null_resource.files_created]
+  count          = var.enforce_gitflow ? length(var.release_branches) : 0
+  repository_id  = github_repository.this.node_id
+  pattern        = var.release_branches[count.index]
+  enforce_admins = true
+  required_status_checks {
+    strict   = true
+    contexts = var.status_check_contexts
+  }
+  required_pull_request_reviews {
+    dismiss_stale_reviews           = true
+    require_code_owner_reviews      = true
+    required_approving_review_count = 1
+  }
 }

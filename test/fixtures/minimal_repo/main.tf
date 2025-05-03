@@ -2,10 +2,10 @@ output "repository_name" {
   value = module.repo.repository_name
 }
 module "repo" {
-  source = "../../../modules/github-repo"
+  source = "../../../"
 
   name                      = var.name
-  owner                     = var.github_owner
+  owners                    = var.owners
   visibility                = "private"
   enforce_gitflow           = false
   enforce_tests             = false
@@ -22,6 +22,7 @@ variable "name" {
   type = string
 }
 
-variable "github_owner" {
-  type = string
+variable "owners" {
+  description = "List of GitHub users or orgs for CODEOWNERS."
+  type        = list(string)
 }
