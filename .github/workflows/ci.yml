@@ -37,6 +37,12 @@ jobs:
       - name: Terraform plan
         run: terraform plan -input=false
 
+      - name: Terraform plan (JSON)
+        run: terraform plan -input=false -refresh=false -out=tfplan.binary && terraform show -json tfplan.binary > ci-tfplan.json
+
+      - name: Check for drift (no unexpected resource changes)
+        run: bash scripts/ci-check-drift.sh
+
       - name: Run TFLint
         run: tflint
 
