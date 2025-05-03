@@ -61,3 +61,6 @@ node_modules/
 npm-debug.log*
 package-lock.json
 .husky/_/        # ✅ ignore only internal Husky binaries
+
+# === Terraform security reports ===
+tfsec-report.json
