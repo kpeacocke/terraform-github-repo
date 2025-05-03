@@ -9,9 +9,9 @@ resource "github_repository_file" "auto_approve_dependabot" {
   overwrite_on_create = true
 }
 resource "github_repository" "this" {
-  name        = var.name
-  description = "Managed by Terraform"
-  visibility  = var.visibility
+  name             = var.name
+  description      = "Managed by Terraform"
+  visibility       = var.visibility
   auto_init        = true
   has_issues       = true
   has_projects     = true
