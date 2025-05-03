@@ -1,7 +1,7 @@
 # Wait for GitHub repo to be available before setting Actions permissions
 resource "null_resource" "wait_for_github_repo" {
   provisioner "local-exec" {
-    command = <<EOT
+    command     = <<EOT
       for i in {1..60}; do
         # Poll the Actions permissions endpoint directly
         status=$(curl -s -o /dev/null -w "%%{http_code}" \
@@ -54,12 +54,12 @@ resource "github_repository" "this" {
 }
 
 resource "github_actions_repository_permissions" "repo_perms" {
-  count       = var.disable_actions_until_provisioning ? 0 : 1
-  repository  = github_repository.this.name
+  count      = var.disable_actions_until_provisioning ? 0 : 1
+  repository = github_repository.this.name
   # disable external Actions runs until provisioning is complete (allow only local actions when disabled)
   # Toggle Actions runs: local_only to disable external actions, all to enable
   allowed_actions = var.disable_actions_until_provisioning ? "local_only" : "all"
-  depends_on = [github_repository.this, null_resource.wait_for_github_repo]
+  depends_on      = [github_repository.this, null_resource.wait_for_github_repo]
 }
 
 # --- CI Enforcement: Placeholder for validating issues, docs, tests ---

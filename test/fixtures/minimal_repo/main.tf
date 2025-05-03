@@ -20,15 +20,15 @@ module "repo" {
   enable_weekly_reporting   = false
   github_token              = var.github_token
   github_owner              = var.github_owner
-variable "github_token" {
-  description = "GitHub token for API access (used in provisioning wait step)"
-  type        = string
-}
+  variable "github_token" {
+    description = "GitHub token for API access (used in provisioning wait step)"
+    type        = string
+  }
 
-variable "github_owner" {
-  description = "GitHub owner (user or org) for API access (used in provisioning wait step)"
-  type        = string
-}
+  variable "github_owner" {
+    description = "GitHub owner (user or org) for API access (used in provisioning wait step)"
+    type        = string
+  }
 }
 
 variable "name" {

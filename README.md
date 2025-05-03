@@ -154,6 +154,7 @@ No modules.
 | [github_repository_file.stale](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
 | [github_repository_file.traceability](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
 | [null_resource.files_created](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.wait_for_github_repo](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 
 ## Inputs
 
@@ -186,7 +187,9 @@ No modules.
 | <a name="input_enforce_security"></a> [enforce\_security](#input\_enforce\_security) | Enable security tools such as CodeQL scanning and Dependabot alerts. | `bool` | `false` | no |
 | <a name="input_enforce_semantic_pr_title"></a> [enforce\_semantic\_pr\_title](#input\_enforce\_semantic\_pr\_title) | If true, enforces semantic PR titles via GitHub Actions | `bool` | `false` | no |
 | <a name="input_enforce_tests"></a> [enforce\_tests](#input\_enforce\_tests) | If true, enforce test updates in PRs. | `bool` | `false` | no |
+| <a name="input_github_owner"></a> [github\_owner](#input\_github\_owner) | GitHub owner (user or org) for API access (used in provisioning wait step) | `string` | n/a | yes |
 | <a name="input_github_project_url"></a> [github\_project\_url](#input\_github\_project\_url) | The full URL of the GitHub project to attach issues/PRs to. | `string` | `""` | no |
+| <a name="input_github_token"></a> [github\_token](#input\_github\_token) | GitHub token for API access (used in provisioning wait step) | `string` | n/a | yes |
 | <a name="input_language_default_versions"></a> [language\_default\_versions](#input\_language\_default\_versions) | Map of default single-version values for each language | `map(string)` | <pre>{<br/>  "go": "1.21",<br/>  "javascript": "20",<br/>  "python": "3.11",<br/>  "typescript": "20"<br/>}</pre> | no |
 | <a name="input_language_matrix_versions"></a> [language\_matrix\_versions](#input\_language\_matrix\_versions) | Map of version lists for matrix testing per language | `map(list(string))` | <pre>{<br/>  "go": [<br/>    "1.20",<br/>    "1.21",<br/>    "1.22"<br/>  ],<br/>  "javascript": [<br/>    "16",<br/>    "18",<br/>    "20"<br/>  ],<br/>  "python": [<br/>    "3.9",<br/>    "3.10",<br/>    "3.11"<br/>  ],<br/>  "typescript": [<br/>    "4.5",<br/>    "4.6",<br/>    "4.7"<br/>  ]<br/>}</pre> | no |
 | <a name="input_languages"></a> [languages](#input\_languages) | List of languages for CodeQL analysis and templates. | `list(string)` | `[]` | no |
