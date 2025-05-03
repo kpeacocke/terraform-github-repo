@@ -87,8 +87,7 @@ See [`variables.tf`](./variables.tf) for all available options.
 
 See the [examples](./examples) directory for complete usage scenarios.
 
-## Inputs
-
+<!-- markdownlint-disable MD033 -->
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -96,6 +95,7 @@ See the [examples](./examples) directory for complete usage scenarios.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_github"></a> [github](#requirement\_github) | ~> 6.6 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.2 |
 
 ## Providers
 
@@ -198,11 +198,7 @@ No modules.
 | <a name="output_repository_url"></a> [repository\_url](#output\_repository\_url) | The HTTPS URL of the GitHub repository. |
 | <a name="output_workflow_file_shas"></a> [workflow\_file\_shas](#output\_workflow\_file\_shas) | Map of workflow file paths to commit SHAs. |
 <!-- END_TF_DOCS -->
-
-## Outputs
-
-<!-- BEGIN_TF_DOCS -->
-<!-- END_TF_DOCS -->
+<!-- markdownlint-enable MD033 -->
 
 ## 🧪 Local Testing
 
