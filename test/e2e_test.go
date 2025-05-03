@@ -62,6 +62,9 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 		},
 	}
 
+	// Clean state and initialize Terraform
+	SetupTerraformTest(t, rootDir, tfOptions)
+
 	// Clean up resources after all assertions
 	defer func() {
 		t.Log("Waiting 30 seconds before Terraform destroy to allow for GitHub propagation...")
@@ -75,11 +78,14 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 				t.Errorf("Terraform destroy failed: %v", err)
 			}
 		}
+		// Clean up state files after destroy
+		CleanTerraformState(t, rootDir)
 		t.Log("Terraform destroy completed.")
 	}()
 
 	// Deploy
-	_, err := terraform.InitAndApplyE(t, tfOptions)
+	// Apply Terraform configuration
+	_, err := terraform.ApplyE(t, tfOptions)
 	require.NoError(t, err, "Terraform apply failed")
 
 	// GitHub client

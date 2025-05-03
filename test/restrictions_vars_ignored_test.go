@@ -22,9 +22,9 @@ func TestBranchProtectionRestrictionsVarsIgnored(t *testing.T) {
 	_, filename, _, _ := runtime.Caller(0)
 	testDir := filepath.Dir(filename)
 	fixtureDir := filepath.Join(testDir, "fixtures", "restrictions_test")
-	_ = os.RemoveAll(filepath.Join(fixtureDir, ".terraform"))
-	_ = os.RemoveAll(filepath.Join(fixtureDir, ".terraform.lock.hcl"))
-	_ = os.RemoveAll(filepath.Join(fixtureDir, ".terraform", "modules"))
+
+	// Clean state using helper function
+	CleanTerraformState(t, fixtureDir)
 
 	// Explicitly re-initialize Terraform modules after cleaning
 	terraformOptionsInit := &terraform.Options{
@@ -82,7 +82,7 @@ func TestBranchProtectionRestrictionsVarsIgnored(t *testing.T) {
 	}()
 
 	// Apply Terraform immediately
-	_, err := terraform.InitAndApplyE(t, terraformOptions)
+	_, err := terraform.ApplyE(t, terraformOptions)
 	if err != nil {
 		t.Fatalf("Failed to apply Terraform: %v", err)
 	}

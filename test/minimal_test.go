@@ -55,6 +55,9 @@ func TestMinimalRepo(t *testing.T) {
 		TimeBetweenRetries: 20 * time.Second, // 20 seconds
 	}
 
+	// Clean state and initialize Terraform
+	SetupTerraformTest(t, fixtureDir, terraformOptions)
+
 	defer func() {
 		_, err := terraform.DestroyE(t, terraformOptions)
 		if err != nil {
@@ -64,11 +67,12 @@ func TestMinimalRepo(t *testing.T) {
 				t.Errorf("Terraform destroy failed: %v", err)
 			}
 		}
-		// Do not check for repo existence after destroy
+		// Clean up state files after destroy
+		CleanTerraformState(t, fixtureDir)
 	}()
 
 	// Now apply Terraform and verify output
-	_, err := terraform.InitAndApplyE(t, terraformOptions)
+	_, err := terraform.ApplyE(t, terraformOptions)
 	if err != nil {
 		t.Fatalf("Failed to apply Terraform: %v", err)
 	}

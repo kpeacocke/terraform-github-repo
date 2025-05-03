@@ -51,8 +51,11 @@ func TestDisableCodeQLWorkflow(t *testing.T) {
 		},
 	}
 
+	// Clean state and initialize Terraform
+	SetupTerraformTest(t, fixtureDir, terraformOptions)
+
 	// Now plan immediately without polling
-	planOutput, err := terraform.InitAndPlanE(t, terraformOptions)
+	planOutput, err := terraform.PlanE(t, terraformOptions)
 	assert.NoError(t, err, "Expected terraform plan to succeed")
 	// Ensure the CodeQL workflow resource is not in the plan output
 	assert.NotContains(t, planOutput, "github_repository_file.codeql_workflow", "Expected no CodeQL workflow when enable_codeql is false")
@@ -93,6 +96,8 @@ func TestInvalidVisibility(t *testing.T) {
 	}
 
 	// Expect an error during init or apply due to validation
+	// Clean state and setup, but expect failure
+	CleanTerraformState(t, filepath.Join(filepath.Dir(filename), "fixtures", "minimal_repo"))
 	_, err := terraform.InitAndApplyE(t, terraformOptions)
 	assert.Error(t, err, "Expected error when using invalid visibility value")
 }

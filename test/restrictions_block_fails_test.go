@@ -109,6 +109,8 @@ func TestBranchProtectionRestrictionsBlockFails(t *testing.T) {
 	}()
 
 	// Run Terraform and expect failure
+	// Clean state first
+	CleanTerraformState(t, "../test/fixtures/restrictions_test")
 	_, err = terraform.InitAndApplyE(t, terraformOptions)
 	assert.Error(t, err, "Terraform should fail when restrictions block is uncommented")
 }
