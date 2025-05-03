@@ -62,3 +62,22 @@ jobs:
         with:
           commit_message: "chore: update Terraform docs [skip ci]"
           file_pattern: README.md
+
+  test:
+    name: Terratest
+    runs-on: ubuntu-latest
+    needs: terraform
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Run Terratest suite
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: go test ./test/... -timeout 5m
