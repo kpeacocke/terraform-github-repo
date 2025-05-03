@@ -66,3 +66,7 @@ package-lock.json
 
 # === Terraform security reports ===
 tfsec-report.json
+
+# === Kitchen Terraform artifacts ===
+planfile
+plan.json

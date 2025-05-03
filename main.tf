@@ -9,7 +9,8 @@ resource "github_repository_file" "auto_approve_dependabot" {
   overwrite_on_create = true
 }
 resource "github_repository" "this" {
-  name             = var.name
+  name = "terratest-${replace(var.name, "^terratest-", "")}"
+  # owner argument removed; repository will use provider's configured owner
   description      = "Managed by Terraform"
   visibility       = var.visibility
   auto_init        = true

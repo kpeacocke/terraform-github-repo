@@ -1,0 +1,38 @@
+---
+driver:
+  name: terraform
+  root_module_directory: "examples/minimal"
+  variable_files:
+    - "examples/minimal/terraform.tfvars"
+  plan_output_directory: .
+  plan_output_name: kitchen-terraform-plan.json
+
+
+transport:
+  name: exec
+
+provisioner:
+  name: terraform
+  create_terraform_plan: true
+  init_command: "set -a; source .env; set +a; terraform init -no-color"
+  plan_command: "set -a; source .env; set +a; terraform plan -var-file=terraform.tfvars -input=false -out=tfplan.bin && terraform show -json tfplan.bin > kitchen-terraform-plan.json"
+  apply_command: "true"
+  destroy_command: "true"
+
+verifier:
+  name: inspec
+  format: doc
+  backend: local
+  inspec_tests:
+    - test/integration/default
+
+platforms:
+  - name: ubuntu
+
+suites:
+  - name: default
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
+      tfvars_file: "examples/minimal/terraform.tfvars"

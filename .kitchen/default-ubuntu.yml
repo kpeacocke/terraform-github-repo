@@ -1,0 +1,74 @@
+---
+last_action: verify
+last_error:
+kitchen_terraform_outputs:
+  branch_protection_enforcement:
+    sensitive: false
+    type:
+    - object
+    - main: bool
+    value:
+      main: true
+  branch_protection_patterns:
+    sensitive: false
+    type:
+    - tuple
+    - - - object
+        - enforced: bool
+          pattern: string
+          protection_id: string
+    value:
+    - enforced: true
+      pattern: main
+      protection_id: BPR_kwDOO6-pks4D0KzV
+  branch_protection_rule_ids:
+    sensitive: false
+    type:
+    - tuple
+    - - string
+    value:
+    - BPR_kwDOO6-pks4D0KzV
+  repository_full_name:
+    sensitive: false
+    type: string
+    value: kpeacocke/example-repo
+  repository_http_clone_url:
+    sensitive: false
+    type: string
+    value: https://github.com/kpeacocke/example-repo.git
+  repository_id:
+    sensitive: false
+    type: string
+    value: example-repo
+  repository_name:
+    sensitive: false
+    type: string
+    value: example-repo
+  repository_node_id:
+    sensitive: false
+    type: string
+    value: R_kgDOO6-pkg
+  repository_ssh_clone_url:
+    sensitive: false
+    type: string
+    value: git@github.com:kpeacocke/example-repo.git
+  repository_url:
+    sensitive: false
+    type: string
+    value: https://github.com/kpeacocke/example-repo
+  workflow_file_shas:
+    sensitive: false
+    type:
+    - object
+    - ".github/dependabot.yml": string
+      ".github/workflows/auto-approve-dependabot.yml": string
+      ".github/workflows/build.yml": string
+      ".github/workflows/ci-enforcement.yml": string
+      ".github/workflows/release.yml": string
+    value:
+      ".github/dependabot.yml": 80e8bcd26c6a2934112e646ed7c685bd5a4e0d58
+      ".github/workflows/auto-approve-dependabot.yml": caf69ad4406d19293e7e1eb1b8cc845ad253ec85
+      ".github/workflows/build.yml": d504d876c697d7de58ab60185a2d4fc5ac141cdd
+      ".github/workflows/ci-enforcement.yml": 4d8be9bb52f4c59b1ec903a2a0c2669f9b78e823
+      ".github/workflows/release.yml": f362d636f55d6868f774e731cdb12dab47307488
+kitchen_terraform_variables: {}

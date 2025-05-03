@@ -34,7 +34,6 @@ Terraform module for enforcing best practices on GitHub repositories.
 |--------|-----------------------|---------|
 | github | integrations/github   | ~> 6.0  |
 
-
 ## ⚠️ Default: GitHub Actions Disabled Until Provisioning
 
 By default, this module disables GitHub Actions workflows for new repositories until provisioning is complete. This prevents excessive notification emails and failed workflow runs during initial setup.
@@ -228,6 +227,34 @@ task test
 ```
 
 > Requires valid `GITHUB_TOKEN` exported in your terminal or `.env`.
+
+## ⚙️ Integration Testing
+
+We use kitchen-terraform with Terragrunt and InSpec to run `terraform plan` in isolation against the root module and verify its JSON output.
+
+Prerequisites:
+
+- Ruby (2.7+)
+- Bundler (`gem install bundler`)
+
+Install dependencies:
+
+```bash
+bundle install
+```
+
+Run tests:
+
+```bash
+bundle exec kitchen test
+```
+
+Or, to run kitchen directly without Bundler:
+
+```bash
+gem install kitchen-terraform inspec
+kitchen test
+```
 
 ## 📜 License
 
