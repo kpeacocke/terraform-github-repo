@@ -7,6 +7,7 @@ module "repo" {
   name                               = var.name
   owners                             = var.owners
   visibility                         = var.visibility
+  license                            = var.license
   enforce_gitflow                    = false
   enforce_tests                      = false
   enforce_security                   = false
@@ -55,4 +56,18 @@ variable "enable_codeql" {
   description = "Enable CodeQL analysis workflow."
   type        = bool
   default     = true
+}
+
+variable "license" {
+  description = "The open source license to apply (MIT, Apache-2.0, GPL-3.0, BSD-3-Clause, MPL-2.0)."
+  type        = string
+  default     = "MIT"
+
+  validation {
+    condition = contains(
+      ["MIT", "Apache-2.0", "GPL-3.0", "BSD-3-Clause", "MPL-2.0"],
+      var.license
+    )
+    error_message = "License must be one of: MIT, Apache-2.0, GPL-3.0, BSD-3-Clause, MPL-2.0"
+  }
 }

@@ -1,22 +1,22 @@
 package test
 
 import (
-	"io/ioutil"
+	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBranchProtectionRestrictionsBlockFails(t *testing.T) {
+func TestVariableValidationFailures(t *testing.T) {
 	_ = godotenv.Load()
-	// Do not run in parallel to avoid polluting the module cache and fixture
 
-	t.Skip("Skipping branch protection restrictions tests for now")
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
 		t.Fatal("GITHUB_TOKEN is not set in the environment")
@@ -26,128 +26,129 @@ func TestBranchProtectionRestrictionsBlockFails(t *testing.T) {
 	if owner == "" {
 		t.Fatal("GITHUB_OWNER is not set in the environment")
 	}
-
-	// Copy the module directory to a temp dir
-	tempDir, err := ioutil.TempDir("", "github-repo-module-")
-	if err != nil {
-		t.Fatalf("Failed to create temp dir: %v", err)
-	}
-	defer os.RemoveAll(tempDir)
-
-	srcDir := "../modules/github-repo"
-	err = copyDir(srcDir, tempDir)
-	if err != nil {
-		t.Fatalf("Failed to copy module dir: %v", err)
+	if strings.Contains(owner, "@") {
+		parts := strings.SplitN(owner, "@", 2)
+		owner = parts[0]
 	}
 
-	// Uncomment the restrictions block in the copied main.tf
-	mainPath := filepath.Join(tempDir, "main.tf")
-	input, err := os.ReadFile(mainPath)
-	if err != nil {
-		t.Fatalf("Failed to read copied main.tf: %v", err)
-	}
-	content := string(input)
-	uncommented := strings.Replace(content,
-		"# restrictions {", "restrictions {", 1)
-	uncommented = strings.Replace(uncommented,
-		"#   users = var.branch_protection_users", "  users = var.branch_protection_users", 1)
-	uncommented = strings.Replace(uncommented,
-		"#   teams = var.branch_protection_teams", "  teams = var.branch_protection_teams", 1)
-	uncommented = strings.Replace(uncommented,
-		"#   apps  = var.branch_protection_apps", "  apps  = var.branch_protection_apps", 1)
-	uncommented = strings.Replace(uncommented,
-		"# }", "}", 1)
-	err = os.WriteFile(mainPath, []byte(uncommented), 0644)
-	if err != nil {
-		t.Fatalf("Failed to write uncommented main.tf: %v", err)
+	// Test cases for different validation failures
+	testCases := []struct {
+		name           string
+		vars           map[string]interface{}
+		expectedError  string
+		description    string
+	}{
+		{
+			name: "empty_owners_list",
+			vars: map[string]interface{}{
+				"name":         fmt.Sprintf("test-empty-owners-%d", time.Now().Unix()),
+				"owners":       []string{}, // Empty list should fail validation
+				"github_token": token,
+				"github_owner": owner,
+			},
+			expectedError: "Missing required variable 'owners'",
+			description:   "Should fail when owners list is empty",
+		},
+		{
+			name: "invalid_visibility",
+			vars: map[string]interface{}{
+				"name":         fmt.Sprintf("test-invalid-vis-%d", time.Now().Unix()),
+				"owners":       []string{owner},
+				"visibility":   "internal", // Invalid visibility
+				"github_token": token,
+				"github_owner": owner,
+			},
+			expectedError: "Visibility must be either 'private' or 'public'",
+			description:   "Should fail when visibility is not private or public",
+		},
+		{
+			name: "invalid_license",
+			vars: map[string]interface{}{
+				"name":         fmt.Sprintf("test-invalid-license-%d", time.Now().Unix()),
+				"owners":       []string{owner},
+				"license":      "LGPL", // Invalid license
+				"github_token": token,
+				"github_owner": owner,
+			},
+			expectedError: "License must be one of: MIT, Apache-2.0, GPL-3.0, BSD-3-Clause, MPL-2.0",
+			description:   "Should fail when license is not in the allowed list",
+		},
 	}
 
-	// Update the test fixture to point to the temp module dir
-	fixturePath := "../test/fixtures/restrictions_test/main.tf"
-	fixtureInput, err := os.ReadFile(fixturePath)
-	if err != nil {
-		t.Fatalf("Failed to read fixture file: %v", err)
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Create a unique test directory for this subtest  
+			_, filename, _, _ := runtime.Caller(0)
+			testDir := filepath.Dir(filename)
+			fixtureDir := filepath.Join(testDir, "fixtures", "minimal_repo")
+
+			terraformOptions := &terraform.Options{
+				TerraformDir: fixtureDir,
+				EnvVars: map[string]string{
+					"GITHUB_TOKEN": token,
+					"GITHUB_OWNER": owner,
+				},
+				Vars: tc.vars,
+			}
+
+			// Clean state and initialize
+			SetupTerraformTest(t, fixtureDir, terraformOptions)
+
+			// Run terraform plan and expect it to fail with validation error
+			_, err := terraform.PlanE(t, terraformOptions)
+			assert.Error(t, err, tc.description)
+
+			// Check that the error contains the expected validation message
+			if err != nil {
+				assert.Contains(t, err.Error(), tc.expectedError, 
+					"Expected validation error message not found. Got: %s", err.Error())
+			}
+		})
 	}
-	fixtureContent := strings.Replace(string(fixtureInput),
-		"source = \"../../../modules/github-repo\"",
-		"source = \""+mainPath[:len(mainPath)-7]+"\"", // remove /main.tf
-		1)
-	tempFixture := fixturePath + ".temp"
-	err = os.WriteFile(tempFixture, []byte(fixtureContent), 0644)
-	if err != nil {
-		t.Fatalf("Failed to write temp fixture file: %v", err)
+}
+
+func TestSuccessfulValidation(t *testing.T) {
+	_ = godotenv.Load()
+
+	token := os.Getenv("GITHUB_TOKEN")
+	if token == "" {
+		t.Fatal("GITHUB_TOKEN is not set in the environment")
 	}
-	defer os.Remove(tempFixture)
+
+	owner := os.Getenv("GITHUB_OWNER")
+	if owner == "" {
+		t.Fatal("GITHUB_OWNER is not set in the environment")
+	}
+	if strings.Contains(owner, "@") {
+		parts := strings.SplitN(owner, "@", 2)
+		owner = parts[0]
+	}
+
+	// Test that valid configuration passes validation
+	_, filename, _, _ := runtime.Caller(0)
+	testDir := filepath.Dir(filename)
+	fixtureDir := filepath.Join(testDir, "fixtures", "minimal_repo")
 
 	terraformOptions := &terraform.Options{
-		TerraformDir: "../test/fixtures/restrictions_test",
+		TerraformDir: fixtureDir,
 		EnvVars: map[string]string{
 			"GITHUB_TOKEN": token,
 			"GITHUB_OWNER": owner,
 		},
 		Vars: map[string]interface{}{
-			"name":         "terratest-restrictions-fail",
-			"owner":        owner,
+			"name":         fmt.Sprintf("test-valid-config-%d", time.Now().Unix()),
+			"owners":       []string{owner},
+			"visibility":   "private",    // Valid visibility
+			"license":      "MIT",        // Valid license
 			"github_token": token,
 			"github_owner": owner,
-			// Set restriction vars to trigger the block
-			"branch_protection_users": []string{"octocat"},
-			"branch_protection_teams": []string{"my-team"},
-			"branch_protection_apps":  []string{"my-app"},
 		},
-		MaxRetries:         15,                 // Increase retries for slow API
-		TimeBetweenRetries: 15 * 1_000_000_000, // 15 seconds
 	}
 
-	// Move the temp fixture into place
-	backupFixture := fixturePath + ".bak"
-	os.Rename(fixturePath, backupFixture)
-	os.Rename(tempFixture, fixturePath)
-	defer func() {
-		os.Rename(fixturePath, tempFixture)
-		os.Rename(backupFixture, fixturePath)
-	}()
+	// Clean state and initialize
+	SetupTerraformTest(t, fixtureDir, terraformOptions)
 
-	// Run Terraform and expect failure
-	// Clean state first
-	CleanTerraformState(t, "../test/fixtures/restrictions_test")
-	_, err = terraform.InitAndApplyE(t, terraformOptions)
-	assert.Error(t, err, "Terraform should fail when restrictions block is uncommented")
-}
-
-// Helper to copy a directory recursively
-func copyDir(src string, dst string) error {
-	entries, err := ioutil.ReadDir(src)
-	if err != nil {
-		return err
-	}
-	for _, entry := range entries {
-		srcPath := filepath.Join(src, entry.Name())
-		dstPath := filepath.Join(dst, entry.Name())
-		if entry.IsDir() {
-			if err := os.MkdirAll(dstPath, entry.Mode()); err != nil {
-				return err
-			}
-			if err := copyDir(srcPath, dstPath); err != nil {
-				return err
-			}
-		} else {
-			if err := copyFile(srcPath, dstPath, entry.Mode()); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-// Helper to copy a single file
-func copyFile(srcPath, dstPath string, mode os.FileMode) error {
-	data, err := os.ReadFile(srcPath)
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(dstPath, data, mode); err != nil {
-		return err
-	}
-	return nil
+	// Run terraform plan and expect it to succeed
+	_, err := terraform.PlanE(t, terraformOptions)
+	assert.NoError(t, err, "Valid configuration should pass validation")
 }
