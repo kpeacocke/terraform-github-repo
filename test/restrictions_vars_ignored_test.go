@@ -2,7 +2,6 @@ package test
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -11,10 +10,12 @@ import (
 	"time"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBranchProtectionRestrictionsVarsIgnored(t *testing.T) {
+	_ = godotenv.Load()
 	// Do not run in parallel to avoid polluting the module cache and fixture
 
 	// Clean local Terraform state to ensure correct module path
@@ -60,8 +61,10 @@ func TestBranchProtectionRestrictionsVarsIgnored(t *testing.T) {
 			"GITHUB_OWNER": owner,
 		},
 		Vars: map[string]interface{}{
-			"name":   repoName,
-			"owners": []string{owner},
+			"name":         repoName,
+			"owners":       []string{owner},
+			"github_token": token,
+			"github_owner": owner,
 		},
 		MaxRetries:         15,                 // Increase retries for slow API
 		TimeBetweenRetries: 15 * 1_000_000_000, // 15 seconds
@@ -77,43 +80,12 @@ func TestBranchProtectionRestrictionsVarsIgnored(t *testing.T) {
 			}
 		}
 	}()
-	// Wait for repo to be fully available using GitHub API before applying (robust polling)
-	maxWait := 180 // seconds
-	apiUrl := fmt.Sprintf("https://api.github.com/repos/%s/%s", owner, repoName)
-	client := &http.Client{Timeout: 5 * time.Second}
-	found := false
-	var lastStatus int
-	var lastBody string
-	for i := 0; i < maxWait; i++ {
-		resp, err := client.Get(apiUrl)
-		if err == nil {
-			lastStatus = resp.StatusCode
-			body := make([]byte, 4096)
-			n, _ := resp.Body.Read(body)
-			lastBody = string(body[:n])
-			resp.Body.Close()
-			if resp.StatusCode == 200 {
-				found = true
-				break
-			}
-		}
-		if err != nil {
-			t.Logf("[DEBUG] Error polling GitHub API: %v", err)
-		} else {
-			t.Logf("[DEBUG] GitHub API status: %d, body: %s", lastStatus, lastBody)
-		}
-		t.Logf("Waiting for GitHub repo to be available via API (%d/%d)...", i+1, maxWait)
-		time.Sleep(time.Duration(2*i+1) * time.Second) // Exponential-ish backoff
-	}
-	if !found {
-		t.Fatalf("Repository was not available via GitHub API after %d seconds. Last status: %d, body: %s", maxWait, lastStatus, lastBody)
-	}
 
+	// Apply Terraform immediately
 	_, err := terraform.InitAndApplyE(t, terraformOptions)
 	if err != nil {
 		t.Fatalf("Failed to apply Terraform: %v", err)
 	}
-
 	outputRepoName := terraform.Output(t, terraformOptions, "repository_name")
 	assert.Equal(t, repoName, outputRepoName)
 }

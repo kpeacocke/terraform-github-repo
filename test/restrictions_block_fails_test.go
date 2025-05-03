@@ -8,10 +8,12 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBranchProtectionRestrictionsBlockFails(t *testing.T) {
+	_ = godotenv.Load()
 	// Do not run in parallel to avoid polluting the module cache and fixture
 
 	t.Skip("Skipping branch protection restrictions tests for now")
@@ -81,10 +83,13 @@ func TestBranchProtectionRestrictionsBlockFails(t *testing.T) {
 		TerraformDir: "../test/fixtures/restrictions_test",
 		EnvVars: map[string]string{
 			"GITHUB_TOKEN": token,
+			"GITHUB_OWNER": owner,
 		},
 		Vars: map[string]interface{}{
-			"name":  "terratest-restrictions-fail",
-			"owner": owner,
+			"name":         "terratest-restrictions-fail",
+			"owner":        owner,
+			"github_token": token,
+			"github_owner": owner,
 			// Set restriction vars to trigger the block
 			"branch_protection_users": []string{"octocat"},
 			"branch_protection_teams": []string{"my-team"},

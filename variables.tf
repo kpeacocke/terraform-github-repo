@@ -1,3 +1,12 @@
+variable "github_token" {
+  description = "GitHub token for API access (used in provisioning wait step)"
+  type        = string
+}
+
+variable "github_owner" {
+  description = "GitHub owner (user or org) for API access (used in provisioning wait step)"
+  type        = string
+}
 variable "enable_dependabot_autoapprove" {
   description = "Enable workflow to auto-approve and auto-merge Dependabot PRs."
   type        = bool
@@ -114,7 +123,7 @@ variable "owners" {
 
   validation {
     condition     = length(var.owners) > 0
-    error_message = "You must provide at least one CODEOWNER."
+    error_message = "Missing required variable 'owners'"
   }
 }
 

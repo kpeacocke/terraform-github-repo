@@ -12,6 +12,7 @@ import (
 
 	"github.com/google/go-github/v55/github"
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
@@ -19,7 +20,9 @@ import (
 
 // TestE2E_GitHubRepoModule performs an end-to-end test by creating a real GitHub repository
 // using the module, validating settings, and then destroying it.
+
 func TestE2E_GitHubRepoModule(t *testing.T) {
+	_ = godotenv.Load()
 	t.Parallel()
 
 	// Requirements: set GITHUB_TOKEN and GITHUB_OWNER env vars
@@ -36,7 +39,7 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 		t.Fatal("GITHUB_OWNER should be a GitHub username or organization, not an email address")
 	}
 
-	repoName := fmt.Sprintf("test-repo-%d", time.Now().Unix())
+	repoName := fmt.Sprintf("test-repo-%d-%d", time.Now().Unix(), time.Now().Nanosecond())
 
 	// Run E2E against the root module
 	// Determine root module directory based on this test file location
@@ -46,8 +49,10 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 	tfOptions := &terraform.Options{
 		TerraformDir: rootDir,
 		Vars: map[string]interface{}{
-			"name":   repoName,
-			"owners": []string{owner},
+			"name":         repoName,
+			"owners":       []string{owner},
+			"github_token": token,
+			"github_owner": owner,
 		},
 		EnvVars: map[string]string{
 			"GITHUB_TOKEN": token,
@@ -57,8 +62,10 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 		},
 	}
 
-	// Clean up resources
+	// Clean up resources after all assertions
 	defer func() {
+		t.Log("Waiting 30 seconds before Terraform destroy to allow for GitHub propagation...")
+		time.Sleep(30 * time.Second)
 		t.Log("Starting Terraform destroy...")
 		_, err := terraform.DestroyE(t, tfOptions)
 		if err != nil {
@@ -81,6 +88,33 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
 
+	// Wait for GitHub to finish provisioning the repo (avoid 404s)
+	maxAttempts := 60
+	for i := 0; i < maxAttempts; i++ {
+		// Poll the Actions permissions endpoint directly
+		resp, err := tc.Get(
+			fmt.Sprintf("https://api.github.com/repos/%s/%s/actions/permissions", owner, repoName),
+		)
+		if err == nil && resp.StatusCode == 200 {
+			resp.Body.Close()
+			break
+		}
+		if resp != nil {
+			resp.Body.Close()
+		}
+		t.Logf("Waiting for Actions permissions endpoint (attempt %d/%d, status: %v)...", i+1, maxAttempts, func() interface{} {
+			if resp != nil {
+				return resp.StatusCode
+			} else {
+				return "nil"
+			}
+		}())
+		time.Sleep(5 * time.Second)
+		if i == maxAttempts-1 {
+			t.Fatalf("Actions permissions endpoint for %s/%s not available after retries: %v", owner, repoName, err)
+		}
+	}
+
 	// Verify token scopes to avoid permission errors
 	_, resp, err := client.Users.Get(ctx, "")
 	require.NoError(t, err, "Failed to authenticate with GitHub")
@@ -98,7 +132,7 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 	// PATCH /repos/{owner}/{repo}/actions/permissions with { "enabled": false }
 	t.Log("(Info) Could not disable GitHub Actions automatically: not supported by go-github client.")
 
-	// Verify repository exists
+	// Verify repository exists (after wait)
 	repo, _, err := client.Repositories.Get(ctx, owner, repoName)
 	require.NoError(t, err, "Failed to get repository from GitHub")
 	assert.Equal(t, "private", repo.GetVisibility())

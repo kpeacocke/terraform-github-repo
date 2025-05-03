@@ -1,3 +1,36 @@
+# Wait for GitHub repo to be available before setting Actions permissions
+resource "null_resource" "wait_for_github_repo" {
+  provisioner "local-exec" {
+    command = <<EOT
+      for i in {1..60}; do
+        # Poll the Actions permissions endpoint directly
+        status=$(curl -s -o /dev/null -w "%%{http_code}" \
+          -H "Authorization: token ${var.github_token}" \
+          "https://api.github.com/repos/${var.github_owner}/${github_repository.this.name}/actions/permissions")
+        if [ "$status" = "200" ]; then
+          echo "Actions permissions endpoint is available."
+          exit 0
+        fi
+        echo "Waiting for Actions permissions endpoint... ($i/30, status: $status)"
+        sleep 5
+      done
+      echo "Actions permissions endpoint not available after waiting."
+      exit 1
+    EOT
+    interpreter = ["/bin/bash", "-c"]
+    environment = {
+      github_token = var.github_token
+      github_owner = var.github_owner
+    }
+  }
+  triggers = {
+    repo_name = github_repository.this.name
+  }
+  depends_on = [github_repository.this]
+}
+locals {
+  _validate_owners = length(var.owners) > 0 ? true : throw("Missing required variable 'owners'")
+}
 # Auto-approve and auto-merge Dependabot PRs workflow
 resource "github_repository_file" "auto_approve_dependabot" {
   count               = var.disable_actions_until_provisioning ? 0 : (var.enable_dependabot && var.enable_dependabot_autoapprove ? 1 : 0)
@@ -9,7 +42,7 @@ resource "github_repository_file" "auto_approve_dependabot" {
   overwrite_on_create = true
 }
 resource "github_repository" "this" {
-  name = "terratest-${replace(var.name, "^terratest-", "")}"
+  name = var.name
   # owner argument removed; repository will use provider's configured owner
   description      = "Managed by Terraform"
   visibility       = var.visibility
@@ -21,10 +54,12 @@ resource "github_repository" "this" {
 }
 
 resource "github_actions_repository_permissions" "repo_perms" {
-  repository = github_repository.this.name
+  count       = var.disable_actions_until_provisioning ? 0 : 1
+  repository  = github_repository.this.name
   # disable external Actions runs until provisioning is complete (allow only local actions when disabled)
   # Toggle Actions runs: local_only to disable external actions, all to enable
   allowed_actions = var.disable_actions_until_provisioning ? "local_only" : "all"
+  depends_on = [github_repository.this, null_resource.wait_for_github_repo]
 }
 
 # --- CI Enforcement: Placeholder for validating issues, docs, tests ---

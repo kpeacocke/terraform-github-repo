@@ -2,7 +2,6 @@ package test
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -11,11 +10,14 @@ import (
 	"time"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 // Test that the CodeQL workflow is not created when enable_codeql is false
+
 func TestDisableCodeQLWorkflow(t *testing.T) {
+	_ = godotenv.Load()
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
 		t.Fatal("GITHUB_TOKEN is not set in the environment")
@@ -28,7 +30,7 @@ func TestDisableCodeQLWorkflow(t *testing.T) {
 		parts := strings.SplitN(owner, "@", 2)
 		owner = parts[0]
 	}
-	repoName := fmt.Sprintf("terratest-disable-codeql-%d", time.Now().Unix())
+	repoName := fmt.Sprintf("terratest-disable-codeql-%d-%d", time.Now().Unix(), time.Now().Nanosecond())
 
 	_, filename, _, _ := runtime.Caller(0)
 	fixtureDir := filepath.Join(filepath.Dir(filename), "fixtures", "minimal_repo")
@@ -44,42 +46,12 @@ func TestDisableCodeQLWorkflow(t *testing.T) {
 			"owners":        []string{owner},
 			"languages":     []string{"go"},
 			"enable_codeql": false,
+			"github_token":  token,
+			"github_owner":  owner,
 		},
 	}
 
-	// Wait for repo to be fully available using GitHub API before planning (robust polling)
-	maxWait := 180 // seconds
-	repoUrl := fmt.Sprintf("https://api.github.com/repos/%s/%s", owner, repoName)
-	client := &http.Client{Timeout: 5 * time.Second}
-	found := false
-	var lastStatus int
-	var lastBody string
-	for i := 0; i < maxWait; i++ {
-		resp, err := client.Get(repoUrl)
-		if err == nil {
-			lastStatus = resp.StatusCode
-			body := make([]byte, 4096)
-			n, _ := resp.Body.Read(body)
-			lastBody = string(body[:n])
-			resp.Body.Close()
-			if resp.StatusCode == 200 {
-				found = true
-				break
-			}
-		}
-		if err != nil {
-			t.Logf("[DEBUG] Error polling GitHub API: %v", err)
-		} else {
-			t.Logf("[DEBUG] GitHub API status: %d, body: %s", lastStatus, lastBody)
-		}
-		t.Logf("Waiting for GitHub repo to be available via API (%d/%d)...", i+1, maxWait)
-		time.Sleep(time.Duration(2*i+1) * time.Second) // Exponential-ish backoff
-	}
-	if !found {
-		t.Fatalf("Repository was not available via GitHub API after %d seconds. Last status: %d, body: %s", maxWait, lastStatus, lastBody)
-	}
-
-	// Now plan
+	// Now plan immediately without polling
 	planOutput, err := terraform.InitAndPlanE(t, terraformOptions)
 	assert.NoError(t, err, "Expected terraform plan to succeed")
 	// Ensure the CodeQL workflow resource is not in the plan output
@@ -100,7 +72,7 @@ func TestInvalidVisibility(t *testing.T) {
 		parts := strings.SplitN(owner, "@", 2)
 		owner = parts[0]
 	}
-	repoName := fmt.Sprintf("terratest-invalid-visibility-%d", time.Now().Unix())
+	repoName := fmt.Sprintf("terratest-invalid-visibility-%d-%d", time.Now().Unix(), time.Now().Nanosecond())
 
 	_, filename, _, _ := runtime.Caller(0)
 	fixtureDir := filepath.Join(filepath.Dir(filename), "fixtures", "minimal_repo")
@@ -112,9 +84,11 @@ func TestInvalidVisibility(t *testing.T) {
 			"GITHUB_OWNER": owner,
 		},
 		Vars: map[string]interface{}{
-			"name":       repoName,
-			"owners":     []string{owner},
-			"visibility": "foobar",
+			"name":         repoName,
+			"owners":       []string{owner},
+			"visibility":   "foobar",
+			"github_token": token,
+			"github_owner": owner,
 		},
 	}
 

@@ -2,7 +2,6 @@ package test
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -11,10 +10,12 @@ import (
 	"time"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMinimalRepo(t *testing.T) {
+	_ = godotenv.Load()
 
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
@@ -32,7 +33,7 @@ func TestMinimalRepo(t *testing.T) {
 	}
 
 	// Generate a unique repo name using a timestamp
-	repoName := "terratest-minimal-" + fmt.Sprintf("%d", time.Now().Unix())
+	repoName := fmt.Sprintf("terratest-minimal-%d-%d", time.Now().Unix(), time.Now().Nanosecond())
 
 	// Determine fixture directory based on this test file location
 	_, filename, _, _ := runtime.Caller(0)
@@ -45,8 +46,10 @@ func TestMinimalRepo(t *testing.T) {
 			"GITHUB_OWNER": owner,
 		},
 		Vars: map[string]interface{}{
-			"name":   repoName,
-			"owners": []string{owner},
+			"name":         repoName,
+			"owners":       []string{owner},
+			"github_token": token,
+			"github_owner": owner,
 		},
 		MaxRetries:         20,               // Increase retries for slow API
 		TimeBetweenRetries: 20 * time.Second, // 20 seconds
@@ -64,47 +67,7 @@ func TestMinimalRepo(t *testing.T) {
 		// Do not check for repo existence after destroy
 	}()
 
-	// Wait for repo to be fully available using GitHub API before applying (robust polling)
-	maxWait := 180 // seconds
-	apiUrl := fmt.Sprintf("https://api.github.com/repos/%s/%s", owner, repoName)
-	client := &http.Client{Timeout: 5 * time.Second}
-	found := false
-	var lastStatus int
-	var lastBody string
-	for i := 0; i < maxWait; i++ {
-		resp, err := client.Get(apiUrl)
-		if err != nil {
-			t.Logf("[DEBUG] Error polling GitHub API: %v", err)
-		} else {
-			lastStatus = resp.StatusCode
-			// Read up to 4KB of body for logging
-			body := make([]byte, 4096)
-			n, _ := resp.Body.Read(body)
-			lastBody = string(body[:n])
-			resp.Body.Close()
-			// Handle success
-			if resp.StatusCode == http.StatusOK {
-				found = true
-				break
-			}
-			// Handle rate limiting: shorter backoff
-			if resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusTooManyRequests {
-				t.Logf("[WARN] Rate limited (status %d), backing off for 10s", resp.StatusCode)
-				time.Sleep(10 * time.Second)
-				continue
-			}
-			// Log other statuses
-			t.Logf("[DEBUG] GitHub API status: %d, body: %s", lastStatus, lastBody)
-		}
-		// Exponential-ish backoff for other errors/statuses
-		t.Logf("Waiting for GitHub repo to be available via API (%d/%d)...", i+1, maxWait)
-		time.Sleep(time.Duration(2*i+1) * time.Second)
-	}
-	if !found {
-		t.Fatalf("Repository was not available via GitHub API after %d seconds. Last status: %d, body: %s", maxWait, lastStatus, lastBody)
-	}
-
-	// Now apply Terraform
+	// Now apply Terraform and verify output
 	_, err := terraform.InitAndApplyE(t, terraformOptions)
 	if err != nil {
 		t.Fatalf("Failed to apply Terraform: %v", err)
