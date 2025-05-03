@@ -18,6 +18,17 @@ type ValidateOutput struct {
 	} `json:"diagnostics"`
 }
 
+type PlanLogEntry struct {
+	Level      string `json:"@level"`
+	Message    string `json:"@message"`
+	Diagnostic struct {
+		Severity string `json:"severity"`
+		Summary  string `json:"summary"`
+		Detail   string `json:"detail"`
+	} `json:"diagnostic"`
+	Type string `json:"type"`
+}
+
 func TestMissingOwnersVariableError(t *testing.T) {
 	_ = godotenv.Load()
 	// Temporarily move any tfvars files so 'owners' is truly missing
@@ -53,20 +64,40 @@ func TestMissingOwnersVariableError(t *testing.T) {
 	if err != nil {
 		t.Fatalf("terraform init failed: %s\nOutput: %s", err, string(out))
 	}
-	// Validate in JSON format
-	cmdVal := exec.Command("terraform", "validate", "-json")
+	// Plan instead of validate to trigger variable validation
+	cmdVal := exec.Command("terraform", "plan", "-json")
 	cmdVal.Dir = modulePath
 	outV, err := cmdVal.CombinedOutput()
 	if err == nil {
-		t.Fatalf("expected terraform validate to fail due to missing owners, but it passed. Output: %s", string(outV))
+		t.Fatalf("expected terraform plan to fail due to missing owners, but it passed. Output: %s", string(outV))
 	}
 	var vo ValidateOutput
-	if err := json.Unmarshal(outV, &vo); err != nil {
-		t.Fatalf("failed to parse terraform validate JSON output: %s\nOutput: %s", err, string(outV))
+	// Parse NDJSON (line-delimited JSON) from terraform plan
+	lines := strings.Split(string(outV), "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		var entry PlanLogEntry
+		if err := json.Unmarshal([]byte(line), &entry); err != nil {
+			continue // Skip lines that aren't JSON
+		}
+		if entry.Type == "diagnostic" && entry.Diagnostic.Severity == "error" {
+			vo.Diagnostics = append(vo.Diagnostics, struct {
+				Severity string `json:"severity"`
+				Summary  string `json:"summary"`
+				Detail   string `json:"detail"`
+			}{
+				Severity: entry.Diagnostic.Severity,
+				Summary:  entry.Diagnostic.Summary,
+				Detail:   entry.Diagnostic.Detail,
+			})
+		}
 	}
 	found := false
 	for _, diag := range vo.Diagnostics {
-		if diag.Severity == "error" && strings.Contains(diag.Summary, "owners") {
+		if diag.Severity == "error" && (strings.Contains(diag.Summary, "owners") || strings.Contains(diag.Detail, "owners")) {
 			found = true
 			break
 		}
