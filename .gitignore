@@ -11,6 +11,8 @@ crash.log
 *.out
 *.test
 *.log
+go-test-coverage.log
+go-test-long.log
 test/__pycache__/
 test/tmp/
 test/fixtures/.terraform/

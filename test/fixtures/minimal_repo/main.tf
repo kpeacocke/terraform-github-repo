@@ -6,7 +6,7 @@ module "repo" {
 
   name                      = var.name
   owners                    = var.owners
-  visibility                = "private"
+  visibility                = var.visibility
   enforce_gitflow           = false
   enforce_tests             = false
   enforce_security          = false
@@ -15,6 +15,8 @@ module "repo" {
   enforce_issue_integration = false
   enforce_project_board     = false
   traceability_enabled      = false
+  languages                 = var.languages
+  enable_codeql             = var.enable_codeql
   enable_weekly_reporting   = false
 }
 
@@ -25,4 +27,19 @@ variable "name" {
 variable "owners" {
   description = "List of GitHub users or orgs for CODEOWNERS."
   type        = list(string)
+}
+variable "visibility" {
+  description = "Whether the repository should be 'private' or 'public'."
+  type        = string
+  default     = "private"
+}
+variable "languages" {
+  description = "List of languages for CodeQL analysis and templates."
+  type        = list(string)
+  default     = []
+}
+variable "enable_codeql" {
+  description = "Enable CodeQL analysis workflow."
+  type        = bool
+  default     = true
 }

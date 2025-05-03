@@ -1,8 +1,14 @@
+
 name: "Auto Label Issues"
+
 
 on:
   issues:
     types: [opened]
+
+notifications:
+  email:
+    enabled: false
 
 jobs:
   label:

@@ -58,7 +58,18 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 	}
 
 	// Clean up resources
-	defer terraform.Destroy(t, tfOptions)
+	defer func() {
+		t.Log("Starting Terraform destroy...")
+		_, err := terraform.DestroyE(t, tfOptions)
+		if err != nil {
+			if strings.Contains(err.Error(), "Could not resolve to a node with the global id") {
+				t.Logf("[WARN] Ignoring destroy error: %v", err)
+			} else {
+				t.Errorf("Terraform destroy failed: %v", err)
+			}
+		}
+		t.Log("Terraform destroy completed.")
+	}()
 
 	// Deploy
 	_, err := terraform.InitAndApplyE(t, tfOptions)
@@ -82,6 +93,11 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 		require.Contains(t, scopes, "workflow", "GITHUB_TOKEN must have 'workflow' scope")
 	}
 
+	// NOTE: go-github does not support disabling Actions for a repo directly.
+	// To reduce notification emails, consider disabling Actions via the GitHub API:
+	// PATCH /repos/{owner}/{repo}/actions/permissions with { "enabled": false }
+	t.Log("(Info) Could not disable GitHub Actions automatically: not supported by go-github client.")
+
 	// Verify repository exists
 	repo, _, err := client.Repositories.Get(ctx, owner, repoName)
 	require.NoError(t, err, "Failed to get repository from GitHub")
@@ -93,12 +109,18 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 	require.NoError(t, err, "Failed to get branch protection for 'main'")
 	assert.True(t, bp.GetEnforceAdmins().Enabled)
 
-	// Verify workflow files exist
-	_, files, _, err := client.Repositories.GetContents(ctx, owner, repoName, ".github/workflows", nil)
-	require.NoError(t, err, "Failed to list workflow files")
+	// Verify workflow files exist (even if Actions are disabled)
+	_, directoryContent, resp, err := client.Repositories.GetContents(ctx, owner, repoName, ".github/workflows", nil)
+	if err != nil {
+		// If 404, directory may not exist yet; fail with a clear message
+		if resp != nil && resp.Response.StatusCode == 404 {
+			t.Fatalf(".github/workflows directory not found in repo %s/%s. Workflows may not have been provisioned.", owner, repoName)
+		}
+		require.NoError(t, err, "Failed to list workflow files")
+	}
 	expected := []string{"build.yml", "ci-enforcement.yml", "release.yml"}
 	found := make(map[string]bool)
-	for _, f := range files {
+	for _, f := range directoryContent {
 		found[f.GetName()] = true
 	}
 	for _, name := range expected {

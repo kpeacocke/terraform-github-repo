@@ -1,4 +1,6 @@
+
 name: Update Terraform Docs
+
 
 on:
   pull_request:
@@ -6,6 +8,10 @@ on:
       - 'variables.tf'
       - 'outputs.tf'
       - 'README.md'
+
+notifications:
+  email:
+    enabled: false
 
 jobs:
   terraform-docs:

@@ -1,9 +1,15 @@
+
 name: Push Coverage to Wiki
+
 
 on:
   push:
     branches: [main]
   pull_request:
+
+notifications:
+  email:
+    enabled: false
 
 jobs:
   push-coverage:

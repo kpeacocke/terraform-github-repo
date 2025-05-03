@@ -1,10 +1,16 @@
+
 name: Test & Coverage (python) (matrix)
+
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+
+notifications:
+  email:
+    enabled: false
 
 permissions:
   contents: write

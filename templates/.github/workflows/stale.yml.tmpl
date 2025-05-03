@@ -1,7 +1,13 @@
+
 name: "Close Stale Issues and PRs"
+
 on:
   schedule:
     - cron: "0 0 * * *"
+
+notifications:
+  email:
+    enabled: false
 
 jobs:
   stale:

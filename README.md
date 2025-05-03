@@ -34,6 +34,23 @@ Terraform module for enforcing best practices on GitHub repositories.
 |--------|-----------------------|---------|
 | github | integrations/github   | ~> 6.0  |
 
+
+## ⚠️ Default: GitHub Actions Disabled Until Provisioning
+
+By default, this module disables GitHub Actions workflows for new repositories until provisioning is complete. This prevents excessive notification emails and failed workflow runs during initial setup.
+
+To enable Actions after provisioning, set the variable `disable_actions_until_provisioning = false` in your environment or Terraform configuration:
+
+```hcl
+module "github_repo" {
+  source = "..."
+  # ... other variables ...
+  disable_actions_until_provisioning = false
+}
+```
+
+If you are bootstrapping a new environment, keep Actions disabled until all resources are provisioned, then re-apply with Actions enabled.
+
 ## 🚀 Usage
 
 ### Backend Configuration

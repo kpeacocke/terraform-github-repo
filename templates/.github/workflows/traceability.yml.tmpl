@@ -1,8 +1,14 @@
+
 name: "Traceability Check"
+
 
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize]
+
+notifications:
+  email:
+    enabled: false
 
 jobs:
   traceability:

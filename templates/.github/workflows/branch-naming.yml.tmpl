@@ -1,7 +1,13 @@
+
 name: 'Enforce Branch Naming'
+
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize]
+
+notifications:
+  email:
+    enabled: false
 
 jobs:
   branch-name-check:

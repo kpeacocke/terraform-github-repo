@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -66,7 +67,48 @@ func TestBranchProtectionRestrictionsVarsIgnored(t *testing.T) {
 		TimeBetweenRetries: 15 * 1_000_000_000, // 15 seconds
 	}
 
-	defer terraform.Destroy(t, terraformOptions)
+	defer func() {
+		_, err := terraform.DestroyE(t, terraformOptions)
+		if err != nil {
+			if strings.Contains(err.Error(), "Could not resolve to a node with the global id") {
+				t.Logf("[WARN] Ignoring destroy error: %v", err)
+			} else {
+				t.Errorf("Terraform destroy failed: %v", err)
+			}
+		}
+	}()
+	// Wait for repo to be fully available using GitHub API before applying (robust polling)
+	maxWait := 180 // seconds
+	apiUrl := fmt.Sprintf("https://api.github.com/repos/%s/%s", owner, repoName)
+	client := &http.Client{Timeout: 5 * time.Second}
+	found := false
+	var lastStatus int
+	var lastBody string
+	for i := 0; i < maxWait; i++ {
+		resp, err := client.Get(apiUrl)
+		if err == nil {
+			lastStatus = resp.StatusCode
+			body := make([]byte, 4096)
+			n, _ := resp.Body.Read(body)
+			lastBody = string(body[:n])
+			resp.Body.Close()
+			if resp.StatusCode == 200 {
+				found = true
+				break
+			}
+		}
+		if err != nil {
+			t.Logf("[DEBUG] Error polling GitHub API: %v", err)
+		} else {
+			t.Logf("[DEBUG] GitHub API status: %d, body: %s", lastStatus, lastBody)
+		}
+		t.Logf("Waiting for GitHub repo to be available via API (%d/%d)...", i+1, maxWait)
+		time.Sleep(time.Duration(2*i+1) * time.Second) // Exponential-ish backoff
+	}
+	if !found {
+		t.Fatalf("Repository was not available via GitHub API after %d seconds. Last status: %d, body: %s", maxWait, lastStatus, lastBody)
+	}
+
 	_, err := terraform.InitAndApplyE(t, terraformOptions)
 	if err != nil {
 		t.Fatalf("Failed to apply Terraform: %v", err)

@@ -12,8 +12,6 @@ resource "github_repository" "this" {
   name        = var.name
   description = "Managed by Terraform"
   visibility  = var.visibility
-  # Set the default branch to the configured branch variable to ensure branch exists
-  default_branch   = var.branch
   auto_init        = true
   has_issues       = true
   has_projects     = true
@@ -23,9 +21,9 @@ resource "github_repository" "this" {
 
 resource "github_actions_repository_permissions" "repo_perms" {
   repository = github_repository.this.name
-  # disable all Actions runs until provisioning is complete
-  # Toggle Actions runs: none to disable, all to enable
-  allowed_actions = var.disable_actions_until_provisioning ? "none" : "all"
+  # disable external Actions runs until provisioning is complete (allow only local actions when disabled)
+  # Toggle Actions runs: local_only to disable external actions, all to enable
+  allowed_actions = var.disable_actions_until_provisioning ? "local_only" : "all"
 }
 
 # --- CI Enforcement: Placeholder for validating issues, docs, tests ---
@@ -67,7 +65,7 @@ resource "github_repository_file" "dependabot" {
 # CI enforcement workflow
 resource "github_repository_file" "ci_enforcement_workflow" {
   # Always include CI enforcement workflow when CI is enabled
-  count = var.disable_actions_until_provisioning ? 0 : (var.enable_ci ? 1 : 0)
+  count = var.enable_ci ? 1 : 0
 
   repository = github_repository.this.name
   branch     = "main"
@@ -85,7 +83,7 @@ resource "github_repository_file" "ci_enforcement_workflow" {
 
 # Add stale.yml
 resource "github_repository_file" "stale" {
-  count = var.disable_actions_until_provisioning ? 0 : (var.enable_weekly_reporting ? 1 : 0)
+  count = var.enable_weekly_reporting ? 1 : 0
 
   repository          = github_repository.this.name
   branch              = "main"
@@ -97,7 +95,7 @@ resource "github_repository_file" "stale" {
 
 # Add scorecard.yml
 resource "github_repository_file" "scorecard" {
-  count = var.disable_actions_until_provisioning ? 0 : (var.enable_weekly_reporting ? 1 : 0)
+  count = var.enable_weekly_reporting ? 1 : 0
 
   repository          = github_repository.this.name
   branch              = "main"
@@ -109,7 +107,7 @@ resource "github_repository_file" "scorecard" {
 
 
 resource "github_repository_file" "traceability" {
-  count = var.disable_actions_until_provisioning ? 0 : (var.traceability_enabled ? 1 : 0)
+  count = var.traceability_enabled ? 1 : 0
 
   repository          = github_repository.this.name
   branch              = "main"
@@ -135,7 +133,7 @@ variable "enable_release" {
 }
 
 resource "github_repository_file" "build" {
-  count = var.disable_actions_until_provisioning ? 0 : (var.enable_ci ? 1 : 0)
+  count = var.enable_ci ? 1 : 0
 
   repository          = github_repository.this.name
   branch              = "main"
@@ -146,7 +144,7 @@ resource "github_repository_file" "build" {
 }
 
 resource "github_repository_file" "release" {
-  count = var.disable_actions_until_provisioning ? 0 : (var.enable_release ? 1 : 0)
+  count = var.enable_release ? 1 : 0
 
   repository          = github_repository.this.name
   branch              = "main"

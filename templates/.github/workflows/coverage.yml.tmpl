@@ -1,10 +1,16 @@
+
 name: Coverage
+
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+
+notifications:
+  email:
+    enabled: false
 
 jobs:
   coverage:

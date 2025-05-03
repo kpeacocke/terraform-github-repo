@@ -1,4 +1,6 @@
+
 name: CodeQL
+
 
 on:
   push:
@@ -7,6 +9,10 @@ on:
     branches: [main]
   schedule:
     - cron: '0 0 * * 0'
+
+notifications:
+  email:
+    enabled: false
 
 jobs:
   analyze:

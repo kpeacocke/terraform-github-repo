@@ -19,8 +19,8 @@
 			"resource": "github_branch_protection.release[0]",
 			"location": {
 				"filename": "/Users/kpeacocke/git-practice/main.tf",
-				"start_line": 352,
-				"end_line": 368
+				"start_line": 359,
+				"end_line": 375
 			}
 		},
 		{

@@ -1,9 +1,16 @@
+
 name: CI Enforcement
+
 
 on:
   pull_request:
 
+notifications:
+  email:
+    enabled: false
+
 jobs:
+
   ci-enforcement:
     runs-on: ubuntu-latest
     steps:
@@ -32,7 +39,7 @@ jobs:
 %{ if enforce_tests }
       - name: Check test changes
         run: |
-          if [ -z "$(git diff --name-only $${{ github.event.pull_request.base.sha }} $${{ github.sha }} | grep 'test/\\|\\.spec\\\\\\.\\|_test\\\\\\.')" ]; then
+          if [ -z "$(git diff --name-only $${{ github.event.pull_request.base.sha }} $${{ github.sha }} | grep 'test/\\|\\.spec\\.\\|_test\\.')" ]; then
             echo 'No test changes detected.'; exit 1
           fi
 %{ endif }

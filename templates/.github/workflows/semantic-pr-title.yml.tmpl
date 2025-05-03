@@ -1,8 +1,14 @@
+
 name: Enforce Semantic PR Titles
+
 
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize]
+
+notifications:
+  email:
+    enabled: false
 
 jobs:
   check-title:
