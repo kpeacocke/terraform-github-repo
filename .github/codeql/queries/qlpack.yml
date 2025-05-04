@@ -1,0 +1,5 @@
+name: custom-go-queries
+version: 1.0.0
+extractor: go
+dependencies:
+  codeql/go-all: "*"

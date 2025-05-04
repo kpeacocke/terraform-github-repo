@@ -1,0 +1,8 @@
+- description: Custom security queries for the project
+- queries: .
+- include:
+    kind: problem
+    tags:
+      - security
+- exclude:
+    precision: low

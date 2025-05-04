@@ -1,0 +1,10 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "codeQL.cli.executablePath": "/opt/homebrew/Caskroom/codeql/2.22.0/codeql/codeql"
+    }
+}

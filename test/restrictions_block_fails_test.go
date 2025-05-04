@@ -33,10 +33,10 @@ func TestVariableValidationFailures(t *testing.T) {
 
 	// Test cases for different validation failures
 	testCases := []struct {
-		name           string
-		vars           map[string]interface{}
-		expectedError  string
-		description    string
+		name          string
+		vars          map[string]interface{}
+		expectedError string
+		description   string
 	}{
 		{
 			name: "empty_owners_list",
@@ -77,7 +77,7 @@ func TestVariableValidationFailures(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			// Create a unique test directory for this subtest  
+			// Create a unique test directory for this subtest
 			_, filename, _, _ := runtime.Caller(0)
 			testDir := filepath.Dir(filename)
 			fixtureDir := filepath.Join(testDir, "fixtures", "minimal_repo")
@@ -100,7 +100,7 @@ func TestVariableValidationFailures(t *testing.T) {
 
 			// Check that the error contains the expected validation message
 			if err != nil {
-				assert.Contains(t, err.Error(), tc.expectedError, 
+				assert.Contains(t, err.Error(), tc.expectedError,
 					"Expected validation error message not found. Got: %s", err.Error())
 			}
 		})
@@ -138,8 +138,8 @@ func TestSuccessfulValidation(t *testing.T) {
 		Vars: map[string]interface{}{
 			"name":         fmt.Sprintf("test-valid-config-%d", time.Now().Unix()),
 			"owners":       []string{owner},
-			"visibility":   "private",    // Valid visibility
-			"license":      "MIT",        // Valid license
+			"visibility":   "private", // Valid visibility
+			"license":      "MIT",     // Valid license
 			"github_token": token,
 			"github_owner": owner,
 		},

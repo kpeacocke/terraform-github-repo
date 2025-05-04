@@ -1,0 +1,23 @@
+name: "Default CodeQL Config"
+
+disable-default-queries: false
+
+queries:
+  - name: security-extended
+    uses: security-extended
+  - name: security-and-quality
+    uses: security-and-quality
+
+paths-ignore:
+  - "test/fixtures/**"
+  - "examples/**"
+  - "templates/**"
+  - "*.tfstate*"
+  - "coverage.out"
+  - "go-test*.log"
+
+# For Go
+paths:
+  - "**/*.go"
+  - "go.mod"
+  - "go.sum"
