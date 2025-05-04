@@ -271,6 +271,7 @@ This module enforces best-practice compliance guardrails using static analysis a
 - **OPA (Open Policy Agent) with conftest**: Custom Rego policies in `policy/` directory enforce organization guardrails on every PR.
 
 ### Guardrails Enforced
+
 - S3 buckets and RDS instances must be encrypted, versioned, and tagged (Owner, Environment)
 - No public S3 buckets or open security groups (0.0.0.0/0)
 - No IAM users or inline IAM policies
@@ -284,11 +285,12 @@ This module enforces best-practice compliance guardrails using static analysis a
 - Cost estimation enforced (fail if Infracost > $1000)
 - No public IPs on EC2
 - MFA required for IAM users
-- IAM policies must not allow Action: * or Resource: *
+- IAM policies must not allow Action: *or Resource:*
 - Only approved AWS regions allowed (configurable in `policy/extra-guardrails.rego`)
 - All endpoints must use HTTPS
 
 ### How it works
+
 - On every PR, CI runs `terraform plan -json`, then runs `conftest` with all policies in `policy/`.
 - Any violation fails the build and prints a clear message.
 
@@ -313,6 +315,7 @@ conftest test --policy policy/ plan.json
 Edit `policy/extra-guardrails.rego` to configure allowed AWS regions or add more rules.
 
 ### Custom Policies
+
 - Add new `.rego` files to the `policy/` directory to enforce additional org-specific rules.
 - See [Open Policy Agent docs](https://www.openpolicyagent.org/docs/latest/) for more examples.
 
