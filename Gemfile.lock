@@ -792,8 +792,10 @@ PLATFORMS
 DEPENDENCIES
   csv
   inspec
+  json
   kitchen-inspec
   kitchen-terraform
+  rspec
 
 BUNDLED WITH
    2.6.9

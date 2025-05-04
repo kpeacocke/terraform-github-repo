@@ -70,3 +70,24 @@ tfsec-report.json
 # === Kitchen Terraform artifacts ===
 planfile
 plan.json
+
+# === CodeQL Analysis ===
+# CodeQL databases (local testing)
+codeql-db/
+test-codeql-db/
+*-codeql-db/
+
+# CodeQL analysis results
+codeql-results.csv
+codeql-custom-results.sarif
+*.sarif
+
+# CodeQL pack lock files
+codeql-pack.lock.yml
+.github/codeql/queries/codeql-pack.lock.yml
+
+# CodeQL workspace config (optional - can be committed if you want to share settings)
+.codeqlrc
+
+# CodeQL test artifacts
+.github/codeql/queries/queries.testproj/
