@@ -1,10 +1,39 @@
 # terraform-github-repo
 
-Terraform module for enforcing best practices on GitHub repositories.
+**A comprehensive Terraform module for enforcing GitHub repository best practices and security standards.**
 
-[![Terraform Registry](https://img.shields.io/badge/registry-terraform--registry-blue)](https://registry.terraform.io/modules/your-org/terraform-github-repo/latest)
-<!-- Add CI status badge -->
+[![Terraform Registry](https://img.shields.io/badge/registry-terraform--registry-623CE4?logo=terraform&logoColor=white)](https://registry.terraform.io/modules/your-org/terraform-github-repo/latest)
+[![Module Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fyour-org%2Fterraform-github-repo&query=%24.version&label=version&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/your-org/terraform-github-repo/latest)
+[![Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fyour-org%2Fterraform-github-repo&query=%24.downloads&label=downloads&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/your-org/terraform-github-repo/latest)
 [![CI](https://github.com/your-org/terraform-github-repo/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/terraform-github-repo/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/your-org/terraform-github-repo/actions/workflows/codeql.yml/badge.svg)](https://github.com/your-org/terraform-github-repo/actions/workflows/codeql.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/your-org/terraform-github-repo?style=social)](https://github.com/your-org/terraform-github-repo)
+
+---
+
+## 🎯 Overview
+
+This Terraform module provides a **production-ready**, **security-first** approach to managing GitHub repositories with comprehensive governance, compliance, and DevSecOps automation.
+
+**Perfect for:** Organizations requiring standardized repository governance, security compliance (SOC2, ISO27001), and automated DevOps workflows.
+
+### 🏷️ Keywords
+
+`terraform` • `github` • `devops` • `security` • `compliance` • `governance` • `devsecops` • `repository-management` • `gitops` • `automation` • `best-practices` • `branch-protection` • `codeql` • `dependabot`
+
+### 🔗 Quick Links
+
+| Resource | Description |
+|----------|-------------|
+| 📖 [**Terraform Registry**](https://registry.terraform.io/modules/your-org/terraform-github-repo/latest) | Official module page with usage examples |
+| 🚀 [**Getting Started Guide**](#-usage) | Jump to basic usage examples |
+| 📋 [**Examples**](./examples) | Complete real-world usage scenarios |
+| 🔐 [**Security Features**](#%EF%B8%8F-compliance-guardrails--policy-enforcement) | Security scanning and compliance |
+| 🧪 [**Testing Guide**](#-local-testing) | How to test the module locally |
+| 📝 [**Contributing**](./CONTRIBUTING.md) | How to contribute to this project |
+| 🐛 [**Issues**](https://github.com/your-org/terraform-github-repo/issues) | Report bugs or request features |
+| 💬 [**Discussions**](https://github.com/your-org/terraform-github-repo/discussions) | Community support and Q&A |
 
 ## 📦 Features
 
@@ -318,5 +347,28 @@ Edit `policy/extra-guardrails.rego` to configure allowed AWS regions or add more
 
 - Add new `.rego` files to the `policy/` directory to enforce additional org-specific rules.
 - See [Open Policy Agent docs](https://www.openpolicyagent.org/docs/latest/) for more examples.
+
+## 📊 Module Statistics
+
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/your-org/terraform-github-repo)
+![GitHub last commit](https://img.shields.io/github/last-commit/your-org/terraform-github-repo)
+![GitHub repo size](https://img.shields.io/github/repo-size/your-org/terraform-github-repo)
+![Lines of code](https://img.shields.io/tokei/lines/github/your-org/terraform-github-repo)
+
+## 🤝 Support & Community
+
+- 💡 **Have questions?** Start a [Discussion](https://github.com/your-org/terraform-github-repo/discussions)
+- 🐛 **Found a bug?** Create an [Issue](https://github.com/your-org/terraform-github-repo/issues)
+- 🚀 **Want to contribute?** See our [Contributing Guide](./CONTRIBUTING.md)
+- 📚 **Need examples?** Check our [Examples Directory](./examples)
+
+## 🎖️ Acknowledgments
+
+This module is inspired by and follows best practices from:
+
+- [HashiCorp Terraform Module Standards](https://www.terraform.io/docs/registry/modules/publish.html)
+- [GitHub Security Best Practices](https://docs.github.com/en/code-security)
+- [Open Source Security Foundation (OpenSSF)](https://openssf.org/)
+- [Cloud Security Alliance](https://cloudsecurityalliance.org/)
 
 ---

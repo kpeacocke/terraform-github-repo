@@ -1,0 +1,55 @@
+# Terraform Module Metadata
+# This file provides additional metadata for the Terraform Registry
+
+title: "GitHub Repository Management"
+description: "Comprehensive Terraform module for GitHub repository governance, security, and DevOps automation"
+
+# Module logo - can be a URL or relative path
+logo: "https://raw.githubusercontent.com/hashicorp/terraform/main/website/public/img/logo-text.svg"
+
+# Provider dependencies
+providers:
+  - name: github
+    source: integrations/github
+    version: "~> 6.0"
+
+# Module categories for better discoverability
+categories:
+  - devops
+  - security
+  - compliance
+  - github
+  - governance
+
+# Keywords for search optimization
+keywords:
+  - terraform
+  - github
+  - devops
+  - security
+  - compliance
+  - governance
+  - devsecops
+  - repository-management
+  - gitops
+  - automation
+  - best-practices
+  - branch-protection
+  - codeql
+  - dependabot
+  - policy-as-code
+  - soc2
+  - iso27001
+
+# Links for additional resources
+links:
+  - title: "Examples"
+    url: "https://github.com/your-org/terraform-github-repo/tree/main/examples"
+  - title: "Contributing Guide"
+    url: "https://github.com/your-org/terraform-github-repo/blob/main/CONTRIBUTING.md"
+  - title: "Security Policy"
+    url: "https://github.com/your-org/terraform-github-repo/blob/main/SECURITY.md"
+  - title: "Issues"
+    url: "https://github.com/your-org/terraform-github-repo/issues"
+  - title: "Discussions"
+    url: "https://github.com/your-org/terraform-github-repo/discussions"
