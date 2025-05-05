@@ -37,3 +37,23 @@ tasks:
     desc: Update README with terraform-docs
     cmds:
       - terraform-docs . --output-file README.md --output-mode inject
+  docs:install:
+    desc: Install documentation dependencies
+    cmds:
+      - ./scripts/docs.sh install
+  docs:serve:
+    desc: Serve documentation locally
+    cmds:
+      - ./scripts/docs.sh serve
+  docs:build:
+    desc: Build documentation
+    cmds:
+      - ./scripts/docs.sh build
+  docs:update:
+    desc: Update API documentation
+    cmds:
+      - ./scripts/docs.sh update
+  docs:deploy:
+    desc: Deploy documentation to GitHub Pages
+    cmds:
+      - ./scripts/docs.sh deploy

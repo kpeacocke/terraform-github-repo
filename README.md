@@ -1,14 +1,21 @@
 # terraform-github-repo
 
-**A comprehensive Terraform module for enforcing GitHub repository best practices and security standards.**
+**A| 📖 [**Terraform Registry**](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest) | Official module page with usage examples |
+| 🚀 [**Getting Started Guide**](#-usage) | Jump to basic usage examples |
+| 📋 [**Examples**](./examples) | Complete real-world usage scenarios |
+| 🔐 [**Security Features**](#%EF%B8%8F-compliance-guardrails--policy-enforcement) | Security scanning and compliance |
+| 🧪 [**Testing Guide**](#-local-testing) | How to test the module locally |
+| 📝 [**Contributing**](./CONTRIBUTING.md) | How to contribute to this project |
+| 🐛 [**Issues**](https://github.com/kpeacocke/terraform-github-repo/issues) | Report bugs or request features |
+| 💬 [**Discussions**](https://github.com/kpeacocke/terraform-github-repo/discussions) | Community support and Q&A |ensive Terraform module for enforcing GitHub repository best practices and security standards.**
 
-[![Terraform Registry](https://img.shields.io/badge/registry-terraform--registry-623CE4?logo=terraform&logoColor=white)](https://registry.terraform.io/modules/your-org/terraform-github-repo/latest)
-[![Module Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fyour-org%2Fterraform-github-repo&query=%24.version&label=version&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/your-org/terraform-github-repo/latest)
-[![Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fyour-org%2Fterraform-github-repo&query=%24.downloads&label=downloads&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/your-org/terraform-github-repo/latest)
-[![CI](https://github.com/your-org/terraform-github-repo/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/terraform-github-repo/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/your-org/terraform-github-repo/actions/workflows/codeql.yml/badge.svg)](https://github.com/your-org/terraform-github-repo/actions/workflows/codeql.yml)
+[![Terraform Registry](https://img.shields.io/badge/registry-terraform--registry-623CE4?logo=terraform&logoColor=white)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
+[![Module Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fkpeacocke%2Fterraform-github-repo&query=%24.version&label=version&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
+[![Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fkpeacocke%2Fterraform-github-repo&query=%24.downloads&label=downloads&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
+[![CI](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/ci.yml/badge.svg)](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/codeql.yml/badge.svg)](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/codeql.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub Stars](https://img.shields.io/github/stars/your-org/terraform-github-repo?style=social)](https://github.com/your-org/terraform-github-repo)
+[![GitHub Stars](https://img.shields.io/github/stars/kpeacocke/terraform-github-repo?style=social)](https://github.com/kpeacocke/terraform-github-repo)
 
 ---
 
@@ -26,14 +33,14 @@ This Terraform module provides a **production-ready**, **security-first** approa
 
 | Resource | Description |
 |----------|-------------|
-| 📖 [**Terraform Registry**](https://registry.terraform.io/modules/your-org/terraform-github-repo/latest) | Official module page with usage examples |
+| 📖 [**Terraform Registry**](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest) | Official module page with usage examples |
 | 🚀 [**Getting Started Guide**](#-usage) | Jump to basic usage examples |
 | 📋 [**Examples**](./examples) | Complete real-world usage scenarios |
 | 🔐 [**Security Features**](#%EF%B8%8F-compliance-guardrails--policy-enforcement) | Security scanning and compliance |
 | 🧪 [**Testing Guide**](#-local-testing) | How to test the module locally |
 | 📝 [**Contributing**](./CONTRIBUTING.md) | How to contribute to this project |
-| 🐛 [**Issues**](https://github.com/your-org/terraform-github-repo/issues) | Report bugs or request features |
-| 💬 [**Discussions**](https://github.com/your-org/terraform-github-repo/discussions) | Community support and Q&A |
+| 🐛 [**Issues**](https://github.com/kpeacocke/terraform-github-repo/issues) | Report bugs or request features |
+| 💬 [**Discussions**](https://github.com/kpeacocke/terraform-github-repo/discussions) | Community support and Q&A |
 
 ## 📦 Features
 
@@ -97,10 +104,10 @@ terraform {
 
 ```hcl
 module "github_repo" {
-  source = "github.com/your-org/terraform-github-repo"
+  source = "github.com/kpeacocke/terraform-github-repo"
 
   name        = "my-repo"
-  owners      = ["your-org"]
+  owners      = ["kpeacocke"]
   visibility  = "private"
   license     = "MIT"
   languages   = ["go", "python"]
@@ -227,7 +234,7 @@ No modules.
 | <a name="input_owners"></a> [owners](#input\_owners) | List of GitHub users or teams who should be set as CODEOWNERS. | `list(string)` | n/a | yes |
 | <a name="input_release_branches"></a> [release\_branches](#input\_release\_branches) | List of branch patterns to apply branch protection rules (e.g. ["main", "release/*"]). | `list(string)` | <pre>[<br/>  "main"<br/>]</pre> | no |
 | <a name="input_require_codeql_workflow"></a> [require\_codeql\_workflow](#input\_require\_codeql\_workflow) | Require that the CodeQL workflow exists in the repository. | `bool` | `true` | no |
-| <a name="input_security_contact"></a> [security\_contact](#input\_security\_contact) | Email or contact address to report security issues. | `string` | `"security@your-org.com"` | no |
+| <a name="input_security_contact"></a> [security\_contact](#input\_security\_contact) | Email or contact address to report security issues. | `string` | `"security@kpeacocke.com"` | no |
 | <a name="input_status_check_contexts"></a> [status\_check\_contexts](#input\_status\_check\_contexts) | List of status check contexts required for branch protection. | `list(string)` | `[]` | no |
 | <a name="input_traceability_enabled"></a> [traceability\_enabled](#input\_traceability\_enabled) | Enable traceability enforcement such as issue states, assignments, or labels. | `bool` | `false` | no |
 | <a name="input_visibility"></a> [visibility](#input\_visibility) | Whether the repository should be 'private' or 'public'. | `string` | `"private"` | no |
@@ -350,15 +357,15 @@ Edit `policy/extra-guardrails.rego` to configure allowed AWS regions or add more
 
 ## 📊 Module Statistics
 
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/your-org/terraform-github-repo)
-![GitHub last commit](https://img.shields.io/github/last-commit/your-org/terraform-github-repo)
-![GitHub repo size](https://img.shields.io/github/repo-size/your-org/terraform-github-repo)
-![Lines of code](https://img.shields.io/tokei/lines/github/your-org/terraform-github-repo)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/kpeacocke/terraform-github-repo)
+![GitHub last commit](https://img.shields.io/github/last-commit/kpeacocke/terraform-github-repo)
+![GitHub repo size](https://img.shields.io/github/repo-size/kpeacocke/terraform-github-repo)
+![Lines of code](https://img.shields.io/tokei/lines/github/kpeacocke/terraform-github-repo)
 
 ## 🤝 Support & Community
 
-- 💡 **Have questions?** Start a [Discussion](https://github.com/your-org/terraform-github-repo/discussions)
-- 🐛 **Found a bug?** Create an [Issue](https://github.com/your-org/terraform-github-repo/issues)
+- 💡 **Have questions?** Start a [Discussion](https://github.com/kpeacocke/terraform-github-repo/discussions)
+- 🐛 **Found a bug?** Create an [Issue](https://github.com/kpeacocke/terraform-github-repo/issues)
 - 🚀 **Want to contribute?** See our [Contributing Guide](./CONTRIBUTING.md)
 - 📚 **Need examples?** Check our [Examples Directory](./examples)
 

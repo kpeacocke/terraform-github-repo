@@ -44,12 +44,12 @@ keywords:
 # Links for additional resources
 links:
   - title: "Examples"
-    url: "https://github.com/your-org/terraform-github-repo/tree/main/examples"
+    url: "https://github.com/kpeacocke/terraform-github-repo/tree/main/examples"
   - title: "Contributing Guide"
-    url: "https://github.com/your-org/terraform-github-repo/blob/main/CONTRIBUTING.md"
+    url: "https://github.com/kpeacocke/terraform-github-repo/blob/main/CONTRIBUTING.md"
   - title: "Security Policy"
-    url: "https://github.com/your-org/terraform-github-repo/blob/main/SECURITY.md"
+    url: "https://github.com/kpeacocke/terraform-github-repo/blob/main/SECURITY.md"
   - title: "Issues"
-    url: "https://github.com/your-org/terraform-github-repo/issues"
+    url: "https://github.com/kpeacocke/terraform-github-repo/issues"
   - title: "Discussions"
-    url: "https://github.com/your-org/terraform-github-repo/discussions"
+    url: "https://github.com/kpeacocke/terraform-github-repo/discussions"

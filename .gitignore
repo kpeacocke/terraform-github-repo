@@ -91,3 +91,13 @@ codeql-pack.lock.yml
 
 # CodeQL test artifacts
 .github/codeql/queries/queries.testproj/
+
+# === Documentation ===
+# Built documentation site
+site/
+
+# MkDocs temporary files
+.mkdocs_cache/
+
+# Local terraform-docs binary
+terraform-docs

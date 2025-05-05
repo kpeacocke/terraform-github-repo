@@ -195,7 +195,7 @@ variable "license" {
 variable "security_contact" {
   description = "Email or contact address to report security issues."
   type        = string
-  default     = "security@your-org.com"
+  default     = "security@kpeacocke.com"
 }
 
 variable "enable_auto_labeling" {

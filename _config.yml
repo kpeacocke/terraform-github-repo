@@ -1,0 +1,39 @@
+# GitHub Pages Configuration
+# This file is used by GitHub Pages to configure the deployment
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Site metadata
+title: "Terraform GitHub Repository Module"
+description: "Comprehensive Terraform module for GitHub repository governance, security, and DevOps automation"
+url: "https://kpeacocke.github.io"
+baseurl: "/terraform-github-repo"
+
+# Social
+github_username: kpeacocke
+
+# Build settings
+safe: true
+incremental: false
+
+# Exclude from processing
+exclude:
+  - .github/
+  - .terraform/
+  - node_modules/
+  - vendor/
+  - Gemfile*
+  - README.md
+  - LICENSE
+  - Taskfile.yml
+  - "*.tf"
+  - "*.tfvars"
+  - "*.json"
+  - "*.lock"
+  - "*.log"
