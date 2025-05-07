@@ -57,3 +57,39 @@ tasks:
     desc: Deploy documentation to GitHub Pages
     cmds:
       - ./scripts/docs.sh deploy
+  # Dependabot Management Tasks
+  deps:check:
+    desc: Check for available dependency updates
+    cmds:
+      - ./scripts/dependabot.sh check-updates
+  deps:validate:
+    desc: Validate current dependencies
+    cmds:
+      - ./scripts/dependabot.sh validate-deps
+  deps:test:
+    desc: Run tests with current dependencies
+    cmds:
+      - ./scripts/dependabot.sh test-deps
+  deps:security:
+    desc: Run security scans on dependencies
+    cmds:
+      - ./scripts/dependabot.sh security-scan
+  deps:update:terraform:
+    desc: Update Terraform providers manually
+    cmds:
+      - ./scripts/dependabot.sh update-terraform
+  deps:update:go:
+    desc: Update Go dependencies
+    cmds:
+      - ./scripts/dependabot.sh update-go
+  deps:simulate-pr:
+    desc: Simulate Dependabot PR validation locally
+    cmds:
+      - ./scripts/dependabot.sh simulate-pr
+  deps:all:
+    desc: Run all dependency management tasks
+    cmds:
+      - task deps:check
+      - task deps:validate
+      - task deps:test
+      - task deps:security

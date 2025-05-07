@@ -154,6 +154,7 @@ nav:
   - Development:
     - Contributing: development/contributing.md
     - Testing: development/testing.md
+    - Dependabot: development/dependabot.md
     - Release Process: development/releases.md
     - Architecture: development/architecture.md
   - Changelog: changelog.md

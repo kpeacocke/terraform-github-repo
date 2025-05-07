@@ -1,0 +1,185 @@
+name: Dependabot Auto-Validation
+
+on:
+  pull_request:
+    branches: [main]
+    # Only run on Dependabot PRs
+    types: [opened, synchronize, reopened]
+
+jobs:
+  # Check if this is a Dependabot PR
+  check-dependabot:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    outputs:
+      is-dependabot: ${{ steps.check.outputs.is-dependabot }}
+    steps:
+      - name: Check if Dependabot PR
+        id: check
+        run: echo "is-dependabot=true" >> $GITHUB_OUTPUT
+
+  # Validate Terraform changes
+  terraform-validation:
+    needs: check-dependabot
+    if: needs.check-dependabot.outputs.is-dependabot == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        terraform-version: ["1.5.0", "1.6.0", "1.7.0", "latest"]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ matrix.terraform-version }}
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate Examples
+        run: |
+          for example in examples/*/; do
+            if [ -d "$example" ]; then
+              echo "Validating example: $example"
+              cd "$example"
+              terraform init
+              terraform validate
+              terraform plan
+              cd - > /dev/null
+            fi
+          done
+
+  # Run Go tests for Terratest
+  go-tests:
+    needs: check-dependabot
+    if: needs.check-dependabot.outputs.is-dependabot == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Download Go modules
+        run: go mod download
+
+      - name: Run Go tests
+        run: go test -v -timeout 10m ./test/...
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Go tests with race detection
+        run: go test -race -v -timeout 15m ./test/...
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Security scanning
+  security-scan:
+    needs: check-dependabot
+    if: needs.check-dependabot.outputs.is-dependabot == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy security scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Documentation validation
+  docs-validation:
+    needs: check-dependabot
+    if: needs.check-dependabot.outputs.is-dependabot == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install MkDocs dependencies
+        run: |
+          pip install -r docs/requirements.txt
+
+      - name: Validate MkDocs build
+        run: |
+          mkdocs build --strict
+
+      - name: Check terraform-docs
+        uses: terraform-docs/gh-actions@v1
+        with:
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+          git-push: false
+          fail-on-diff: true
+
+  # Auto-approve and merge if all checks pass
+  auto-merge:
+    needs: [terraform-validation, go-tests, security-scan, docs-validation]
+    if: always() && needs.terraform-validation.result == 'success' && needs.go-tests.result == 'success' && needs.security-scan.result == 'success' && needs.docs-validation.result == 'success'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Auto-approve Dependabot PR
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge
+        run: gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Notify on failure
+  notify-failure:
+    needs: [terraform-validation, go-tests, security-scan, docs-validation]
+    if: always() && (needs.terraform-validation.result == 'failure' || needs.go-tests.result == 'failure' || needs.security-scan.result == 'failure' || needs.docs-validation.result == 'failure')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ **Dependabot PR Validation Failed**\n\nOne or more validation checks failed. Please review the failed checks and fix any issues before merging.\n\n- Terraform Validation: ${{ needs.terraform-validation.result }}\n- Go Tests: ${{ needs.go-tests.result }}\n- Security Scan: ${{ needs.security-scan.result }}\n- Documentation: ${{ needs.docs-validation.result }}'
+            })

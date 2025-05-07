@@ -1,0 +1,171 @@
+# Dependabot configuration for Terraform module maintenance
+# This configuration automatically updates dependencies and opens PRs for validation
+version: 2
+updates:
+  # Terraform configuration updates
+  - package-ecosystem: "terraform"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 5
+    target-branch: "main"
+    reviewers:
+      - "kpeacocke"
+    assignees:
+      - "kpeacocke"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "terraform"
+      - "automated"
+    allow:
+      # Allow updates for Terraform providers
+      - dependency-type: "direct"
+        dependency-name: "hashicorp/*"
+      # Allow updates for other providers
+      - dependency-type: "direct"
+        dependency-name: "*/*"
+    ignore:
+      # Ignore major version updates for stability (can be removed if desired)
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # Example Terraform configurations
+  - package-ecosystem: "terraform"
+    directory: "/examples/minimal"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:30"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 3
+    target-branch: "main"
+    reviewers:
+      - "kpeacocke"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "terraform"
+      - "examples"
+      - "automated"
+
+  # Go dependencies for testing
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 5
+    target-branch: "main"
+    reviewers:
+      - "kpeacocke"
+    assignees:
+      - "kpeacocke"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "go"
+      - "testing"
+      - "automated"
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+
+  # GitHub Actions workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 5
+    target-branch: "main"
+    reviewers:
+      - "kpeacocke"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "ci"
+      - "automated"
+
+  # Ruby dependencies for Kitchen-Terraform testing
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "thursday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 3
+    target-branch: "main"
+    reviewers:
+      - "kpeacocke"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "ruby"
+      - "kitchen-terraform"
+      - "automated"
+
+  # Python dependencies for documentation
+  - package-ecosystem: "pip"
+    directory: "/docs"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 3
+    target-branch: "main"
+    reviewers:
+      - "kpeacocke"
+    commit-message:
+      prefix: "docs"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+      - "documentation"
+      - "automated"
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+
+  # NPM dependencies (if any)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "10:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 3
+    target-branch: "main"
+    reviewers:
+      - "kpeacocke"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "npm"
+      - "automated"
