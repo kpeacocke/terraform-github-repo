@@ -1,0 +1,252 @@
+name: Manual Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Type of release to create'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      skip_tests:
+        description: 'Skip test validation (not recommended)'
+        required: false
+        type: boolean
+        default: false
+      force_release:
+        description: 'Force release even with warnings'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  manual-release:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate inputs
+        run: |
+          echo "Release type: ${{ github.event.inputs.release_type }}"
+          echo "Skip tests: ${{ github.event.inputs.skip_tests }}"
+          echo "Force release: ${{ github.event.inputs.force_release }}"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install -g semantic-release \
+            @semantic-release/changelog \
+            @semantic-release/git \
+            @semantic-release/github \
+            @semantic-release/exec \
+            conventional-changelog-conventionalcommits
+
+      - name: Pre-release validation
+        if: github.event.inputs.skip_tests != 'true'
+        run: |
+          # Terraform validation
+          terraform fmt -check -recursive
+          terraform init
+          terraform validate
+          
+          # Go tests
+          go mod download
+          go test -v -timeout 10m ./test/...
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update documentation
+        run: |
+          # Install terraform-docs
+          curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v0.17.0/terraform-docs-v0.17.0-$(uname)-amd64.tar.gz
+          tar -xzf terraform-docs.tar.gz
+          chmod +x terraform-docs
+          ./terraform-docs markdown table --output-file README.md --output-mode inject .
+
+      - name: Create manual release commit
+        run: |
+          # Create a commit that will trigger the appropriate release type
+          case "${{ github.event.inputs.release_type }}" in
+            major)
+              commit_msg="feat!: manual major release
+              
+              BREAKING CHANGE: Manual major version release triggered by maintainer"
+              ;;
+            minor)
+              commit_msg="feat: manual minor release
+              
+              New features and improvements included in this release"
+              ;;
+            patch)
+              commit_msg="fix: manual patch release
+              
+              Bug fixes and minor improvements included in this release"
+              ;;
+          esac
+          
+          # Check if there are changes to commit
+          if ! git diff --quiet || ! git diff --cached --quiet; then
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+            git add .
+            git commit -m "$commit_msg"
+            git push origin main
+          else
+            # Create an empty commit to trigger release
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+            git commit --allow-empty -m "$commit_msg"
+            git push origin main
+          fi
+
+      - name: Trigger semantic release
+        run: |
+          echo "Manual release commit pushed. The main release workflow will now execute."
+          echo "Monitor the release at: https://github.com/${{ github.repository }}/actions"
+
+      - name: Create issue for manual release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const releaseType = '${{ github.event.inputs.release_type }}';
+            const actor = '${{ github.actor }}';
+            const runId = '${{ github.run_id }}';
+            
+            const body = `
+            ## 🚀 Manual ${releaseType.toUpperCase()} Release Triggered
+            
+            **Initiated by**: @${actor}
+            **Release type**: \`${releaseType}\`
+            **Workflow run**: [#${runId}](https://github.com/${{ github.repository }}/actions/runs/${runId})
+            
+            ### Settings:
+            - Skip tests: ${{ github.event.inputs.skip_tests }}
+            - Force release: ${{ github.event.inputs.force_release }}
+            
+            ### Next Steps:
+            1. Monitor the [release workflow](https://github.com/${{ github.repository }}/actions/workflows/release.yml)
+            2. Verify the release appears in [GitHub Releases](https://github.com/${{ github.repository }}/releases)
+            3. Check [Terraform Registry](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo) for the new version
+            4. Update any dependent modules or configurations
+            
+            This issue will be automatically closed when the release is complete.
+            `;
+            
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚀 Manual ${releaseType.toUpperCase()} Release - ${new Date().toISOString().split('T')[0]}`,
+              body,
+              labels: ['release', 'manual', releaseType],
+              assignees: [actor]
+            });
+            
+            console.log(`Created issue #${issue.data.number} for manual release tracking`);
+
+  # Workflow to close the manual release issue when release completes
+  close-manual-release-issue:
+    needs: manual-release
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Wait for release workflow
+        run: |
+          echo "Waiting 30 seconds for release workflow to start..."
+          sleep 30
+
+      - name: Close manual release issue on success
+        if: needs.manual-release.result == 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Find the manual release issue created in this run
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'release,manual',
+              state: 'open',
+              sort: 'created',
+              direction: 'desc',
+              per_page: 1
+            });
+            
+            if (issues.data.length > 0) {
+              const issue = issues.data[0];
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: '✅ Manual release workflow completed successfully. The main release workflow should now be running.'
+              });
+              
+              // Don't close immediately - let the main release workflow handle it
+              console.log(`Added success comment to issue #${issue.number}`);
+            }
+
+      - name: Comment on failure
+        if: needs.manual-release.result == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'release,manual',
+              state: 'open',
+              sort: 'created',
+              direction: 'desc',
+              per_page: 1
+            });
+            
+            if (issues.data.length > 0) {
+              const issue = issues.data[0];
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: '❌ Manual release workflow failed. Please check the [workflow logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) and try again.'
+              });
+              
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: ['release', 'manual', 'failed']
+              });
+              
+              console.log(`Added failure comment to issue #${issue.number}`);
+            }

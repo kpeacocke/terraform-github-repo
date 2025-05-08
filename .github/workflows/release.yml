@@ -1,31 +1,401 @@
-name: Release
+name: Release & Publish
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Type of release'
+        required: true
+        default: 'auto'
+        type: choice
+        options:
+        - auto
+        - patch
+        - minor
+        - major
 
 jobs:
-  release:
+  # Pre-release validation
+  validate:
     runs-on: ubuntu-latest
+    outputs:
+      should-release: ${{ steps.check.outputs.should-release }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if release is needed
+        id: check
+        run: |
+          # Check if there are commits since last release
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            echo "No previous releases found, creating first release"
+            echo "should-release=true" >> $GITHUB_OUTPUT
+          else
+            COMMITS_SINCE_TAG=$(git rev-list ${LAST_TAG}..HEAD --count)
+            if [ "$COMMITS_SINCE_TAG" -gt 0 ]; then
+              echo "Found $COMMITS_SINCE_TAG commits since last release"
+              echo "should-release=true" >> $GITHUB_OUTPUT
+            else
+              echo "No commits since last release"
+              echo "should-release=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Setup Terraform
+        if: steps.check.outputs.should-release == 'true'
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+
+      - name: Terraform Format Check
+        if: steps.check.outputs.should-release == 'true'
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init
+        if: steps.check.outputs.should-release == 'true'
+        run: terraform init
+
+      - name: Terraform Validate
+        if: steps.check.outputs.should-release == 'true'
+        run: terraform validate
+
+      - name: Setup Go
+        if: steps.check.outputs.should-release == 'true'
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Run Tests
+        if: steps.check.outputs.should-release == 'true'
+        run: |
+          go mod download
+          go test -v -timeout 10m ./test/...
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Semantic release
+  release:
+    needs: validate
+    if: needs.validate.outputs.should-release == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.semantic.outputs.version }}
+      published: ${{ steps.semantic.outputs.published }}
+      release-notes: ${{ steps.semantic.outputs.release-notes }}
 
     permissions:
       contents: write
       issues: write
       pull-requests: write
+      actions: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install -g semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github
+      - name: Install semantic-release dependencies
+        run: |
+          npm install -g semantic-release \
+            @semantic-release/changelog \
+            @semantic-release/git \
+            @semantic-release/github \
+            @semantic-release/exec \
+            conventional-changelog-conventionalcommits
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+
+      - name: Update terraform-docs
+        run: |
+          curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v0.17.0/terraform-docs-v0.17.0-$(uname)-amd64.tar.gz
+          tar -xzf terraform-docs.tar.gz
+          chmod +x terraform-docs
+          ./terraform-docs markdown table --output-file README.md --output-mode inject .
 
       - name: Run semantic-release
+        id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: semantic-release
+        run: |
+          npx semantic-release --debug
+          # Capture outputs
+          echo "version=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+          echo "published=true" >> $GITHUB_OUTPUT
+
+  # Terraform Registry publishing
+  terraform-registry:
+    needs: [validate, release]
+    if: needs.release.outputs.published == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release.outputs.version }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+
+      - name: Validate Terraform for Registry
+        run: |
+          terraform fmt -check -recursive
+          terraform init
+          terraform validate
+          
+          # Check required files for Terraform Registry
+          echo "Checking Terraform Registry requirements..."
+          
+          # Check for required files
+          if [ ! -f "main.tf" ] && [ ! -f "variables.tf" ]; then
+            echo "❌ Missing main.tf or variables.tf"
+            exit 1
+          fi
+          
+          if [ ! -f "README.md" ]; then
+            echo "❌ Missing README.md"
+            exit 1
+          fi
+          
+          if [ ! -f "LICENSE" ]; then
+            echo "❌ Missing LICENSE file"
+            exit 1
+          fi
+          
+          # Check examples directory
+          if [ ! -d "examples" ]; then
+            echo "❌ Missing examples directory"
+            exit 1
+          fi
+          
+          echo "✅ All Terraform Registry requirements met"
+
+      - name: Publish to Terraform Registry
+        run: |
+          echo "🚀 Publishing to Terraform Registry..."
+          echo "Module: kpeacocke/terraform-github-repo"
+          echo "Version: ${{ needs.release.outputs.version }}"
+          echo "Registry will automatically detect the new release tag"
+          echo "Monitor at: https://registry.terraform.io/modules/kpeacocke/terraform-github-repo"
+
+      - name: Notify Terraform Registry
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const version = "${{ needs.release.outputs.version }}";
+            
+            // Create a release notification comment
+            const body = `
+            ## 🚀 Terraform Registry Release
+            
+            **Module**: \`kpeacocke/terraform-github-repo\`
+            **Version**: \`${version}\`
+            **Registry URL**: https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/${version}
+            
+            ### Next Steps
+            1. Monitor the Terraform Registry for the new version
+            2. Update any dependent modules
+            3. Verify the module documentation is updated
+            
+            ### Usage
+            \`\`\`hcl
+            module "github_repo" {
+              source = "kpeacocke/terraform-github-repo/github"
+              version = "${version}"
+              
+              # Your configuration here
+            }
+            \`\`\`
+            `;
+            
+            // Add comment to the release
+            const release = await github.rest.repos.getReleaseByTag({
+              owner,
+              repo,
+              tag: version
+            });
+            
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: release.data.id,
+              body
+            });
+
+  # Documentation update
+  docs-update:
+    needs: [release, terraform-registry]
+    if: needs.release.outputs.published == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install MkDocs dependencies
+        run: |
+          pip install -r docs/requirements.txt
+
+      - name: Setup Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Deploy versioned documentation
+        run: |
+          # Install mike for versioned docs
+          pip install mike
+          
+          # Deploy new version
+          VERSION="${{ needs.release.outputs.version }}"
+          mike deploy --push --update-aliases $VERSION latest
+          mike set-default --push latest
+
+      - name: Update changelog in docs
+        run: |
+          # Copy changelog to docs
+          cp CHANGELOG.md docs/changelog.md
+          
+          # Commit and push
+          git add docs/changelog.md
+          git commit -m "docs: update changelog for ${{ needs.release.outputs.version }}" || exit 0
+          git push origin main
+
+  # Notification and cleanup
+  notify:
+    needs: [release, terraform-registry, docs-update]
+    if: always() && needs.release.outputs.published == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Notify success
+        if: needs.terraform-registry.result == 'success' && needs.docs-update.result == 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = "${{ needs.release.outputs.version }}";
+            const body = `
+            ## ✅ Release Complete
+            
+            **Version**: \`${version}\`
+            
+            ### What was published:
+            - 🏷️ GitHub Release with changelog
+            - 📦 Terraform Registry module
+            - 📚 Versioned documentation
+            
+            ### Links:
+            - [GitHub Release](https://github.com/kpeacocke/terraform-github-repo/releases/tag/${version})
+            - [Terraform Registry](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/${version})
+            - [Documentation](https://kpeacocke.github.io/terraform-github-repo/)
+            
+            The module is now available for use! 🎉
+            `;
+            
+            // Create an issue for the release announcement
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚀 Release ${version} Published`,
+              body,
+              labels: ['release', 'announcement']
+            });
+
+      - name: Notify failure
+        if: needs.terraform-registry.result == 'failure' || needs.docs-update.result == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = "${{ needs.release.outputs.version }}";
+            const body = `
+            ## ❌ Release Partially Failed
+            
+            **Version**: \`${version}\`
+            
+            ### Status:
+            - GitHub Release: ✅ Success
+            - Terraform Registry: ${{ needs.terraform-registry.result == 'success' && '✅ Success' || '❌ Failed' }}
+            - Documentation: ${{ needs.docs-update.result == 'success' && '✅ Success' || '❌ Failed' }}
+            
+            Please check the workflow logs and take manual action if needed.
+            `;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚠️ Release ${version} Needs Attention`,
+              body,
+              labels: ['release', 'needs-attention']
+            });
+
+  # Cleanup old releases (optional)
+  cleanup:
+    needs: [notify]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Cleanup old pre-releases
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            
+            // Get all releases
+            const releases = await github.rest.repos.listReleases({
+              owner,
+              repo,
+              per_page: 100
+            });
+            
+            // Keep only the latest 10 releases, delete older pre-releases
+            const preReleases = releases.data
+              .filter(r => r.prerelease)
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+              .slice(10); // Keep latest 10, delete rest
+            
+            for (const release of preReleases) {
+              try {
+                await github.rest.repos.deleteRelease({
+                  owner,
+                  repo,
+                  release_id: release.id
+                });
+                console.log(`Deleted old pre-release: ${release.tag_name}`);
+              } catch (error) {
+                console.log(`Failed to delete ${release.tag_name}: ${error.message}`);
+              }
+            }

@@ -93,3 +93,38 @@ tasks:
       - task deps:validate
       - task deps:test
       - task deps:security
+  # Release Management Tasks
+  release:check:
+    desc: Check if repository is ready for release
+    cmds:
+      - ./scripts/release.sh check
+  release:prepare:
+    desc: Prepare repository for release
+    cmds:
+      - ./scripts/release.sh prepare
+  release:preview:
+    desc: Preview the next release version
+    cmds:
+      - ./scripts/release.sh preview
+  release:create:
+    desc: Create a new release
+    cmds:
+      - ./scripts/release.sh release
+  release:status:
+    desc: Check release status
+    cmds:
+      - ./scripts/release.sh status
+  release:registry:
+    desc: Check Terraform Registry status
+    cmds:
+      - ./scripts/release.sh registry
+  release:docs:
+    desc: Update release documentation
+    cmds:
+      - ./scripts/release.sh docs
+  release:all:
+    desc: Full release workflow (check, prepare, create)
+    cmds:
+      - task release:check
+      - task release:prepare
+      - task release:create
