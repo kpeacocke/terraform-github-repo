@@ -18,16 +18,37 @@ tasks:
     desc: Run tflint linting (warnings allowed to continue)
     cmds:
       - tflint
-  tfsec:
-    desc: Run tfsec security scanning (do not fail on warnings)
+  trivy:
+    desc: Run Trivy security scanning (replaces tfsec)
     cmds:
-      - sh -c "tfsec --format json --out tfsec-report.json . || true"
+      - sh -c "trivy fs --format json --output trivy-report.json . || true"
+  trivy:terraform:
+    desc: Run Trivy Terraform-specific security scan
+    cmds:
+      - trivy config --format table .
+  trivy:secrets:
+    desc: Scan for secrets and sensitive information
+    cmds:
+      - trivy fs --scanners secret --format table .
+  trivy:vuln:
+    desc: Scan for vulnerabilities in dependencies
+    cmds:
+      - trivy fs --scanners vuln --format table .
+  trivy:all:
+    desc: Run comprehensive Trivy security scan
+    cmds:
+      - trivy fs --format table .
+      - trivy fs --format json --output trivy-report.json .
+  trivy:sarif:
+    desc: Generate SARIF report for GitHub Security tab
+    cmds:
+      - trivy fs --format sarif --output trivy-results.sarif .
   lint:
-    desc: Run fmt, validate, tfsec, and tflint (ensures security scan runs before lint failures)
+    desc: Run fmt, validate, trivy, and tflint (ensures security scan runs before lint failures)
     cmds:
       - task fmt
       - task validate
-      - task tfsec
+      - task trivy
       - task tflint
   husky:
     desc: Setup Git hooks for local dev

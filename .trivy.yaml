@@ -1,0 +1,88 @@
+# Trivy security scanner configuration
+# Replaces tfsec configuration for enhanced security scanning
+
+# Scanner configuration
+scanner:
+  # Scan for security issues, secrets, and misconfigurations
+  - vuln
+  - secret
+  - config
+
+# Terraform-specific security checks
+terraform:
+  # Enable Terraform security scanning
+  enabled: true
+  # Include custom checks
+  checks:
+    - terraform
+    - kubernetes
+    - docker
+
+# Severity levels to report
+severity:
+  - CRITICAL
+  - HIGH
+  - MEDIUM
+  - LOW
+
+# File types to scan
+file-patterns:
+  - "*.tf"
+  - "*.tfvars"
+  - "*.yaml"
+  - "*.yml"
+  - "*.json"
+  - "Dockerfile*"
+  - "*.sh"
+
+# Paths to ignore
+skip-dirs:
+  - .git
+  - .terraform
+  - node_modules
+  - .vscode
+  - docs/_site
+
+# Files to ignore
+skip-files:
+  - "*.tfstate"
+  - "*.tfstate.backup"
+  - "*.tfplan"
+  - "tfplan.bin"
+  - "*.log"
+
+# Custom policies (if any)
+policy-namespaces:
+  - builtin
+  - terraform
+  - kubernetes
+
+# Output configuration
+format: table
+output: ""
+
+# Secret scanning configuration
+secret:
+  # Skip test files for secret scanning
+  skip-files:
+    - "*_test.go"
+    - "test/**/*"
+    - "examples/**/*.tfvars"
+
+# Known false positives and exceptions
+# Add specific rule IDs to ignore if needed
+ignore-unfixed: false
+ignore-policy: ""
+
+# Custom rules (example - uncomment and modify as needed)
+# custom-rules:
+#   - id: "CUSTOM-001"
+#     title: "Custom security rule"
+#     description: "Custom rule description"
+#     severity: "HIGH"
+#     rule: |
+#       package custom
+#       deny[msg] {
+#         # Your custom rule logic here
+#         msg := "Custom rule violation"
+#       }

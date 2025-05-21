@@ -1,2 +1,0 @@
-# tfsec configuration to suppress known false positives
-exclude: []

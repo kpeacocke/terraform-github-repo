@@ -64,8 +64,26 @@ jobs:
       - name: Run TFLint
         run: tflint
 
-      - name: Run tfsec
-        run: tfsec --format github
+      - name: Run Trivy security scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Run Trivy and output to console
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
 
       - name: Update Terraform docs
         run: terraform-docs . --output-file README.md --output-mode inject

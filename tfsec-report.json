@@ -1,0 +1,50 @@
+{
+	"results": [
+		{
+			"rule_id": "AVD-GIT-0004",
+			"long_id": "github-branch_protections-require_signed_commits",
+			"rule_description": "GitHub branch protection does not require signed commits.",
+			"rule_provider": "github",
+			"rule_service": "branch_protections",
+			"impact": "Commits may not be verified and signed as coming from a trusted developer",
+			"resolution": "Require signed commits",
+			"links": [
+				"https://aquasecurity.github.io/tfsec/v1.28.14/checks/github/branch_protections/require_signed_commits/",
+				"https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection"
+			],
+			"description": "Branch protection does not require signed commits,",
+			"severity": "HIGH",
+			"warning": false,
+			"status": 0,
+			"resource": "github_branch_protection.release[0]",
+			"location": {
+				"filename": "/Users/kpeacocke/git-practice/main.tf",
+				"start_line": 393,
+				"end_line": 409
+			}
+		},
+		{
+			"rule_id": "AVD-GIT-0003",
+			"long_id": "github-repositories-enable_vulnerability_alerts",
+			"rule_description": "GitHub repository has vulnerability alerts disabled.",
+			"rule_provider": "github",
+			"rule_service": "repositories",
+			"impact": "Known vulnerabilities may not be discovered",
+			"resolution": "Enable vulnerability alerts",
+			"links": [
+				"https://aquasecurity.github.io/tfsec/v1.28.14/checks/github/repositories/enable_vulnerability_alerts/",
+				"https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository"
+			],
+			"description": "Repository does not have vulnerability alerts enabled,",
+			"severity": "HIGH",
+			"warning": false,
+			"status": 0,
+			"resource": "github_repository.this",
+			"location": {
+				"filename": "/Users/kpeacocke/git-practice/main.tf",
+				"start_line": 44,
+				"end_line": 54
+			}
+		}
+	]
+}

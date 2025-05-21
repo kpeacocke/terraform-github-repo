@@ -65,7 +65,9 @@ package-lock.json
 .husky/_/        # ✅ ignore only internal Husky binaries
 
 # === Terraform security reports ===
-tfsec-report.json
+trivy-report.json
+trivy-results.sarif
+.trivy/
 
 # === Kitchen Terraform artifacts ===
 planfile

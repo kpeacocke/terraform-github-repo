@@ -303,7 +303,7 @@ kitchen test
 
 This module enforces best-practice compliance guardrails using static analysis and policy-as-code in CI:
 
-- **tfsec** and **tflint**: Run automatically in CI for static security and lint checks.
+- **Trivy** and **tflint**: Run automatically in CI for static security and lint checks.
 - **OPA (Open Policy Agent) with conftest**: Custom Rego policies in `policy/` directory enforce organization guardrails on every PR.
 
 ### Guardrails Enforced
