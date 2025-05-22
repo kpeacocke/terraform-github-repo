@@ -155,6 +155,7 @@ nav:
     - Contributing: development/contributing.md
     - Testing: development/testing.md
     - Dependabot: development/dependabot.md
+    - Security Hardening: development/security-hardening.md
     - Trivy Migration: development/trivy-migration.md
     - Release Process: development/releases.md
     - Architecture: development/architecture.md

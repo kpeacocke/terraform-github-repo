@@ -149,3 +149,30 @@ tasks:
       - task release:check
       - task release:prepare
       - task release:create
+  # Security Hardening Tasks
+  security:harden:
+    desc: Apply GitHub Actions security hardening
+    cmds:
+      - ./scripts/security-hardening.sh update-all
+  
+  security:validate:
+    desc: Validate GitHub Actions security configuration
+    cmds:
+      - ./scripts/security-validate.sh
+  
+  security:report:
+    desc: Generate security hardening report
+    cmds:
+      - ./scripts/security-hardening.sh report
+  
+  security:restore:
+    desc: Restore workflows from backups
+    cmds:
+      - ./scripts/security-hardening.sh restore
+  
+  security:all:
+    desc: Complete security hardening workflow
+    cmds:
+      - task security:harden
+      - task security:validate
+      - task security:report

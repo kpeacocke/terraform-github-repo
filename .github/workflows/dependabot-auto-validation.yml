@@ -1,5 +1,11 @@
 name: Dependabot Auto-Validation
 
+# Minimal permissions for security hardening
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
 on:
   pull_request:
     branches: [main]
@@ -11,6 +17,8 @@ jobs:
   check-dependabot:
     if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       is-dependabot: ${{ steps.check.outputs.is-dependabot }}
     steps:
@@ -23,16 +31,18 @@ jobs:
     needs: check-dependabot
     if: needs.check-dependabot.outputs.is-dependabot == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         terraform-version: ["1.5.0", "1.6.0", "1.7.0", "latest"]
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@651471c36a6092792c552e8b1bef71e592b462d8 # v3
         with:
           terraform_version: ${{ matrix.terraform-version }}
 
@@ -68,13 +78,15 @@ jobs:
     needs: check-dependabot
     if: needs.check-dependabot.outputs.is-dependabot == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7 # v5
         with:
           go-version-file: go.mod
           cache: true
@@ -97,13 +109,16 @@ jobs:
     needs: check-dependabot
     if: needs.check-dependabot.outputs.is-dependabot == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
       - name: Run Trivy security scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@7c2007bcb556501da015201bcba5aa14069b74e2 # master
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -111,7 +126,7 @@ jobs:
           output: 'trivy-results.sarif'
 
       - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@ce28f5bb42b7a9f2c824e633a3f6ee835bab6858 # v3
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
@@ -121,13 +136,15 @@ jobs:
     needs: check-dependabot
     if: needs.check-dependabot.outputs.is-dependabot == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -141,7 +158,7 @@ jobs:
           mkdocs build --strict
 
       - name: Check terraform-docs
-        uses: terraform-docs/gh-actions@v1
+        uses: terraform-docs/gh-actions@6de6da0cefcc6b4b7a5cbea4d79d97060733093c # v1
         with:
           working-dir: .
           output-file: README.md
@@ -154,10 +171,13 @@ jobs:
     needs: [terraform-validation, go-tests, security-scan, docs-validation]
     if: always() && needs.terraform-validation.result == 'success' && needs.go-tests.result == 'success' && needs.security-scan.result == 'success' && needs.docs-validation.result == 'success'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     
     steps:
       - name: Auto-approve Dependabot PR
-        uses: hmarr/auto-approve-action@v4
+        uses: hmarr/auto-approve-action@44888832e8966dd1e8967662c50b8eb292872ad8 # v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -171,10 +191,12 @@ jobs:
     needs: [terraform-validation, go-tests, security-scan, docs-validation]
     if: always() && (needs.terraform-validation.result == 'failure' || needs.go-tests.result == 'failure' || needs.security-scan.result == 'failure' || needs.docs-validation.result == 'failure')
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     
     steps:
       - name: Comment on PR
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         with:
           script: |
             github.rest.issues.createComment({

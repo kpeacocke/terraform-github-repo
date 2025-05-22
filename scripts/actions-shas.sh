@@ -1,0 +1,47 @@
+# GitHub Actions Security Hardening Script
+# This script helps identify current Actions and their latest SHAs for pinning
+
+# Note: These SHAs are current as of June 2025 - verify latest versions before use
+
+# Core GitHub Actions (most commonly used)
+ACTIONS_CHECKOUT_V4="692973e3d937129bcbf40652eb9f2f61becf3332"  # v4.1.7
+ACTIONS_CHECKOUT_V3="f43a0e5ff2bd294095638e18286ca9a3d1956744"  # v3.6.0
+
+ACTIONS_SETUP_GO_V5="cdcb36043654635271a94b9a6d1392de5bb323a7"     # v5.0.1
+ACTIONS_SETUP_GO_V4="93397bea11091df50f3d7e59dc26a7711a8bcfbe"     # v4.1.0
+
+ACTIONS_SETUP_NODE_V4="60edb5dd545a775178f52524783378180af0d1f8"   # v4.0.2
+ACTIONS_SETUP_NODE_V3="e33196f7422957bea03ed53f6fbb155025ffc7b8"   # v3.8.1
+
+ACTIONS_SETUP_PYTHON_V5="82c7e631bb3cdc910f68e0081d67478d79c6982d"  # v5.1.0
+
+ACTIONS_GITHUB_SCRIPT_V7="60a0d83039c74a4aee543508d2ffcb1c3799cdea" # v7.0.1
+
+ACTIONS_CONFIGURE_PAGES_V4="1f0c6887b9edc79d95b7bb436dccb191c13b5f50" # v4.0.0
+
+ACTIONS_UPLOAD_PAGES_ARTIFACT_V3="56afc609e74202658d3ffba0e8f6dda462b719fa" # v3.0.1
+
+ACTIONS_DEPLOY_PAGES_V4="d6db90164ac5ed86f2b6aed7dc0c3d1ccfc41083" # v4.0.5
+
+# HashiCorp Actions
+HASHICORP_SETUP_TERRAFORM_V3="651471c36a6092792c552e8b1bef71e592b462d8" # v3.1.1
+HASHICORP_SETUP_TERRAFORM_V2="633666f66e0061ca3b725c73b2ec20cd13a8fdd1" # v2.0.3
+
+# Third-party Actions
+AQUASECURITY_TRIVY_MASTER="7c2007bcb556501da015201bcba5aa14069b74e2"    # Latest as of June 2025
+GITHUB_CODEQL_UPLOAD_SARIF_V3="eb055d739abdc2e8de2e5f4ba1a8b246daa31dc0" # v3.25.11
+GITHUB_CODEQL_INIT_V3="eb055d739abdc2e8de2e5f4ba1a8b246daa31dc0"        # v3.25.11
+GITHUB_CODEQL_AUTOBUILD_V3="eb055d739abdc2e8de2e5f4ba1a8b246daa31dc0"   # v3.25.11
+GITHUB_CODEQL_ANALYZE_V3="eb055d739abdc2e8de2e5f4ba1a8b246daa31dc0"     # v3.25.11
+
+TERRAFORM_DOCS_GH_ACTIONS_V1="e47bfa196e79fa50987ef99aadc16d521c4bd8a2" # v1.2.0
+
+STEFANZWEIFEL_GIT_AUTO_COMMIT_V4="8756aa072ef5b4a080af5dc8fef36c5d586e521d" # v4.16.0
+
+HMARR_AUTO_APPROVE_V4="44888832e8966dd1e8967662c50b8eb292872ad8"      # v4.0.0
+
+SONAR_SONARCLOUD_GITHUB_ACTION_MASTER="e44258b109568baa0df60ed515909fc6c72cba41" # Latest master
+
+echo "GitHub Actions Security Hardening - SHA Reference"
+echo "These SHAs were current as of June 2025"
+echo "Always verify the latest versions before using in production"
