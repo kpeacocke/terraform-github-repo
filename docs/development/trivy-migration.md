@@ -7,26 +7,29 @@ This document outlines the migration from tfsec to Trivy for security scanning i
 As announced by Aqua Security, **tfsec is joining the Trivy family**. The tfsec project is being consolidated into Trivy to provide a unified security scanning experience.
 
 > **Official Statement**: "tfsec will continue to remain available for the time being, although our engineering attention will be directed at Trivy going forward."
-> 
-> Read more: https://github.com/aquasecurity/tfsec/discussions/1994
+>
+> Read more: <https://github.com/aquasecurity/tfsec/discussions/1994>
 
 ## Benefits of Trivy
 
 Trivy provides enhanced security scanning capabilities compared to tfsec:
 
 ### 🔍 **Multi-Scanner Approach**
+
 - **Vulnerability Scanning**: CVE detection in dependencies
 - **Secret Detection**: Hardcoded secrets and API keys
 - **Configuration Scanning**: Infrastructure as Code security issues
 - **License Scanning**: License compliance checks
 
 ### 🎯 **Broader Coverage**
+
 - **Terraform**: All tfsec checks plus additional rules
 - **Kubernetes**: YAML manifest security
 - **Docker**: Container image vulnerabilities
 - **Cloud**: AWS, Azure, GCP misconfigurations
 
 ### 📊 **Better Integration**
+
 - **SARIF Output**: Native GitHub Security tab integration
 - **Multiple Formats**: JSON, Table, GitHub format support
 - **CI/CD Friendly**: Better error handling and reporting
@@ -54,12 +57,14 @@ Trivy provides enhanced security scanning capabilities compared to tfsec:
 ### CI/CD Integration
 
 **Before (tfsec):**
+
 ```yaml
 - name: Run tfsec
   run: tfsec --format github
 ```
 
 **After (Trivy):**
+
 ```yaml
 - name: Run Trivy security scan
   uses: aquasecurity/trivy-action@master
@@ -80,11 +85,13 @@ Trivy provides enhanced security scanning capabilities compared to tfsec:
 ### Local Installation
 
 **macOS:**
+
 ```bash
 brew install trivy
 ```
 
 **Linux:**
+
 ```bash
 # Using package manager
 sudo apt-get update && sudo apt-get install trivy
@@ -94,6 +101,7 @@ curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/inst
 ```
 
 **Windows:**
+
 ```powershell
 # Using Chocolatey
 choco install trivy
@@ -105,6 +113,7 @@ scoop install trivy
 ### GitHub Actions
 
 Trivy is available as a GitHub Action:
+
 ```yaml
 - name: Run Trivy scanner
   uses: aquasecurity/trivy-action@master
@@ -116,6 +125,7 @@ Trivy is available as a GitHub Action:
 ## Usage Examples
 
 ### Basic Security Scan
+
 ```bash
 # Scan current directory
 trivy fs .
@@ -131,6 +141,7 @@ trivy fs --scanners vuln .
 ```
 
 ### Output Formats
+
 ```bash
 # Table format (human-readable)
 trivy fs --format table .
@@ -146,6 +157,7 @@ trivy fs --format github .
 ```
 
 ### Using Task Commands
+
 ```bash
 # Run basic security scan
 task trivy
@@ -225,6 +237,7 @@ The migration maintains backward compatibility:
 ### Common Issues
 
 1. **Trivy not found**
+
    ```bash
    # Install Trivy
    brew install trivy  # macOS
@@ -232,12 +245,14 @@ The migration maintains backward compatibility:
    ```
 
 2. **Configuration not loaded**
+
    ```bash
    # Verify config file location
    trivy fs --config .trivy.yaml .
    ```
 
 3. **Too many false positives**
+
    ```yaml
    # Add to .trivy.yaml
    ignore-unfixed: true
@@ -247,6 +262,7 @@ The migration maintains backward compatibility:
    ```
 
 4. **SARIF upload fails**
+
    ```yaml
    # Ensure proper permissions in GitHub Actions
    permissions:
@@ -274,16 +290,16 @@ cache:
 
 ## Resources
 
-- **Trivy Documentation**: https://aquasecurity.github.io/trivy/
-- **tfsec Migration Guide**: https://github.com/aquasecurity/tfsec/discussions/1994
-- **Trivy Rules**: https://avd.aquasec.com/
-- **GitHub Security Integration**: https://docs.github.com/en/code-security/code-scanning
+- **Trivy Documentation**: <https://aquasecurity.github.io/trivy/>
+- **tfsec Migration Guide**: <https://github.com/aquasecurity/tfsec/discussions/1994>
+- **Trivy Rules**: <https://avd.aquasec.com/>
+- **GitHub Security Integration**: <https://docs.github.com/en/code-security/code-scanning>
 
 ## Support
 
 If you encounter issues during migration:
 
-1. **Check Trivy Documentation**: https://aquasecurity.github.io/trivy/
+1. **Check Trivy Documentation**: <https://aquasecurity.github.io/trivy/>
 2. **Review Configuration**: Ensure `.trivy.yaml` is properly configured
 3. **Test Locally**: Run `task trivy:all` to validate setup
 4. **GitHub Issues**: Report issues in the repository

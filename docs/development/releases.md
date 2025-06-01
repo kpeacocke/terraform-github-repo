@@ -62,7 +62,7 @@ For controlled releases when needed:
 
 ### Commit Message Format
 
-```
+```markdown
 <type>[optional scope]: <description>
 
 [optional body]
@@ -70,7 +70,16 @@ For controlled releases when needed:
 [optional footer(s)]
 ```
 
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+
+```markdown
+
 **Examples:**
+
 ```bash
 feat(security): add CodeQL scanning configuration
 fix(validation): resolve terraform version constraint

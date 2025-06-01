@@ -5,6 +5,7 @@ This document outlines the comprehensive security hardening implemented for all 
 ## Overview
 
 GitHub Actions security hardening focuses on two critical areas:
+
 1. **SHA Pinning**: Pinning actions to immutable SHA commits
 2. **Least-Privilege Permissions**: Implementing minimal required permissions
 
@@ -17,6 +18,7 @@ GitHub Actions security hardening focuses on two critical areas:
 **Solution**: Pin all actions to specific SHA commits that are immutable.
 
 **Before:**
+
 ```yaml
 - uses: actions/checkout@v4
 - uses: hashicorp/setup-terraform@v3
@@ -24,6 +26,7 @@ GitHub Actions security hardening focuses on two critical areas:
 ```
 
 **After:**
+
 ```yaml
 - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 - uses: hashicorp/setup-terraform@651471c36a6092792c552e8b1bef71e592b462d8 # v3.1.1
@@ -37,6 +40,7 @@ GitHub Actions security hardening focuses on two critical areas:
 **Solution**: Implement explicit, minimal permissions at both workflow and job levels.
 
 **Before (implicit permissions):**
+
 ```yaml
 jobs:
   test:
@@ -46,6 +50,7 @@ jobs:
 ```
 
 **After (explicit minimal permissions):**
+
 ```yaml
 permissions:
   contents: read          # Only what's needed
@@ -75,6 +80,7 @@ jobs:
 ## Permission Matrix by Workflow
 
 ### CI Workflow (`ci.yml`)
+
 ```yaml
 permissions:
   contents: read          # Read repository contents
@@ -84,6 +90,7 @@ permissions:
 ```
 
 ### CodeQL Workflow (`codeql.yml`)
+
 ```yaml
 permissions:
   actions: read           # Read workflow information
@@ -92,6 +99,7 @@ permissions:
 ```
 
 ### Release Workflow (`release.yml`)
+
 ```yaml
 permissions:
   contents: write         # Create releases and push tags
@@ -103,6 +111,7 @@ permissions:
 ```
 
 ### Documentation Workflow (`docs.yml`)
+
 ```yaml
 permissions:
   contents: read          # Read repository contents
@@ -111,6 +120,7 @@ permissions:
 ```
 
 ### Dependabot Auto-Validation (`dependabot-auto-validation.yml`)
+
 ```yaml
 permissions:
   contents: read          # Read repository contents
@@ -243,12 +253,14 @@ This security hardening helps meet:
 ### Common Issues
 
 1. **SHA Not Found**
+
    ```bash
    # Check if SHA exists
    git ls-remote https://github.com/actions/checkout <SHA>
    ```
 
 2. **Permission Denied**
+
    ```yaml
    # Add required permission to workflow
    permissions:
@@ -257,6 +269,7 @@ This security hardening helps meet:
    ```
 
 3. **Workflow Failure**
+
    ```bash
    # Restore from backup
    ./scripts/security-hardening.sh restore
