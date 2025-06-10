@@ -257,3 +257,9 @@ variable "coverage_threshold" {
   type        = number
   default     = 80
 }
+
+variable "disable_actions_until_provisioning" {
+  description = "Disable GitHub Actions workflows until provisioning is complete to avoid failure notifications."
+  type        = bool
+  default     = true # start with workflows disabled; set to false to re-enable after provisioning
+}

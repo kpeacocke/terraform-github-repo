@@ -1,6 +1,6 @@
 # Auto-approve and auto-merge Dependabot PRs workflow
 resource "github_repository_file" "auto_approve_dependabot" {
-  count               = var.enable_dependabot && var.enable_dependabot_autoapprove ? 1 : 0
+  count               = var.disable_actions_until_provisioning ? 0 : (var.enable_dependabot && var.enable_dependabot_autoapprove ? 1 : 0)
   repository          = github_repository.this.name
   branch              = var.branch
   file                = ".github/workflows/auto-approve-dependabot.yml"
@@ -21,12 +21,19 @@ resource "github_repository" "this" {
   allow_auto_merge = var.allow_auto_merge
 }
 
+resource "github_actions_repository_permissions" "repo_perms" {
+  repository = github_repository.this.name
+  # disable all Actions runs until provisioning is complete
+  # Toggle Actions runs: none to disable, all to enable
+  allowed_actions = var.disable_actions_until_provisioning ? "none" : "all"
+}
+
 # --- CI Enforcement: Placeholder for validating issues, docs, tests ---
 # (null_resource removed, logic now handled by workflows and branch protection)
 
 # --- Security: CodeQL and Dependabot ---
 resource "github_repository_file" "codeql_workflow" {
-  count      = var.enable_codeql && length(var.languages) > 0 ? 1 : 0
+  count      = var.disable_actions_until_provisioning ? 0 : (var.enable_codeql && length(var.languages) > 0 ? 1 : 0)
   repository = github_repository.this.name
   branch     = var.branch
   file       = ".github/workflows/codeql.yml"
@@ -40,7 +47,7 @@ resource "github_repository_file" "codeql_workflow" {
 }
 
 resource "github_repository_file" "dependabot" {
-  count      = var.enable_dependabot ? 1 : 0
+  count      = var.disable_actions_until_provisioning ? 0 : (var.enable_dependabot ? 1 : 0)
   repository = github_repository.this.name
   branch     = var.branch
   file       = ".github/dependabot.yml"
@@ -60,7 +67,7 @@ resource "github_repository_file" "dependabot" {
 # CI enforcement workflow
 resource "github_repository_file" "ci_enforcement_workflow" {
   # Always include CI enforcement workflow when CI is enabled
-  count = var.enable_ci ? 1 : 0
+  count = var.disable_actions_until_provisioning ? 0 : (var.enable_ci ? 1 : 0)
 
   repository = github_repository.this.name
   branch     = "main"
@@ -78,7 +85,7 @@ resource "github_repository_file" "ci_enforcement_workflow" {
 
 # Add stale.yml
 resource "github_repository_file" "stale" {
-  count = var.enable_weekly_reporting ? 1 : 0
+  count = var.disable_actions_until_provisioning ? 0 : (var.enable_weekly_reporting ? 1 : 0)
 
   repository          = github_repository.this.name
   branch              = "main"
@@ -90,7 +97,7 @@ resource "github_repository_file" "stale" {
 
 # Add scorecard.yml
 resource "github_repository_file" "scorecard" {
-  count = var.enable_weekly_reporting ? 1 : 0
+  count = var.disable_actions_until_provisioning ? 0 : (var.enable_weekly_reporting ? 1 : 0)
 
   repository          = github_repository.this.name
   branch              = "main"
@@ -102,7 +109,7 @@ resource "github_repository_file" "scorecard" {
 
 
 resource "github_repository_file" "traceability" {
-  count = var.traceability_enabled ? 1 : 0
+  count = var.disable_actions_until_provisioning ? 0 : (var.traceability_enabled ? 1 : 0)
 
   repository          = github_repository.this.name
   branch              = "main"
@@ -128,7 +135,7 @@ variable "enable_release" {
 }
 
 resource "github_repository_file" "build" {
-  count = var.enable_ci ? 1 : 0
+  count = var.disable_actions_until_provisioning ? 0 : (var.enable_ci ? 1 : 0)
 
   repository          = github_repository.this.name
   branch              = "main"
@@ -139,7 +146,7 @@ resource "github_repository_file" "build" {
 }
 
 resource "github_repository_file" "release" {
-  count = var.enable_release ? 1 : 0
+  count = var.disable_actions_until_provisioning ? 0 : (var.enable_release ? 1 : 0)
 
   repository          = github_repository.this.name
   branch              = "main"

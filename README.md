@@ -112,6 +112,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [github_actions_repository_permissions.repo_perms](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_repository_permissions) | resource |
 | [github_branch_protection.release](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection) | resource |
 | [github_repository.this](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository) | resource |
 | [github_repository_file.auto_approve_dependabot](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
@@ -146,6 +147,7 @@ No modules.
 | <a name="input_bootstrap_with_templates"></a> [bootstrap\_with\_templates](#input\_bootstrap\_with\_templates) | If true, initialize the repo with standard files like README.md, LICENSE, SECURITY.md. | `bool` | `true` | no |
 | <a name="input_branch"></a> [branch](#input\_branch) | The branch to commit files to. | `string` | `"main"` | no |
 | <a name="input_coverage_threshold"></a> [coverage\_threshold](#input\_coverage\_threshold) | Minimum coverage threshold to enforce (as percentage) | `number` | `80` | no |
+| <a name="input_disable_actions_until_provisioning"></a> [disable\_actions\_until\_provisioning](#input\_disable\_actions\_until\_provisioning) | Disable GitHub Actions workflows until provisioning is complete to avoid failure notifications. | `bool` | `true` | no |
 | <a name="input_enable_auto_labeling"></a> [enable\_auto\_labeling](#input\_enable\_auto\_labeling) | If true, automatically labels PRs and issues based on file paths or content. | `bool` | `false` | no |
 | <a name="input_enable_ci"></a> [enable\_ci](#input\_enable\_ci) | If true, adds build/test workflow for CI validation. | `bool` | `true` | no |
 | <a name="input_enable_codeql"></a> [enable\_codeql](#input\_enable\_codeql) | Enable CodeQL analysis workflow. | `bool` | `true` | no |
