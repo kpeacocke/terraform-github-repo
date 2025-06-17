@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.5...v1.0.6) (2025-06-17)
+
+### 🐛 Bug Fixes
+
+* add GitHub token to Terraform plan steps for enhanced security ([51a53e3](https://github.com/kpeacocke/terraform-github-repo/commit/51a53e3084bb5be167f4a3b43729e31f12426708))
+
+
+Generating notes for 1.0.6
+
 ## [1.0.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.4...v1.0.5) (2025-06-17)
 
 ### 🐛 Bug Fixes
