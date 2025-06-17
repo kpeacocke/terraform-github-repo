@@ -2,6 +2,7 @@ package test
 
 import (
 	"encoding/json"
+	"fmt"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -29,14 +30,8 @@ type PlanLogEntry struct {
 	Type string `json:"type"`
 }
 
-func TestMissingOwnersVariableError(t *testing.T) {
-	_ = godotenv.Load()
-	// Temporarily move any tfvars files so 'owners' is truly missing
-	modulePath, err := filepath.Abs("..")
-	if err != nil {
-		t.Fatalf("failed to get absolute path: %s", err)
-	}
-
+// Helper function to temporarily move tfvars files
+func backupTfvarsFiles(modulePath string) ([]string, error) {
 	tfvarsFiles := []string{
 		filepath.Join(modulePath, "terraform.tfvars"),
 		filepath.Join(modulePath, "test/fixtures/minimal_repo/github.auto.tfvars"),
@@ -46,34 +41,62 @@ func TestMissingOwnersVariableError(t *testing.T) {
 		backup := tfvarsPath + ".bak"
 		if _, err := exec.Command("test", "-f", tfvarsPath).Output(); err == nil {
 			if err := exec.Command("mv", tfvarsPath, backup).Run(); err != nil {
-				t.Fatalf("failed to move %s: %s", tfvarsPath, err)
+				return movedFiles, err
 			}
 			movedFiles = append(movedFiles, tfvarsPath)
 		}
 	}
-	defer func() {
-		for _, tfvarsPath := range movedFiles {
-			backup := tfvarsPath + ".bak"
-			_ = exec.Command("mv", backup, tfvarsPath).Run()
-		}
-	}()
-	// Initialize without backend
+	return movedFiles, nil
+}
+
+// Helper function to restore backed up files
+func restoreTfvarsFiles(movedFiles []string) {
+	for _, tfvarsPath := range movedFiles {
+		backup := tfvarsPath + ".bak"
+		_ = exec.Command("mv", backup, tfvarsPath).Run()
+	}
+}
+
+// Helper function to run terraform init
+func runTerraformInit(modulePath string) error {
 	cmdInit := exec.Command("terraform", "init", "-backend=false")
 	cmdInit.Dir = modulePath
 	out, err := cmdInit.CombinedOutput()
 	if err != nil {
-		t.Fatalf("terraform init failed: %s\nOutput: %s", err, string(out))
+		return fmt.Errorf("terraform init failed: %s\nOutput: %s", err, string(out))
 	}
-	// Plan instead of validate to trigger variable validation
+	return nil
+}
+
+// Helper function to run terraform plan and get diagnostics
+func getTerraformPlanDiagnostics(modulePath string) ([]struct {
+	Severity string `json:"severity"`
+	Summary  string `json:"summary"`
+	Detail   string `json:"detail"`
+}, error) {
 	cmdVal := exec.Command("terraform", "plan", "-json")
 	cmdVal.Dir = modulePath
 	outV, err := cmdVal.CombinedOutput()
 	if err == nil {
-		t.Fatalf("expected terraform plan to fail due to missing owners, but it passed. Output: %s", string(outV))
+		return nil, fmt.Errorf("expected terraform plan to fail due to missing owners, but it passed. Output: %s", string(outV))
 	}
-	var vo ValidateOutput
-	// Parse NDJSON (line-delimited JSON) from terraform plan
-	lines := strings.Split(string(outV), "\n")
+
+	return parseTerraformDiagnostics(string(outV))
+}
+
+// Helper function to parse terraform diagnostics from NDJSON output
+func parseTerraformDiagnostics(output string) ([]struct {
+	Severity string `json:"severity"`
+	Summary  string `json:"summary"`
+	Detail   string `json:"detail"`
+}, error) {
+	var diagnostics []struct {
+		Severity string `json:"severity"`
+		Summary  string `json:"summary"`
+		Detail   string `json:"detail"`
+	}
+
+	lines := strings.Split(output, "\n")
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line == "" {
@@ -84,7 +107,7 @@ func TestMissingOwnersVariableError(t *testing.T) {
 			continue // Skip lines that aren't JSON
 		}
 		if entry.Type == "diagnostic" && entry.Diagnostic.Severity == "error" {
-			vo.Diagnostics = append(vo.Diagnostics, struct {
+			diagnostics = append(diagnostics, struct {
 				Severity string `json:"severity"`
 				Summary  string `json:"summary"`
 				Detail   string `json:"detail"`
@@ -95,14 +118,51 @@ func TestMissingOwnersVariableError(t *testing.T) {
 			})
 		}
 	}
-	found := false
-	for _, diag := range vo.Diagnostics {
+	return diagnostics, nil
+}
+
+// Helper function to check if diagnostics contain owners error
+func hasOwnersError(diagnostics []struct {
+	Severity string `json:"severity"`
+	Summary  string `json:"summary"`
+	Detail   string `json:"detail"`
+}) bool {
+	for _, diag := range diagnostics {
 		if diag.Severity == "error" && (strings.Contains(diag.Summary, "owners") || strings.Contains(diag.Detail, "owners")) {
-			found = true
-			break
+			return true
 		}
 	}
-	if !found {
-		t.Errorf("expected an error about missing required variable 'owners', got diagnostics: %+v", vo.Diagnostics)
+	return false
+}
+
+func TestMissingOwnersVariableError(t *testing.T) {
+	_ = godotenv.Load()
+
+	modulePath, err := filepath.Abs("..")
+	if err != nil {
+		t.Fatalf("failed to get absolute path: %s", err)
+	}
+
+	// Temporarily move tfvars files so 'owners' is truly missing
+	movedFiles, err := backupTfvarsFiles(modulePath)
+	if err != nil {
+		t.Fatalf("failed to backup tfvars files: %s", err)
+	}
+	defer restoreTfvarsFiles(movedFiles)
+
+	// Initialize terraform
+	if err := runTerraformInit(modulePath); err != nil {
+		t.Fatal(err)
+	}
+
+	// Get diagnostics from terraform plan
+	diagnostics, err := getTerraformPlanDiagnostics(modulePath)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Check if owners error is present
+	if !hasOwnersError(diagnostics) {
+		t.Errorf("expected an error about missing required variable 'owners', got diagnostics: %+v", diagnostics)
 	}
 }

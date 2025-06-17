@@ -11,6 +11,10 @@ import (
 	"github.com/Masterminds/sprig/v3"
 )
 
+const (
+	githubDir = ".github"
+)
+
 func mockFuncMap() template.FuncMap {
 	return template.FuncMap{
 		"matrix": func(args ...interface{}) map[string]interface{} {
@@ -62,7 +66,7 @@ func TestPrintWorkingDirectory(t *testing.T) {
 }
 
 func TestRenderDependabotTemplate(t *testing.T) {
-	path := filepath.Join("..", "templates", ".github", "workflows", "dependabot.yml.tmpl")
+	path := filepath.Join("..", "templates", githubDir, "workflows", "dependabot.yml.tmpl")
 	output := renderTemplate(t, path, map[string]interface{}{})
 	if !strings.Contains(output, "updates:") {
 		t.Error("Rendered dependabot.yml missing 'updates:' block")
@@ -73,7 +77,7 @@ func TestRenderDependabotTemplate(t *testing.T) {
 }
 
 func TestRenderCodeQLTemplate(t *testing.T) {
-	path := filepath.Join("..", "templates", ".github", "workflows", "codeql.yml.tmpl")
+	path := filepath.Join("..", "templates", githubDir, "workflows", "codeql.yml.tmpl")
 	output := renderTemplate(t, path, map[string]interface{}{"languages": []string{"go", "python"}})
 	if !strings.Contains(output, "jobs:") {
 		t.Error("Rendered codeql.yml missing 'jobs:' block")
@@ -84,7 +88,7 @@ func TestRenderCodeQLTemplate(t *testing.T) {
 }
 
 func TestRenderCIEnforcementTemplate(t *testing.T) {
-	path := filepath.Join("..", "templates", ".github", "workflows", "ci-enforcement.yml.tmpl")
+	path := filepath.Join("..", "templates", githubDir, "workflows", "ci-enforcement.yml.tmpl")
 	output := renderTemplate(t, path, map[string]interface{}{})
 	if !strings.Contains(output, "jobs:") {
 		t.Error("Rendered ci-enforcement.yml missing 'jobs:' block")

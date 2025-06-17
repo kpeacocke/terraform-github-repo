@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -18,14 +19,8 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// TestE2E_GitHubRepoModule performs an end-to-end test by creating a real GitHub repository
-// using the module, validating settings, and then destroying it.
-
-func TestE2E_GitHubRepoModule(t *testing.T) {
-	_ = godotenv.Load()
-	t.Parallel()
-
-	// Requirements: set GITHUB_TOKEN and GITHUB_OWNER env vars
+// Helper function to validate environment variables
+func validateE2EEnvironment(t *testing.T) (string, string) {
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
 		t.Fatal("GITHUB_TOKEN must be set for E2E tests")
@@ -38,15 +33,12 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 	if strings.Contains(owner, "@") {
 		t.Fatal("GITHUB_OWNER should be a GitHub username or organization, not an email address")
 	}
+	return token, owner
+}
 
-	repoName := fmt.Sprintf("test-repo-%d-%d", time.Now().Unix(), time.Now().Nanosecond())
-
-	// Run E2E against the root module
-	// Determine root module directory based on this test file location
-	_, filename, _, _ := runtime.Caller(0)
-	testDir := filepath.Dir(filename)
-	rootDir := filepath.Dir(testDir)
-	tfOptions := &terraform.Options{
+// Helper function to create terraform options
+func createTerraformOptions(rootDir, repoName, token, owner string) *terraform.Options {
+	return &terraform.Options{
 		TerraformDir: rootDir,
 		Vars: map[string]interface{}{
 			"name":         repoName,
@@ -61,40 +53,10 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 			"TF_CLI_ARGS_apply": "-parallelism=20",
 		},
 	}
+}
 
-	// Clean state and initialize Terraform
-	SetupTerraformTest(t, rootDir, tfOptions)
-
-	// Clean up resources after all assertions
-	defer func() {
-		t.Log("Waiting 30 seconds before Terraform destroy to allow for GitHub propagation...")
-		time.Sleep(30 * time.Second)
-		t.Log("Starting Terraform destroy...")
-		_, err := terraform.DestroyE(t, tfOptions)
-		if err != nil {
-			if strings.Contains(err.Error(), "Could not resolve to a node with the global id") {
-				t.Logf("[WARN] Ignoring destroy error: %v", err)
-			} else {
-				t.Errorf("Terraform destroy failed: %v", err)
-			}
-		}
-		// Clean up state files after destroy
-		CleanTerraformState(t, rootDir)
-		t.Log("Terraform destroy completed.")
-	}()
-
-	// Deploy
-	// Apply Terraform configuration
-	_, err := terraform.ApplyE(t, tfOptions)
-	require.NoError(t, err, "Terraform apply failed")
-
-	// GitHub client
-	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
-
-	// Wait for GitHub to finish provisioning the repo (avoid 404s)
+// Helper function to wait for GitHub repository to be available
+func waitForGitHubRepo(t *testing.T, tc *http.Client, owner, repoName string) {
 	maxAttempts := 60
 	for i := 0; i < maxAttempts; i++ {
 		// Poll the Actions permissions endpoint directly
@@ -120,8 +82,10 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 			t.Fatalf("Actions permissions endpoint for %s/%s not available after retries: %v", owner, repoName, err)
 		}
 	}
+}
 
-	// Verify token scopes to avoid permission errors
+// Helper function to validate GitHub token permissions
+func validateGitHubToken(t *testing.T, client *github.Client, ctx context.Context) {
 	_, resp, err := client.Users.Get(ctx, "")
 	require.NoError(t, err, "Failed to authenticate with GitHub")
 	scopes := resp.Response.Header.Get("X-OAuth-Scopes")
@@ -132,24 +96,25 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 		require.Contains(t, scopes, "repo", "GITHUB_TOKEN must have 'repo' scope")
 		require.Contains(t, scopes, "workflow", "GITHUB_TOKEN must have 'workflow' scope")
 	}
+}
 
-	// NOTE: go-github does not support disabling Actions for a repo directly.
-	// To reduce notification emails, consider disabling Actions via the GitHub API:
-	// PATCH /repos/{owner}/{repo}/actions/permissions with { "enabled": false }
-	t.Log("(Info) Could not disable GitHub Actions automatically: not supported by go-github client.")
-
-	// Verify repository exists (after wait)
+// Helper function to verify repository properties
+func verifyRepositoryProperties(t *testing.T, client *github.Client, ctx context.Context, owner, repoName string) {
 	repo, _, err := client.Repositories.Get(ctx, owner, repoName)
 	require.NoError(t, err, "Failed to get repository from GitHub")
 	assert.Equal(t, "private", repo.GetVisibility())
 	assert.Equal(t, repoName, repo.GetName())
+}
 
-	// Verify branch protection on 'main'
+// Helper function to verify branch protection
+func verifyBranchProtection(t *testing.T, client *github.Client, ctx context.Context, owner, repoName string) {
 	bp, _, err := client.Repositories.GetBranchProtection(ctx, owner, repoName, "main")
 	require.NoError(t, err, "Failed to get branch protection for 'main'")
 	assert.True(t, bp.GetEnforceAdmins().Enabled)
+}
 
-	// Verify workflow files exist (even if Actions are disabled)
+// Helper function to verify workflow files
+func verifyWorkflowFiles(t *testing.T, client *github.Client, ctx context.Context, owner, repoName string) {
 	_, directoryContent, resp, err := client.Repositories.GetContents(ctx, owner, repoName, ".github/workflows", nil)
 	if err != nil {
 		// If 404, directory may not exist yet; fail with a clear message
@@ -166,11 +131,77 @@ func TestE2E_GitHubRepoModule(t *testing.T) {
 	for _, name := range expected {
 		assert.Contains(t, found, name, fmt.Sprintf("Expected workflow %s", name))
 	}
+}
 
-	// Verify CODEOWNERS contains the owner
+// Helper function to verify CODEOWNERS file
+func verifyCODEOWNERSFile(t *testing.T, client *github.Client, ctx context.Context, owner, repoName string) {
 	coFile, _, _, err := client.Repositories.GetContents(ctx, owner, repoName, ".github/CODEOWNERS", nil)
 	require.NoError(t, err, "Failed to fetch CODEOWNERS file")
 	content, err := coFile.GetContent()
 	assert.NoError(t, err)
 	assert.Contains(t, content, owner)
+}
+
+// TestE2EGitHubRepoModule performs an end-to-end test by creating a real GitHub repository
+// using the module, validating settings, and then destroying it.
+func TestE2EGitHubRepoModule(t *testing.T) {
+	_ = godotenv.Load()
+	t.Parallel()
+
+	// Validate environment variables
+	token, owner := validateE2EEnvironment(t)
+
+	repoName := fmt.Sprintf("test-repo-%d-%d", time.Now().Unix(), time.Now().Nanosecond())
+
+	// Setup terraform options
+	_, filename, _, _ := runtime.Caller(0)
+	testDir := filepath.Dir(filename)
+	rootDir := filepath.Dir(testDir)
+	tfOptions := createTerraformOptions(rootDir, repoName, token, owner)
+
+	// Clean state and initialize Terraform
+	SetupTerraformTest(t, rootDir, tfOptions)
+
+	// Clean up resources after all assertions
+	defer func() {
+		t.Log("Waiting 30 seconds before Terraform destroy to allow for GitHub propagation...")
+		time.Sleep(30 * time.Second)
+		t.Log("Starting Terraform destroy...")
+		_, err := terraform.DestroyE(t, tfOptions)
+		if err != nil {
+			if strings.Contains(err.Error(), "Could not resolve to a node with the global id") {
+				t.Logf("[WARN] Ignoring destroy error: %v", err)
+			} else {
+				t.Errorf("Terraform destroy failed: %v", err)
+			}
+		}
+		// Clean up state files after destroy
+		CleanTerraformState(t, rootDir)
+		t.Log("Terraform destroy completed.")
+	}()
+
+	// Apply Terraform configuration
+	_, err := terraform.ApplyE(t, tfOptions)
+	require.NoError(t, err, "Terraform apply failed")
+
+	// Setup GitHub client
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc)
+
+	// Wait for GitHub repository to be available
+	waitForGitHubRepo(t, tc, owner, repoName)
+
+	// Validate GitHub token permissions
+	validateGitHubToken(t, client, ctx)
+
+	// NOTE: go-github does not support disabling Actions for a repo directly.
+	t.Log("(Info) Could not disable GitHub Actions automatically: not supported by go-github client.")
+
+	// Run all verifications
+	verifyRepositoryProperties(t, client, ctx, owner, repoName)
+	verifyBranchProtection(t, client, ctx, owner, repoName)
+	verifyWorkflowFiles(t, client, ctx, owner, repoName)
+	verifyCODEOWNERSFile(t, client, ctx, owner, repoName)
 }
