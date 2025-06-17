@@ -329,6 +329,8 @@ jobs:
         env:
           # Increase Python's error verbosity
           PYTHONVERBOSE: 1
+          # GitHub token for git-committers plugin
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update changelog in docs
         run: |
