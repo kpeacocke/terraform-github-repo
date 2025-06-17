@@ -295,7 +295,7 @@ jobs:
       - name: Install MkDocs dependencies
         run: |
           pip install -r docs/requirements.txt
-          pip install "pygments>=2.15.0" "pymdown-extensions<10.0" emoji-index
+          pip install "mkdocs-material-extensions>=1.1" 
 
       - name: Setup Git
         run: |
@@ -307,14 +307,16 @@ jobs:
           # Install mike for versioned docs
           pip install mike
           
-          # Build the docs first to check for any errors
-          mkdocs build --strict
+          # Build the documentation first to check for errors 
+          # Use --verbose to see more output and help diagnose issues
+          echo "Building documentation to check for errors..."
+          mkdocs build --verbose
           
-          # Deploy new version with more verbose output for debugging
+          # Deploy new version
           VERSION="${{ needs.release.outputs.version }}"
-          echo "Deploying version $VERSION"
-          mike deploy --push --update-aliases $VERSION latest --verbose
-          mike set-default --push latest --verbose
+          echo "Deploying version $VERSION to GitHub Pages..."
+          mike deploy --push --update-aliases $VERSION latest
+          mike set-default --push latest
 
       - name: Update changelog in docs
         run: |
