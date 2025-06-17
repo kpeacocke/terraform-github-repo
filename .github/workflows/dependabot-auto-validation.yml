@@ -59,6 +59,8 @@ jobs:
         run: terraform plan -out=tfplan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_github_owner: ${{ github.repository_owner }}
+          TF_VAR_repository_name: ${{ github.event.repository.name }}
 
       - name: Validate Examples
         run: |
@@ -72,6 +74,10 @@ jobs:
               cd - > /dev/null
             fi
           done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_github_owner: ${{ github.repository_owner }}
+          TF_VAR_repository_name: ${{ github.event.repository.name }}
 
   # Run Go tests for Terratest
   go-tests:
