@@ -79,7 +79,7 @@ jobs:
         if: steps.check.outputs.should-release == 'true'
         run: |
           export GO111MODULE=on
-          go mod download
+          go mod tidy
           go test -v -timeout 10m ./test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

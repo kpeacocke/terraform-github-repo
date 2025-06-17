@@ -98,12 +98,12 @@ jobs:
           cache: true
 
       - name: Download Go modules
-        run: go mod download
+        run: go mod tidy
 
       - name: Run Go tests
         run: |
           export GO111MODULE=on
-          go mod download
+          go mod tidy
           go test -v -timeout 10m ./test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -112,7 +112,7 @@ jobs:
       - name: Run Go tests with race detection
         run: |
           export GO111MODULE=on
-          go mod download
+          go mod tidy
           go test -race -v -timeout 15m ./test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -82,7 +82,7 @@ jobs:
           
           # Go tests
           export GO111MODULE=on
-          go mod download
+          go mod tidy
           go test -v -timeout 10m ./test
         working-directory: ${{ github.workspace }}
         env:

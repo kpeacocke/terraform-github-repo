@@ -31,7 +31,7 @@ jobs:
       - name: Run Go tests with coverage
         run: |
           export GO111MODULE=on
-          go mod download
+          go mod tidy
           go test -coverprofile=coverage.out ./test
           go tool cover -func=coverage.out > coverage.txt
       - name: SonarCloud Scan
