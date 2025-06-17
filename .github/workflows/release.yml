@@ -241,10 +241,10 @@ jobs:
               tag: version
             });
             
-            await github.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number: release.data.id,
+            await github.rest.repos.createReleaseComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.data.id,
               body
             });
 
