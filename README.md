@@ -1,13 +1,22 @@
+
 # terraform-github-repo
 
-**A| 📖 [**Terraform Registry**](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest) | Official module page with usage examples |
-| 🚀 [**Getting Started Guide**](#-usage) | Jump to basic usage examples |
-| 📋 [**Examples**](./examples) | Complete real-world usage scenarios |
-| 🔐 [**Security Features**](#%EF%B8%8F-compliance-guardrails--policy-enforcement) | Security scanning and compliance |
-| 🧪 [**Testing Guide**](#-local-testing) | How to test the module locally |
-| 📝 [**Contributing**](./CONTRIBUTING.md) | How to contribute to this project |
-| 🐛 [**Issues**](https://github.com/kpeacocke/terraform-github-repo/issues) | Report bugs or request features |
-| 💬 [**Discussions**](https://github.com/kpeacocke/terraform-github-repo/discussions) | Community support and Q&A |ensive Terraform module for enforcing GitHub repository best practices and security standards.**
+<div align="center">
+
+<table>
+  <tr><td>📖 <a href="https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest"><b>Terraform Registry</b></a></td><td>Official module page with usage examples</td></tr>
+  <tr><td>🚀 <a href="#-usage"><b>Getting Started Guide</b></a></td><td>Jump to basic usage examples</td></tr>
+  <tr><td>📋 <a href="./examples"><b>Examples</b></a></td><td>Complete real-world usage scenarios</td></tr>
+  <tr><td>🔐 <a href="#%EF%B8%8F-compliance-guardrails--policy-enforcement"><b>Security Features</b></a></td><td>Security scanning and compliance</td></tr>
+  <tr><td>🧪 <a href="#-local-testing"><b>Testing Guide</b></a></td><td>How to test the module locally</td></tr>
+  <tr><td>📝 <a href="./CONTRIBUTING.md"><b>Contributing</b></a></td><td>How to contribute to this project</td></tr>
+  <tr><td>🐛 <a href="https://github.com/kpeacocke/terraform-github-repo/issues"><b>Issues</b></a></td><td>Report bugs or request features</td></tr>
+  <tr><td>💬 <a href="https://github.com/kpeacocke/terraform-github-repo/discussions"><b>Discussions</b></a></td><td>Community support and Q&A</td></tr>
+</table>
+
+</div>
+
+**Comprehensive Terraform module for enforcing GitHub repository best practices and security standards.**
 
 [![Terraform Registry](https://img.shields.io/badge/registry-terraform--registry-623CE4?logo=terraform&logoColor=white)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
 [![Module Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fkpeacocke%2Fterraform-github-repo&query=%24.version&label=version&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
