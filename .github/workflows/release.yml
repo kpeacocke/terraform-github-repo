@@ -276,6 +276,9 @@ jobs:
     if: needs.release.outputs.published == 'true'
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: write
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -292,6 +295,7 @@ jobs:
       - name: Install MkDocs dependencies
         run: |
           pip install -r docs/requirements.txt
+          pip install "pygments>=2.15.0" "pymdown-extensions<10.0" emoji-index
 
       - name: Setup Git
         run: |
@@ -303,10 +307,14 @@ jobs:
           # Install mike for versioned docs
           pip install mike
           
-          # Deploy new version
+          # Build the docs first to check for any errors
+          mkdocs build --strict
+          
+          # Deploy new version with more verbose output for debugging
           VERSION="${{ needs.release.outputs.version }}"
-          mike deploy --push --update-aliases $VERSION latest
-          mike set-default --push latest
+          echo "Deploying version $VERSION"
+          mike deploy --push --update-aliases $VERSION latest --verbose
+          mike set-default --push latest --verbose
 
       - name: Update changelog in docs
         run: |
@@ -395,6 +403,9 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: write
+    
     steps:
       - name: Cleanup old pre-releases
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
@@ -416,7 +427,7 @@ jobs:
               .slice(10); // Keep latest 10, delete rest
             
             for (const release of preReleases) {
-              try:
+              try {
                 await github.rest.repos.deleteRelease({
                   owner,
                   repo,
