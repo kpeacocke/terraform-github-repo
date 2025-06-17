@@ -28,8 +28,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'go', 'javascript' ]
+        language: [ 'go' ]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+        # Only analyzing Go since this is primarily a Terraform module with Go tests
 
     steps:
     - name: Checkout repository
