@@ -155,6 +155,7 @@ jobs:
       contents: read
       issues: write
       discussions: write
+      pull-requests: read
     
     steps:
       - name: Checkout code
@@ -278,6 +279,7 @@ jobs:
     
     permissions:
       contents: write
+      pages: write
     
     steps:
       - name: Checkout code
@@ -294,8 +296,12 @@ jobs:
 
       - name: Install MkDocs dependencies
         run: |
+          # Install basic dependencies first
+          pip install mike mkdocs-material>=9.4.0 "mkdocs-material-extensions>=1.1"
+          # Then install the rest of the dependencies from requirements.txt
           pip install -r docs/requirements.txt
-          pip install "mkdocs-material-extensions>=1.1" 
+          # Show installed packages to help with debugging
+          pip list
 
       - name: Setup Git
         run: |
@@ -304,19 +310,25 @@ jobs:
 
       - name: Deploy versioned documentation
         run: |
-          # Install mike for versioned docs
-          pip install mike
+          # Display installed packages for debugging
+          echo "Installed Python packages:"
+          pip list
           
-          # Build the documentation first to check for errors 
-          # Use --verbose to see more output and help diagnose issues
-          echo "Building documentation to check for errors..."
-          mkdocs build --verbose
+          # Check mkdocs config
+          echo "Validating mkdocs configuration..."
+          mkdocs build --clean --strict || {
+            echo "::warning::MkDocs build failed with strict mode, trying with more verbose output"
+            mkdocs build --verbose
+          }
           
           # Deploy new version
           VERSION="${{ needs.release.outputs.version }}"
           echo "Deploying version $VERSION to GitHub Pages..."
           mike deploy --push --update-aliases $VERSION latest
           mike set-default --push latest
+        env:
+          # Increase Python's error verbosity
+          PYTHONVERBOSE: 1
 
       - name: Update changelog in docs
         run: |
@@ -337,6 +349,7 @@ jobs:
     permissions:
       contents: read
       issues: write
+      discussions: write
     
     steps:
       - name: Notify success
@@ -407,6 +420,7 @@ jobs:
     
     permissions:
       contents: write
+      issues: read
     
     steps:
       - name: Cleanup old pre-releases

@@ -67,7 +67,12 @@ jobs:
 
       - name: Install MkDocs dependencies
         run: |
-          pip install mkdocs-material mkdocs-git-revision-date-localized-plugin mkdocs-git-committers-plugin-2 mkdocs-minify-plugin mike
+          # Install requirements from file
+          pip install -r docs/requirements.txt
+          # Ensure core dependencies are installed, even if requirements.txt changes
+          pip install mkdocs-material>=9.4.0 "mkdocs-material-extensions>=1.1" pymdown-extensions>=10.2 mike>=2.0.0
+          # List installed packages for debugging
+          pip list
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
@@ -147,6 +152,13 @@ jobs:
 
       - name: Build and deploy with versioning
         run: |
+          # Check mkdocs config 
+          echo "Validating mkdocs configuration..."
+          mkdocs build --clean --strict || {
+            echo "::warning::MkDocs build failed with strict mode, trying with more verbose output"
+            mkdocs build --verbose
+          }
+          
           # Setup git for GitHub Pages
           git fetch origin gh-pages:gh-pages 2>/dev/null || echo "No gh-pages branch yet"
           
@@ -159,6 +171,9 @@ jobs:
             mike deploy --push --update-aliases latest --title "Latest (main)"
             mike set-default --push latest
           fi
+        env:
+          # Increase Python's error verbosity
+          PYTHONVERBOSE: 1
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
