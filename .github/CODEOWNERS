@@ -1,0 +1,37 @@
+# CODEOWNERS file for automatic reviewer assignment
+# This file defines who is responsible for different parts of the repository
+# and will automatically assign reviewers to Dependabot PRs
+
+# Global ownership - applies to all files unless overridden
+* @kpeacocke
+
+# Terraform files
+*.tf @kpeacocke
+*.tfvars @kpeacocke
+*.hcl @kpeacocke
+
+# Go test files
+/test/ @kpeacocke
+go.mod @kpeacocke
+go.sum @kpeacocke
+
+# GitHub Actions and CI/CD
+/.github/ @kpeacocke
+
+# Documentation
+/docs/ @kpeacocke
+*.md @kpeacocke
+
+# Ruby/Kitchen-Terraform testing
+Gemfile @kpeacocke
+Gemfile.lock @kpeacocke
+
+# Python documentation dependencies
+requirements*.txt @kpeacocke
+
+# NPM/Node.js dependencies
+package.json @kpeacocke
+package-lock.json @kpeacocke
+
+# Examples
+/examples/ @kpeacocke

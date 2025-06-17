@@ -12,8 +12,6 @@ updates:
       timezone: "America/New_York"
     open-pull-requests-limit: 5
     target-branch: "main"
-    reviewers:
-      - "kpeacocke"
     assignees:
       - "kpeacocke"
     commit-message:
@@ -46,8 +44,6 @@ updates:
       timezone: "America/New_York"
     open-pull-requests-limit: 3
     target-branch: "main"
-    reviewers:
-      - "kpeacocke"
     commit-message:
       prefix: "deps"
       include: "scope"
@@ -67,8 +63,6 @@ updates:
       timezone: "America/New_York"
     open-pull-requests-limit: 5
     target-branch: "main"
-    reviewers:
-      - "kpeacocke"
     assignees:
       - "kpeacocke"
     commit-message:
@@ -94,8 +88,6 @@ updates:
       timezone: "America/New_York"
     open-pull-requests-limit: 5
     target-branch: "main"
-    reviewers:
-      - "kpeacocke"
     commit-message:
       prefix: "ci"
       include: "scope"
@@ -115,8 +107,6 @@ updates:
       timezone: "America/New_York"
     open-pull-requests-limit: 3
     target-branch: "main"
-    reviewers:
-      - "kpeacocke"
     commit-message:
       prefix: "deps"
       include: "scope"
@@ -136,8 +126,6 @@ updates:
       timezone: "America/New_York"
     open-pull-requests-limit: 3
     target-branch: "main"
-    reviewers:
-      - "kpeacocke"
     commit-message:
       prefix: "docs"
       include: "scope"
@@ -160,8 +148,6 @@ updates:
       timezone: "America/New_York"
     open-pull-requests-limit: 3
     target-branch: "main"
-    reviewers:
-      - "kpeacocke"
     commit-message:
       prefix: "deps"
       include: "scope"
