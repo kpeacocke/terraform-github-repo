@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.13](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.12...v1.0.13) (2025-06-17)
+
+### 🐛 Bug Fixes
+
+* correct emoji extension paths in MkDocs configuration ([eb62851](https://github.com/kpeacocke/terraform-github-repo/commit/eb62851536287a71ee8d309f324b20118c11b480))
+
+
+Generating notes for 1.0.13
+
 ## [1.0.12](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.11...v1.0.12) (2025-06-17)
 
 ### 🐛 Bug Fixes
