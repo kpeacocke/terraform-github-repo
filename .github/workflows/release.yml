@@ -78,7 +78,6 @@ jobs:
       - name: Run Tests
         if: steps.check.outputs.should-release == 'true'
         run: |
-          go mod download
           go test -v -timeout 10m ./test/...
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
