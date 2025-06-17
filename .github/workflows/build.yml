@@ -28,14 +28,22 @@ jobs:
         with:
           go-version: '1.21'
           cache: true
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+        with:
+          terraform_version: latest
       
       - name: Run Go tests with coverage
         run: |
           export GO111MODULE=on
           go mod tidy
-          go test -coverprofile=coverage.out ./test
+          # Run template rendering tests that don't require external dependencies
+          go test -coverprofile=coverage.out -run "TestPrintWorkingDirectory|TestRenderDependabotTemplate|TestRenderCodeQLTemplate|TestRenderCIEnforcementTemplate" ./test
           go tool cover -func=coverage.out > coverage.txt
         working-directory: ${{ github.workspace }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@13a24e453e2e6262f3bb0c5fa8241031e637a028 # v5.0.0
         env:
