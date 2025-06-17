@@ -114,7 +114,7 @@ jobs:
         run: markdownlint-cli2 "**/*.md"
 
       - name: Commit updated docs
-        uses: stefanzweifel/git-auto-commit-action@8756aa072ef5b4a080af5dc8fef36c5d586e521d # v4.16.0
+        uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 # v4.16.0
         with:
           commit_message: "chore: update Terraform docs [skip ci]"
           file_pattern: README.md
