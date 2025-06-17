@@ -37,7 +37,8 @@ vendor/
 *.tmp
 *.coverprofile
 *.log
-*.mod
+# Exclude go.sum but keep go.mod (go.mod should always be committed)
+go.sum
 *.sum
 
 # === Node (if used for scripts) ===
