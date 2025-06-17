@@ -81,7 +81,7 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/kpeacocke
-    - icon: fontawesome/brands/terraform
+    - icon: fontawesome/brands/hashnode
       link: https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest
     - icon: fontawesome/solid/paper-plane
       link: mailto:kpeacocke@users.noreply.github.com
@@ -152,6 +152,7 @@ nav:
     - Data Sources: api/data-sources.md
   - Development:
     - Contributing: development/contributing.md
+    - Code of Conduct: development/CODE_OF_CONDUCT.md
     - Testing: development/testing.md
     - Dependabot: development/dependabot.md
     - Security Hardening: development/security-hardening.md
