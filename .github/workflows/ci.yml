@@ -140,4 +140,7 @@ jobs:
       - name: Run Terratest suite
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: go test ./test -timeout 5m
+        run: |
+          export GO111MODULE=on
+          go mod download
+          go test ./test -timeout 5m

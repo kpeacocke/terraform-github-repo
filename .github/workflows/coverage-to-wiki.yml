@@ -22,7 +22,9 @@ jobs:
 
       - name: Generate coverage report and badge
         run: |
-          cd ${{ github.workspace }}
+          # Ensure we're in the right directory and Go modules are available
+          export GO111MODULE=on
+          go mod download
           go test -coverprofile=coverage.out -coverpkg=./... ./test
           go tool cover -html=coverage.out -o coverage.html
           go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//' > pct.txt
