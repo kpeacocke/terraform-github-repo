@@ -1,6 +1,18 @@
 
 # terraform-github-repo
 
+**Comprehensive Terraform module for enforcing GitHub repository best practices and security standards.**
+
+[![Terraform Registry](https://img.shields.io/badge/registry-terraform--registry-623CE4?logo=terraform&logoColor=white)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
+[![Module Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fkpeacocke%2Fterraform-github-repo&query=%24.version&label=version&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
+[![Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fkpeacocke%2Fterraform-github-repo&query=%24.downloads&label=downloads&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
+[![CI](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/ci.yml/badge.svg)](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/codeql.yml/badge.svg)](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/codeql.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/kpeacocke/terraform-github-repo?style=social)](https://github.com/kpeacocke/terraform-github-repo)
+
+---
+
 <div align="center">
 
 <table>
@@ -15,16 +27,6 @@
 </table>
 
 </div>
-
-**Comprehensive Terraform module for enforcing GitHub repository best practices and security standards.**
-
-[![Terraform Registry](https://img.shields.io/badge/registry-terraform--registry-623CE4?logo=terraform&logoColor=white)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
-[![Module Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fkpeacocke%2Fterraform-github-repo&query=%24.version&label=version&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
-[![Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fkpeacocke%2Fterraform-github-repo&query=%24.downloads&label=downloads&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
-[![CI](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/ci.yml/badge.svg)](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/codeql.yml/badge.svg)](https://github.com/kpeacocke/terraform-github-repo/actions/workflows/codeql.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub Stars](https://img.shields.io/github/stars/kpeacocke/terraform-github-repo?style=social)](https://github.com/kpeacocke/terraform-github-repo)
 
 ---
 
