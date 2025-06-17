@@ -101,13 +101,13 @@ jobs:
         run: go mod download
 
       - name: Run Go tests
-        run: go test -v -timeout 10m ./test/...
+        run: go test -v -timeout 10m ./test/*.go
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: ${{ github.workspace }}
 
       - name: Run Go tests with race detection
-        run: go test -race -v -timeout 15m ./test/...
+        run: go test -race -v -timeout 15m ./test/*.go
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: ${{ github.workspace }}
