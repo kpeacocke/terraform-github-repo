@@ -42,5 +42,11 @@ jobs:
           cp coverage.html coverage.svg wiki/
           cd wiki
           git add coverage.html coverage.svg
-          git commit -m "Update coverage report"
-          git push
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit, coverage report is up to date"
+          else
+            git commit -m "Update coverage report"
+            git push
+            echo "Coverage report updated successfully"
+          fi
