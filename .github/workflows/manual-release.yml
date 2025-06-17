@@ -80,10 +80,10 @@ jobs:
           terraform init
           terraform validate
           
-          # Go tests
+          # Go tests - run only template rendering tests that don't require external dependencies
           export GO111MODULE=on
           go mod tidy
-          go test -v -timeout 10m ./test
+          go test -v -timeout 10m -run "TestPrintWorkingDirectory|TestRenderDependabotTemplate|TestRenderCodeQLTemplate|TestRenderCIEnforcementTemplate" ./test
         working-directory: ${{ github.workspace }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
