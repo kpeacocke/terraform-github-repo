@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.4...v1.0.5) (2025-06-17)
+
+### 🐛 Bug Fixes
+
+* refactor issue fetching logic in traceability workflow for improved error handling ([dd9c35c](https://github.com/kpeacocke/terraform-github-repo/commit/dd9c35cc8cb69977cd7cf51642727a316ff3083e))
+* remove custom_dir from theme configuration in mkdocs.yml ([9be77af](https://github.com/kpeacocke/terraform-github-repo/commit/9be77af56dfc3ecdfa05024dbf2c93b449981cb6))
+
+
+Generating notes for 1.0.5
+
 ## [1.0.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.3...v1.0.4) (2025-06-17)
 
 ### 🐛 Bug Fixes
