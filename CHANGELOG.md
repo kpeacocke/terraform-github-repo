@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.1...v1.0.2) (2025-06-17)
+
+### 🐛 Bug Fixes
+
+* update Terraform provider versions in SonarCloud configuration ([7f6b0ee](https://github.com/kpeacocke/terraform-github-repo/commit/7f6b0eedd4de562ae80e620bb48eaa176a476763))
+
+
+Generating notes for 1.0.2
+
 ## [1.0.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.0...v1.0.1) (2025-06-17)
 
 ### 🐛 Bug Fixes
