@@ -99,6 +99,7 @@ jobs:
 
       - name: Download Go modules
         run: go mod tidy
+        working-directory: ${{ github.workspace }}
 
       - name: Run Go tests
         run: |

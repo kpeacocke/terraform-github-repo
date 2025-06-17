@@ -34,6 +34,7 @@ jobs:
           go mod tidy
           go test -coverprofile=coverage.out ./test
           go tool cover -func=coverage.out > coverage.txt
+        working-directory: ${{ github.workspace }}
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@13a24e453e2e6262f3bb0c5fa8241031e637a028 # v5.0.0
         env:

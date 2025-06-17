@@ -144,3 +144,4 @@ jobs:
           export GO111MODULE=on
           go mod tidy
           go test ./test -timeout 5m
+        working-directory: ${{ github.workspace }}
