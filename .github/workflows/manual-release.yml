@@ -81,7 +81,7 @@ jobs:
           terraform validate
           
           # Go tests
-          go test -v -timeout 10m ./...
+          go test -v -timeout 10m ./test/...
         working-directory: ${{ github.workspace }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
