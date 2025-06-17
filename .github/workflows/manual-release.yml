@@ -54,7 +54,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7 # v5
         with:
-          go-version-file: go.mod
+          go-version: 1.21
           cache: true
 
       - name: Setup Node.js
@@ -83,6 +83,7 @@ jobs:
           # Go tests
           go mod download
           go test -v -timeout 10m ./test/...
+        working-directory: ${{ github.workspace }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
