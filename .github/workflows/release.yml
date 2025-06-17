@@ -241,12 +241,29 @@ jobs:
               tag: version
             });
             
-            await github.rest.repos.createReleaseComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              release_id: release.data.id,
-              body
-            });
+            // Create a comment using the discussion_url which points to the release discussion
+            const discussionUrl = release.data.discussion_url;
+            if (discussionUrl) {
+              // Extract the discussion number from the URL
+              const discussionNumber = discussionUrl.split('/').pop();
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: parseInt(discussionNumber),
+                body
+              });
+            } else {
+              console.log('No discussion URL found for this release. Adding comment directly to the release.');
+              // If no discussion, create a new issue instead
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `📦 Release ${version} Published to Terraform Registry`,
+                body: body,
+                labels: ['release', 'documentation']
+              });
+            }
 
   # Documentation update
   docs-update:
@@ -390,7 +407,7 @@ jobs:
               .slice(10); // Keep latest 10, delete rest
             
             for (const release of preReleases) {
-              try {
+              try:
                 await github.rest.repos.deleteRelease({
                   owner,
                   repo,
