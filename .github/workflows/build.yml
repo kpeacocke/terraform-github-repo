@@ -30,7 +30,7 @@ jobs:
       
       - name: Run Go tests with coverage
         run: |
-          go test -coverprofile=coverage.out ./test/*.go
+          go test -coverprofile=coverage.out ./test
           go tool cover -func=coverage.out > coverage.txt
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8 # v5.0.0

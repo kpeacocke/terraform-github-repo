@@ -78,7 +78,7 @@ jobs:
       - name: Run Tests
         if: steps.check.outputs.should-release == 'true'
         run: |
-          go test -v -timeout 10m ./test/*.go
+          go test -v -timeout 10m ./test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
