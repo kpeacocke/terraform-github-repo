@@ -7,6 +7,8 @@ queries:
     uses: security-extended
   - name: security-and-quality
     uses: security-and-quality
+  - name: custom-security
+    uses: ./.github/codeql/queries/custom-security.qls
 
 paths-ignore:
   - "test/fixtures/**"
