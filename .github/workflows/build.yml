@@ -20,7 +20,7 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v3
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up Go
@@ -28,13 +28,22 @@ jobs:
         with:
           go-version: '1.21'
       
+      - name: Debug environment
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Listing current directory:"
+          ls -la
+          echo "Checking for go.mod:"
+          find . -name "go.mod" -type f
+          echo "Environment variables:"
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+      
       - name: Run Go tests with coverage
         run: |
           export GO111MODULE=on
           go mod tidy
           go test -coverprofile=coverage.out ./test
           go tool cover -func=coverage.out > coverage.txt
-        working-directory: ${{ github.workspace }}
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@13a24e453e2e6262f3bb0c5fa8241031e637a028 # v5.0.0
         env:
