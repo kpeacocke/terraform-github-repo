@@ -37,9 +37,7 @@ vendor/
 *.tmp
 *.coverprofile
 *.log
-# Exclude go.sum but keep go.mod (go.mod should always be committed)
-go.sum
-*.sum
+# Keep go.mod and go.sum (both should always be committed for reproducible builds)
 
 # === Node (if used for scripts) ===
 node_modules/
