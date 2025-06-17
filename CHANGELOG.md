@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.8...v1.0.9) (2025-06-17)
+
+### 🐛 Bug Fixes
+
+* add permissions for discussions in terraform-registry and notify jobs ([d9af872](https://github.com/kpeacocke/terraform-github-repo/commit/d9af8728ea57f2245af964aff262f44d248efd58))
+
+
+Generating notes for 1.0.9
+
 ## [1.0.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.7...v1.0.8) (2025-06-17)
 
 ### 🐛 Bug Fixes
