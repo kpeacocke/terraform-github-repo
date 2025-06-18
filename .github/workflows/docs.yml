@@ -1,5 +1,10 @@
 name: Deploy Documentation
 
+# Description: This workflow builds and deploys documentation to GitHub Pages.
+# It runs on main branch pushes, documentation-related PRs, releases, and manual triggers.
+# - PR events: Updates docs in the PR branch
+# - Main/release events: Deploys docs to GitHub Pages
+
 on:
   push:
     branches:
@@ -33,22 +38,15 @@ concurrency:
 jobs:
   update-terraform-docs:
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.head_ref }}
-
-      - name: Update Terraform docs
-        uses: terraform-docs/gh-actions@6de6da0cefcc6b4b7a5cbea4d79d97060733093c # v1
-        with:
-          working-dir: .
-          output-file: README.md
-          output-method: inject
-          git-push: true
-          git-commit-message: "docs: update terraform-docs"
+    uses: ./.github/workflows/reusable-terraform-docs.yml
+    permissions:
+      contents: write
+    with:
+      working_directory: "."
+      output_file: "README.md"
+      git_push: true
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
 
   build-and-deploy-docs:
     if: github.ref == 'refs/heads/main' || github.event_name == 'release'
@@ -150,69 +148,76 @@ jobs:
           fi
 
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
         with:
           enablement: true
+          
+      - name: Verify Pages Setup
+        run: |
+          if [[ -z "${{ steps.pages.outputs }}" ]]; then
+            echo "::notice::GitHub Pages setup completed but didn't return output. This is normal for private repositories."
+          else
+            echo "GitHub Pages setup completed successfully."
+          fi
 
       - name: Build and deploy with versioning
         run: |
-          # Check mkdocs config 
+          # Check mkdocs config and build docs
           echo "Validating mkdocs configuration..."
-          mkdocs build --clean --strict || {
+          if ! mkdocs build --clean --strict; then
             echo "::warning::MkDocs build failed with strict mode, trying with more verbose output"
-            mkdocs build --verbose
-          }
+            if ! mkdocs build --verbose; then
+              echo "::error::MkDocs build failed even with verbose output. Check logs for details."
+              exit 1
+            fi
+          fi
+          
+          # Verify site directory was created and has content
+          if [ ! -d "site" ] || [ -z "$(ls -A site 2>/dev/null)" ]; then
+            echo "::error::Site directory is missing or empty after build!"
+            exit 1
+          else
+            echo "Site directory created successfully with $(find site -type f | wc -l) files"
+          fi
           
           # Setup git for GitHub Pages with proper merge strategy
           echo "Fetching gh-pages branch..."
           git fetch origin gh-pages || echo "No gh-pages branch yet - will be created"
           
-          # Make sure we don't have any local changes that would cause checkout issues
-          echo "Checking for local changes that could interfere with branch switching..."
-          git status -s
-          
-          # First add any generated files that might be part of the documentation process
-          git add docs/ || true
-          
-          # Stash any changes to prevent checkout conflicts
-          echo "Stashing local changes to prevent conflicts..."
-          git stash -u || echo "No changes to stash or stash failed"
-          
-          # Use a completely different approach - configure Git to handle the branch separately
-          echo "Setting up Git configuration for cleaner branch management..."
-          
-          # We'll tell mike to use our token for authentication
+          # Configure Git for GitHub Pages deployment
+          echo "Setting up Git configuration for branch management..."
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # Let mike create/update the branch without us having to check it out manually
-          # This avoids conflicts between our working directory and gh-pages content
-          
-          # Clear any gh-pages worktree if it exists (could cause conflicts)
-          rm -rf /tmp/gh-pages || true
+          # Commit any generated API documentation files to avoid conflicts
+          git add docs/api/ docs/examples/ || true
+          git diff-index --quiet HEAD || git commit -m "chore: update generated documentation [skip ci]" || true
           
           # Make sure our main branch is clean and up to date
           git checkout main -f
           git pull origin main
           
+          # Clean up any previous mike state to avoid conflicts
+          rm -rf .mike || true
+          
           if [[ "${{ steps.version.outputs.is_release }}" == "true" ]]; then
             # For releases, create a versioned deployment
             echo "Deploying versioned documentation for release ${{ steps.version.outputs.version }}..."
-            # Clean up any previous mike state to avoid conflicts
-            rm -rf .mike || true
             mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest --title "${{ steps.version.outputs.version }}"
-            mike set-default --push latest
           else
             # For main branch, update latest
             echo "Deploying latest documentation from main branch..."
-            # Clean up any previous mike state to avoid conflicts
-            rm -rf .mike || true
             mike deploy --push --update-aliases latest --title "Latest (main)"
-            mike set-default --push latest
           fi
+          
+          # Always set latest as default
+          mike set-default --push latest
         env:
           # Increase Python's error verbosity
           PYTHONVERBOSE: 1
+          # GitHub token for git operations and plugins
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # GitHub token for git-committers plugin (MKDOCS_GIT_COMMITTERS_APIKEY is what the plugin looks for)
           MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GIT_COMMITTERS_TOKEN }}
 

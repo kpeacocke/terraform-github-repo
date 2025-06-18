@@ -1,5 +1,9 @@
 name: Release & Publish
 
+# Description: This workflow handles semantic versioning releases.
+# It runs on pushes to main branch and manual triggers with release type options.
+# Key actions: validation, semantic release, version tagging, release notes generation
+
 on:
   push:
     branches:
@@ -465,7 +469,7 @@ jobs:
               .slice(10); // Keep latest 10, delete rest
             
             for (const release of preReleases) {
-              try {
+              try:
                 await github.rest.repos.deleteRelease({
                   owner,
                   repo,

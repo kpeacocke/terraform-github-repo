@@ -1,5 +1,9 @@
 name: Build
 
+# Description: This workflow runs SonarCloud analysis on main branch and pull requests,
+# validates Terraform code, and performs security scanning.
+# Key actions: Go setup, test coverage analysis, SonarCloud scanning, Terraform validation
+
 # Minimal permissions for security hardening
 permissions:
   contents: read
@@ -12,6 +16,34 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+  # Using reusable workflow for Terraform validation on latest version
+  terraform-validation:
+    name: "Terraform Validation"
+    uses: ./.github/workflows/reusable-terraform-validation.yml
+    permissions:
+      contents: read
+      security-events: write
+    with:
+      terraform_version: "latest"
+      working_directory: "."
+      backend: false
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+  # Using reusable workflow for security scanning
+  security-scan:
+    name: "Security Scanning"
+    uses: ./.github/workflows/reusable-security-scan.yml
+    permissions:
+      contents: read
+      security-events: write
+    with:
+      working_directory: "."
+      target_type: "fs"
+      format: "sarif"
+      severity: "MEDIUM,HIGH,CRITICAL"
+      upload_to_security_tab: true
+  
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
@@ -63,3 +95,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          
+  workflow-summary:
+    name: "Build Workflow Summary"
+    needs: [terraform-validation, security-scan, sonarcloud]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Build Summary
+        run: |
+          echo "## Build Workflow Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | ------ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Terraform Validation | ${{ needs.terraform-validation.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Scanning | ${{ needs.security-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| SonarCloud | ${{ needs.sonarcloud.result }} |" >> $GITHUB_STEP_SUMMARY

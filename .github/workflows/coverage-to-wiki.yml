@@ -1,5 +1,9 @@
 name: Push Coverage to Wiki
 
+# Description: This workflow generates test coverage reports and pushes them to the wiki.
+# It runs on pushes to main and pull requests.
+# Key actions: Go tests, coverage badge generation, wiki update
+
 on:
   push:
     branches: [main]

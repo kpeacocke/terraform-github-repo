@@ -1,5 +1,9 @@
 name: "CodeQL"
 
+# Description: This workflow runs CodeQL security scanning on the repository code.
+# It runs on push to main, on pull requests, and weekly on a schedule.
+# Key actions: CodeQL setup, code analysis, vulnerability reporting
+
 on:
   push:
     branches: [ "main", "master" ]

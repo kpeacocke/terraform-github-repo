@@ -1,0 +1,63 @@
+name: Reusable Terraform Documentation
+
+# Description: This is a reusable workflow for generating Terraform documentation.
+# Other workflows can call this to standardize documentation generation.
+
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        description: 'The directory containing Terraform code'
+        type: string
+        default: '.'
+      output_file:
+        description: 'The output file for Terraform docs'
+        type: string
+        default: 'README.md'
+      output_format:
+        description: 'The output format'
+        type: string
+        default: 'markdown table'
+      git_push:
+        description: 'Whether to push changes back to the repository'
+        type: boolean
+        default: false
+    secrets:
+      github_token:
+        description: 'GitHub token for API access'
+        required: true
+
+jobs:
+  generate-docs:
+    name: "Generate Terraform Documentation"
+    runs-on: ubuntu-latest
+    
+    # Least-privilege permissions for the job
+    permissions:
+      contents: write  # Need write permissions to update documentation
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          token: ${{ secrets.github_token }}
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+      
+      - name: Generate Terraform Documentation
+        uses: terraform-docs/gh-actions@6de6da0cefcc6b4b7a5cbea4d79d97060733093c # v1.0.0
+        with:
+          working-dir: ${{ inputs.working_directory }}
+          output-file: ${{ inputs.output_file }}
+          output-method: inject
+          git-push: ${{ inputs.git_push }}
+          git-commit-message: "docs: update terraform-docs [skip ci]"
+      
+      - name: Documentation Result Summary
+        run: |
+          echo "### Terraform Documentation Results" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Documentation generated successfully" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ inputs.git_push }}" == "true" ]]; then
+            echo "✅ Changes committed and pushed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ Changes not pushed (git_push=false)" >> $GITHUB_STEP_SUMMARY
+          fi

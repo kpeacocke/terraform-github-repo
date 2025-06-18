@@ -1,5 +1,9 @@
 name: "Traceability Check"
 
+# Description: This workflow ensures PRs reference valid issues for requirements traceability.
+# It runs on pull request events to validate that referenced issues exist and are open.
+# Key actions: PR content validation, issue status checking
+
 # Minimal permissions for security hardening
 permissions:
   contents: read

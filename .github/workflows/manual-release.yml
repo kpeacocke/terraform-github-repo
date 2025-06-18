@@ -1,5 +1,9 @@
 name: Manual Release
 
+# Description: This workflow provides a manual trigger for creating releases.
+# It has options for release type (patch/minor/major), skipping tests, and force release.
+# Key actions: version bump, changelog generation, release publishing
+
 on:
   workflow_dispatch:
     inputs:

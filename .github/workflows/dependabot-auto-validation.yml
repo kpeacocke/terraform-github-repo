@@ -1,5 +1,9 @@
 name: Dependabot Auto-Validation
 
+# Description: This workflow automatically validates, approves, and merges Dependabot PRs.
+# It runs on Dependabot-generated pull requests to verify changes are safe to merge.
+# Key actions: Terraform validation, security checking, auto-approval, auto-merge
+
 # Minimal permissions for security hardening
 permissions:
   contents: read
@@ -26,17 +30,61 @@ jobs:
         id: check
         run: echo "is-dependabot=true" >> $GITHUB_OUTPUT
 
-  # Validate Terraform changes
-  terraform-validation:
+  # Validate Terraform changes using reusable workflow
+  terraform-validation-1-5:
+    needs: check-dependabot
+    if: needs.check-dependabot.outputs.is-dependabot == 'true'
+    uses: ./.github/workflows/reusable-terraform-validation.yml
+    permissions:
+      contents: read
+    with:
+      terraform_version: "1.5.0"
+      working_directory: "."
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  terraform-validation-1-6:
+    needs: check-dependabot
+    if: needs.check-dependabot.outputs.is-dependabot == 'true'
+    uses: ./.github/workflows/reusable-terraform-validation.yml
+    permissions:
+      contents: read
+    with:
+      terraform_version: "1.6.0"
+      working_directory: "."
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+  terraform-validation-1-7:
+    needs: check-dependabot
+    if: needs.check-dependabot.outputs.is-dependabot == 'true'
+    uses: ./.github/workflows/reusable-terraform-validation.yml
+    permissions:
+      contents: read
+    with:
+      terraform_version: "1.7.0"
+      working_directory: "."
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+  terraform-validation-latest:
+    needs: check-dependabot
+    if: needs.check-dependabot.outputs.is-dependabot == 'true'
+    uses: ./.github/workflows/reusable-terraform-validation.yml
+    permissions:
+      contents: read
+    with:
+      terraform_version: "latest"
+      working_directory: "."
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+  validate-examples:
     needs: check-dependabot
     if: needs.check-dependabot.outputs.is-dependabot == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    strategy:
-      matrix:
-        terraform-version: ["1.5.0", "1.6.0", "1.7.0", "latest"]
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -44,25 +92,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
         with:
-          terraform_version: ${{ matrix.terraform-version }}
-
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Plan
-        run: |
-          # Run plan without saving state file to avoid persisting sensitive data
-          terraform plan -no-color -compact-warnings
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TF_VAR_github_owner: ${{ github.repository_owner }}
-          TF_VAR_repository_name: ${{ github.event.repository.name }}
+          terraform_version: "latest"
 
       - name: Validate Examples
         run: |
@@ -121,32 +151,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: ${{ github.workspace }}
 
-  # Security scanning
+  # Security scanning using reusable workflow
   security-scan:
     needs: check-dependabot
     if: needs.check-dependabot.outputs.is-dependabot == 'true'
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/reusable-security-scan.yml
     permissions:
       contents: read
       security-events: write
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-
-      - name: Run Trivy security scan
-        uses: aquasecurity/trivy-action@76071ef0d7ec797419534a183b498b4d6366cf37 # master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-
-      - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@ce28f5bb42b7a9f2c824e633a3f6ee835bab6858 # v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
+    with:
+      working_directory: "."
+      target_type: "fs"
+      format: "sarif"
+      severity: "MEDIUM,HIGH,CRITICAL"
+      upload_to_security_tab: true
 
   # Documentation validation
   docs-validation:
@@ -174,6 +192,8 @@ jobs:
         run: |
           mkdocs build --strict
 
+      # We're not using the reusable workflow here because we want to check diff without pushing,
+      # which is a different use case than standard terraform-docs generation
       - name: Check terraform-docs
         uses: terraform-docs/gh-actions@6de6da0cefcc6b4b7a5cbea4d79d97060733093c # v1
         with:
@@ -185,8 +205,16 @@ jobs:
 
   # Auto-approve and merge if all checks pass
   auto-merge:
-    needs: [terraform-validation, go-tests, security-scan, docs-validation]
-    if: always() && needs.terraform-validation.result == 'success' && needs.go-tests.result == 'success' && needs.security-scan.result == 'success' && needs.docs-validation.result == 'success'
+    needs: [terraform-validation-1-5, terraform-validation-1-6, terraform-validation-1-7, terraform-validation-latest, validate-examples, go-tests, security-scan, docs-validation]
+    if: always() && 
+        needs.terraform-validation-1-5.result == 'success' && 
+        needs.terraform-validation-1-6.result == 'success' && 
+        needs.terraform-validation-1-7.result == 'success' && 
+        needs.terraform-validation-latest.result == 'success' && 
+        needs.validate-examples.result == 'success' && 
+        needs.go-tests.result == 'success' && 
+        needs.security-scan.result == 'success' && 
+        needs.docs-validation.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -205,8 +233,16 @@ jobs:
 
   # Notify on failure
   notify-failure:
-    needs: [terraform-validation, go-tests, security-scan, docs-validation]
-    if: always() && (needs.terraform-validation.result == 'failure' || needs.go-tests.result == 'failure' || needs.security-scan.result == 'failure' || needs.docs-validation.result == 'failure')
+    needs: [terraform-validation-1-5, terraform-validation-1-6, terraform-validation-1-7, terraform-validation-latest, validate-examples, go-tests, security-scan, docs-validation]
+    if: always() && 
+        (needs.terraform-validation-1-5.result == 'failure' || 
+         needs.terraform-validation-1-6.result == 'failure' || 
+         needs.terraform-validation-1-7.result == 'failure' || 
+         needs.terraform-validation-latest.result == 'failure' || 
+         needs.validate-examples.result == 'failure' || 
+         needs.go-tests.result == 'failure' || 
+         needs.security-scan.result == 'failure' || 
+         needs.docs-validation.result == 'failure')
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -220,5 +256,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '❌ **Dependabot PR Validation Failed**\n\nOne or more validation checks failed. Please review the failed checks and fix any issues before merging.\n\n- Terraform Validation: ${{ needs.terraform-validation.result }}\n- Go Tests: ${{ needs.go-tests.result }}\n- Security Scan: ${{ needs.security-scan.result }}\n- Documentation: ${{ needs.docs-validation.result }}'
+              body: '❌ **Dependabot PR Validation Failed**\n\nOne or more validation checks failed. Please review the failed checks and fix any issues before merging.\n\n- Terraform Validation 1.5.0: ${{ needs.terraform-validation-1-5.result }}\n- Terraform Validation 1.6.0: ${{ needs.terraform-validation-1-6.result }}\n- Terraform Validation 1.7.0: ${{ needs.terraform-validation-1-7.result }}\n- Terraform Validation Latest: ${{ needs.terraform-validation-latest.result }}\n- Example Validation: ${{ needs.validate-examples.result }}\n- Go Tests: ${{ needs.go-tests.result }}\n- Security Scan: ${{ needs.security-scan.result }}\n- Documentation: ${{ needs.docs-validation.result }}'
             })
