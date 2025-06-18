@@ -134,10 +134,7 @@ jobs:
             fi
           done
 
-      - name: Configure Git for versioning
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      # We've moved the git config into the build and deploy step
 
       - name: Get version info
         id: version
@@ -174,37 +171,43 @@ jobs:
           echo "Checking for local changes that could interfere with branch switching..."
           git status -s
           
+          # First add any generated files that might be part of the documentation process
+          git add docs/ || true
+          
           # Stash any changes to prevent checkout conflicts
           echo "Stashing local changes to prevent conflicts..."
           git stash -u || echo "No changes to stash or stash failed"
           
-          # Try to check out the branch if it exists remotely
-          if git branch -r | grep -q origin/gh-pages; then
-            echo "Found remote gh-pages branch, setting it up locally..."
-            if git show-ref --verify --quiet refs/heads/gh-pages; then
-              git checkout gh-pages
-              git pull origin gh-pages --ff-only || (echo "Cannot fast-forward, doing a merge..." && git merge origin/gh-pages)
-              git checkout -
-            else
-              git checkout -b gh-pages origin/gh-pages
-              git checkout -
-            fi
-          else
-            echo "No remote gh-pages branch exists yet - will be created by mike"
-          fi
+          # Use a completely different approach - configure Git to handle the branch separately
+          echo "Setting up Git configuration for cleaner branch management..."
           
-          # Pop stashed changes if needed (for later steps that might need them)
-          git stash list | grep -q "stash@{0}" && git stash pop || echo "No stashed changes to restore"
+          # We'll tell mike to use our token for authentication
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          # Let mike create/update the branch without us having to check it out manually
+          # This avoids conflicts between our working directory and gh-pages content
+          
+          # Clear any gh-pages worktree if it exists (could cause conflicts)
+          rm -rf /tmp/gh-pages || true
+          
+          # Make sure our main branch is clean and up to date
+          git checkout main -f
+          git pull origin main
           
           if [[ "${{ steps.version.outputs.is_release }}" == "true" ]]; then
-            # For releases, create a versioned deployment with force to handle conflicts
+            # For releases, create a versioned deployment
             echo "Deploying versioned documentation for release ${{ steps.version.outputs.version }}..."
-            mike deploy --push --force --update-aliases ${{ steps.version.outputs.version }} latest --title "${{ steps.version.outputs.version }}"
+            # Clean up any previous mike state to avoid conflicts
+            rm -rf .mike || true
+            mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest --title "${{ steps.version.outputs.version }}"
             mike set-default --push latest
           else
-            # For main branch, update latest with force to handle conflicts
+            # For main branch, update latest
             echo "Deploying latest documentation from main branch..."
-            mike deploy --push --force --update-aliases latest --title "Latest (main)"
+            # Clean up any previous mike state to avoid conflicts
+            rm -rf .mike || true
+            mike deploy --push --update-aliases latest --title "Latest (main)"
             mike set-default --push latest
           fi
         env:
