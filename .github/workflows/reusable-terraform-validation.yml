@@ -63,10 +63,14 @@ jobs:
         id: validate
         run: terraform validate -no-color
       
-      - name: Run TFLint
-        uses: terraform-linters/tflint-action@d6270e7c3270dbf079f9aa23c9c11ecc2d9191bc # v0.5.0
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4.1.1
         with:
-          working_directory: ${{ inputs.working_directory }}
+          tflint_version: latest
+      
+      - name: Run TFLint
+        working-directory: ${{ inputs.working_directory }}
+        run: tflint --format compact
       
       - name: Format Check Result Summary
         if: steps.fmt.outcome == 'failure'
