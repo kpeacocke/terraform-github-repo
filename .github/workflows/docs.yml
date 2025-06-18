@@ -53,16 +53,18 @@ jobs:
   build-and-deploy-docs:
     if: github.ref == 'refs/heads/main' || github.event_name == 'release'
     runs-on: ubuntu-latest
-    # Add permissions needed for GitHub Pages setup
+    # Set explicit permissions for the build-and-deploy-docs job
     permissions:
-      contents: write
-      pages: write
-      id-token: write
+      contents: write  # For git push operations
+      pages: write     # For GitHub Pages configuration
+      id-token: write  # For deployment authentication
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0  # Needed for git-revision-date-localized plugin
+          # Set token for proper permissions for gh-pages branch operations
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -168,6 +170,14 @@ jobs:
           echo "Fetching gh-pages branch..."
           git fetch origin gh-pages || echo "No gh-pages branch yet - will be created"
           
+          # Make sure we don't have any local changes that would cause checkout issues
+          echo "Checking for local changes that could interfere with branch switching..."
+          git status -s
+          
+          # Stash any changes to prevent checkout conflicts
+          echo "Stashing local changes to prevent conflicts..."
+          git stash -u || echo "No changes to stash or stash failed"
+          
           # Try to check out the branch if it exists remotely
           if git branch -r | grep -q origin/gh-pages; then
             echo "Found remote gh-pages branch, setting it up locally..."
@@ -183,13 +193,18 @@ jobs:
             echo "No remote gh-pages branch exists yet - will be created by mike"
           fi
           
+          # Pop stashed changes if needed (for later steps that might need them)
+          git stash list | grep -q "stash@{0}" && git stash pop || echo "No stashed changes to restore"
+          
           if [[ "${{ steps.version.outputs.is_release }}" == "true" ]]; then
-            # For releases, create a versioned deployment
-            mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest --title "${{ steps.version.outputs.version }}"
+            # For releases, create a versioned deployment with force to handle conflicts
+            echo "Deploying versioned documentation for release ${{ steps.version.outputs.version }}..."
+            mike deploy --push --force --update-aliases ${{ steps.version.outputs.version }} latest --title "${{ steps.version.outputs.version }}"
             mike set-default --push latest
           else
-            # For main branch, update latest
-            mike deploy --push --update-aliases latest --title "Latest (main)"
+            # For main branch, update latest with force to handle conflicts
+            echo "Deploying latest documentation from main branch..."
+            mike deploy --push --force --update-aliases latest --title "Latest (main)"
             mike set-default --push latest
           fi
         env:

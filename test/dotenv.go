@@ -35,7 +35,7 @@ func LoadDotEnv() {
 		}
 		key := strings.TrimSpace(parts[0])
 		value := strings.Trim(strings.TrimSpace(parts[1]), `"`)
-		
+
 		// Only set if not already present in environment
 		if os.Getenv(key) == "" {
 			os.Setenv(key, value)
