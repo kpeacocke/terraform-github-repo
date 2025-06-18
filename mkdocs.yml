@@ -78,6 +78,8 @@ extra:
   version:
     provider: mike
     default: latest
+    # Disable aliases that match version names to avoid conflicts
+    aliases_versions_match: false
     # Ensure aliases are respected and consistent
     version_selector: true
     tabs_above_content: true

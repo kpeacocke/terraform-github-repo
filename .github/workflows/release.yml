@@ -377,9 +377,20 @@ jobs:
             git checkout main || echo "Already on main branch"
           fi
           
-          # Deploy the new version with the latest alias
-          mike deploy --push $VERSION
-          mike alias --push $VERSION latest
+          # Deploy the new version without any aliases first
+          echo "Deploying version $VERSION (without aliases)..."
+          mike deploy --push --no-redirect $VERSION
+          
+          # Wait a moment to ensure file system changes are registered
+          sleep 2
+          
+          # Add the alias separately with force to overwrite any existing alias
+          echo "Setting version $VERSION as 'latest'..."
+          mike alias --push --update $VERSION latest
+          
+          # Set default version (with a pause to avoid race conditions)
+          sleep 2
+          echo "Setting 'latest' as the default version..."
           mike set-default --push latest
         env:
           # Increase Python's error verbosity

@@ -234,18 +234,26 @@ jobs:
           if [[ "${{ steps.version.outputs.is_release }}" == "true" ]]; then
             # For releases, create a versioned deployment
             echo "Deploying versioned documentation for release ${{ steps.version.outputs.version }}..."
-            # Deploy without latest alias first
-            mike deploy --push ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}"
-            # Then add the latest alias separately
-            mike alias --push ${{ steps.version.outputs.version }} latest
+            # Deploy without any aliases first
+            mike deploy --push --no-redirect ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}"
+            
+            # Wait a moment to ensure file system changes are registered
+            sleep 2
+            
+            # Add the alias separately with force to overwrite any existing alias
+            echo "Setting version ${{ steps.version.outputs.version }} as 'latest'..."
+            mike alias --push --update ${{ steps.version.outputs.version }} latest
           else
             # For main branch, update latest (delete first if exists)
             echo "Deploying latest documentation from main branch..."
             mike delete --push latest || echo "No latest version to delete"
-            mike deploy --push latest --title "Latest (main)"
+            mike deploy --push --no-redirect latest --title "Latest (main)"
+            
+            # Make sure it's the default
+            sleep 2
           fi
-          
-          # Always set latest as default 
+           # Always set latest as default (with separate command to avoid race conditions)
+          echo "Setting 'latest' as the default version..."
           mike set-default --push latest
         env:
           # Increase Python's error verbosity
