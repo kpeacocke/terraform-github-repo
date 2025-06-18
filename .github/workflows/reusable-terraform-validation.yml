@@ -22,7 +22,7 @@ on:
     secrets:
       GITHUB_TOKEN:
         description: 'GitHub token for API access'
-        required: true
+        required: false
 
 # No top-level permissions required for reusable workflows
 # They inherit permissions from the caller workflow

@@ -25,7 +25,7 @@ on:
     secrets:
       GITHUB_TOKEN:
         description: 'GitHub token for API access'
-        required: true
+        required: false
 
 jobs:
   generate-docs:
