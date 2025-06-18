@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.1.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.6...v1.1.7) (2025-06-18)
+
+### 🐛 Bug Fixes
+
+* resolve docs-update job failures by addressing SSL module and mike alias collision issues ([72ccd07](https://github.com/kpeacocke/terraform-github-repo/commit/72ccd079be73bdd474216f700cedecd2f48594d0))
+
+### 📚 Documentation
+
+* add documentation for docs-update job fixes ([dfd5557](https://github.com/kpeacocke/terraform-github-repo/commit/dfd5557b8a33069d56e079d9c9830c4d708d4b89))
+
+
+Generating notes for 1.1.7
+
 ## [1.1.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.5...v1.1.6) (2025-06-18)
 
 ### 🐛 Bug Fixes
