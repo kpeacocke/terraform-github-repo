@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.1.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.7...v1.1.8) (2025-06-18)
+
+### 🐛 Bug Fixes
+
+* update TFLint action to use terraform-linters/setup-tflint@v4.1.1 ([dc55f5f](https://github.com/kpeacocke/terraform-github-repo/commit/dc55f5f68d3e12b13f6557a6a658f792cd55ea7f))
+
+
+Generating notes for 1.1.8
+
 ## [1.1.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.6...v1.1.7) (2025-06-18)
 
 ### 🐛 Bug Fixes
