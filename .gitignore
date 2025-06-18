@@ -99,6 +99,7 @@ site/
 
 # MkDocs temporary files
 .mkdocs_cache/
+.cache/
 
 # Local terraform-docs binary
 terraform-docs
