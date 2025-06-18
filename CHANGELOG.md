@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.14](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.13...v1.0.14) (2025-06-18)
+
+### 🐛 Bug Fixes
+
+* resolve git-committers authentication and gh-pages branch conflicts ([e9c7ea1](https://github.com/kpeacocke/terraform-github-repo/commit/e9c7ea17dd0ebeb61760829fa8b924932e3a44f0))
+
+### 📚 Documentation
+
+* fix MkDocs strict mode issues and add missing documentation files ([5178769](https://github.com/kpeacocke/terraform-github-repo/commit/51787691079219b8a9783adbea7bf798440c7b21))
+* update changelog for v1.0.13 ([6b18a34](https://github.com/kpeacocke/terraform-github-repo/commit/6b18a34df643b5a36adf7443bf772d43a21dfaa4))
+
+
+Generating notes for 1.0.14
+
 ## [1.0.13](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.12...v1.0.13) (2025-06-17)
 
 ### 🐛 Bug Fixes
