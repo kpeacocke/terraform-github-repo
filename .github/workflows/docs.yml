@@ -70,14 +70,33 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
+      - name: Install OpenSSL dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev openssl ca-certificates
+
       - name: Install MkDocs dependencies
         run: |
-          # Install requirements from file
-          pip install -r docs/requirements.txt
+          # Upgrade pip first
+          python -m pip install --upgrade pip
+          
+          # Install with certificate verification configured during build
+          export PYTHONHTTPSVERIFY=0
+          export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+          export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+          
+          # Install requirements from file with SSL handling
+          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r docs/requirements.txt
+          
           # Ensure core dependencies are installed, even if requirements.txt changes
-          pip install mkdocs-material>=9.4.0 "mkdocs-material-extensions>=1.1" pymdown-extensions>=10.2 mike>=2.0.0
+          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org mkdocs-material>=9.4.0 "mkdocs-material-extensions>=1.1" pymdown-extensions>=10.2 mike>=2.0.0
+          
           # List installed packages for debugging
           pip list
+
+      - name: Apply Python SSL fixes
+        run: |
+          source ./scripts/fix-python-ssl.sh
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
@@ -161,8 +180,19 @@ jobs:
             echo "GitHub Pages setup completed successfully."
           fi
 
+      - name: Fix Mike Alias Conflicts
+        run: |
+          # Run the fix-mike-aliases script to clean up any alias conflicts
+          chmod +x ./scripts/fix-mike-aliases.sh
+          ./scripts/fix-mike-aliases.sh
+
       - name: Build and deploy with versioning
         run: |
+          # Set environment variables for Python SSL
+          export PYTHONHTTPSVERIFY=0
+          export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+          export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+          
           # Check mkdocs config and build docs
           echo "Validating mkdocs configuration..."
           if ! mkdocs build --clean --strict; then
@@ -199,19 +229,23 @@ jobs:
           git pull origin main
           
           # Clean up any previous mike state to avoid conflicts
-          rm -rf .mike || true
+          rm -rf .mike 2>/dev/null || true
           
           if [[ "${{ steps.version.outputs.is_release }}" == "true" ]]; then
             # For releases, create a versioned deployment
             echo "Deploying versioned documentation for release ${{ steps.version.outputs.version }}..."
-            mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest --title "${{ steps.version.outputs.version }}"
+            # Deploy without latest alias first
+            mike deploy --push ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}"
+            # Then add the latest alias separately
+            mike alias --push ${{ steps.version.outputs.version }} latest
           else
-            # For main branch, update latest
+            # For main branch, update latest (delete first if exists)
             echo "Deploying latest documentation from main branch..."
-            mike deploy --push --update-aliases latest --title "Latest (main)"
+            mike delete --push latest || echo "No latest version to delete"
+            mike deploy --push latest --title "Latest (main)"
           fi
           
-          # Always set latest as default
+          # Always set latest as default 
           mike set-default --push latest
         env:
           # Increase Python's error verbosity

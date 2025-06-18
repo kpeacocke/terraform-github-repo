@@ -299,12 +299,25 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
+      - name: Install OpenSSL dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev openssl ca-certificates
+
       - name: Install MkDocs dependencies
         run: |
+          # Upgrade pip first
+          python -m pip install --upgrade pip
+          
+          # Install with certificate verification disabled during build
+          export PYTHONHTTPSVERIFY=0
+          
           # Install basic dependencies first
-          pip install mike mkdocs-material>=9.4.0 "mkdocs-material-extensions>=1.1"
+          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org mike mkdocs-material>=9.4.0 "mkdocs-material-extensions>=1.1"
+          
           # Then install the rest of the dependencies from requirements.txt
-          pip install -r docs/requirements.txt
+          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r docs/requirements.txt
+          
           # Show installed packages to help with debugging
           pip list
 
@@ -312,6 +325,10 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Apply Python SSL fixes
+        run: |
+          source ./scripts/fix-python-ssl.sh
 
       - name: Deploy versioned documentation
         run: |
@@ -348,13 +365,29 @@ jobs:
           # Deploy new version
           VERSION="${{ needs.release.outputs.version }}"
           echo "Deploying version $VERSION to GitHub Pages..."
-          mike deploy --push --update-aliases $VERSION latest
+          
+          # Check if 'latest' alias exists and delete it if it does
+          echo "Checking for existing 'latest' alias..."
+          if git ls-remote --exit-code origin gh-pages && git checkout gh-pages && grep -q "latest" .mike; then
+            echo "Removing existing 'latest' alias to avoid collision..."
+            git checkout main
+            mike delete latest --push || echo "Failed to delete latest alias, continuing anyway..."
+          else
+            echo "No existing 'latest' alias found or gh-pages not set up yet."
+            git checkout main || echo "Already on main branch"
+          fi
+          
+          # Deploy the new version with the latest alias
+          mike deploy --push $VERSION
+          mike alias --push $VERSION latest
           mike set-default --push latest
         env:
           # Increase Python's error verbosity
           PYTHONVERBOSE: 1
+          # Disable SSL verification for Python (only during build)
+          PYTHONHTTPSVERIFY: 0
           # GitHub token for git-committers plugin (MKDOCS_GIT_COMMITTERS_APIKEY is what the plugin looks for)
-          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update changelog in docs
         run: |

@@ -78,6 +78,9 @@ extra:
   version:
     provider: mike
     default: latest
+    # Ensure aliases are respected and consistent
+    version_selector: true
+    tabs_above_content: true
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/kpeacocke
@@ -159,6 +162,7 @@ nav:
     - Security Credentials: development/security-credentials.md
     - Sensitive Data: development/sensitive-data.md
     - Trivy Migration: development/trivy-migration.md
+    - Docs Testing: development/docs-testing.md
     - Release Process: development/releases.md
     - Architecture: development/architecture.md
   - Changelog: changelog.md
