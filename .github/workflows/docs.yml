@@ -159,8 +159,24 @@ jobs:
             mkdocs build --verbose
           }
           
-          # Setup git for GitHub Pages
-          git fetch origin gh-pages:gh-pages 2>/dev/null || echo "No gh-pages branch yet"
+          # Setup git for GitHub Pages with proper merge strategy
+          echo "Fetching gh-pages branch..."
+          git fetch origin gh-pages || echo "No gh-pages branch yet - will be created"
+          
+          # Try to check out the branch if it exists remotely
+          if git branch -r | grep -q origin/gh-pages; then
+            echo "Found remote gh-pages branch, setting it up locally..."
+            if git show-ref --verify --quiet refs/heads/gh-pages; then
+              git checkout gh-pages
+              git pull origin gh-pages --ff-only || (echo "Cannot fast-forward, doing a merge..." && git merge origin/gh-pages)
+              git checkout -
+            else
+              git checkout -b gh-pages origin/gh-pages
+              git checkout -
+            fi
+          else
+            echo "No remote gh-pages branch exists yet - will be created by mike"
+          fi
           
           if [[ "${{ steps.version.outputs.is_release }}" == "true" ]]; then
             # For releases, create a versioned deployment
@@ -174,8 +190,8 @@ jobs:
         env:
           # Increase Python's error verbosity
           PYTHONVERBOSE: 1
-          # GitHub token for git-committers plugin
-          GIT_COMMITTERS_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          # GitHub token for git-committers plugin (MKDOCS_GIT_COMMITTERS_APIKEY is what the plugin looks for)
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GIT_COMMITTERS_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3

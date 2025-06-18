@@ -72,7 +72,6 @@ plugins:
   - git-committers:
       repository: kpeacocke/terraform-github-repo
       branch: main
-      token: ${GIT_COMMITTERS_TOKEN}
 
 # Customization
 extra:

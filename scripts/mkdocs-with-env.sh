@@ -10,10 +10,10 @@ if [ -f .env ]; then
   source .env
   set +a
   
-  # Map GITHUB_TOKEN to GIT_COMMITTERS_TOKEN if needed
-  if [ -n "$GITHUB_TOKEN" ] && [ -z "$GIT_COMMITTERS_TOKEN" ]; then
-    echo "Mapping GITHUB_TOKEN to GIT_COMMITTERS_TOKEN for mkdocs..."
-    export GIT_COMMITTERS_TOKEN="$GITHUB_TOKEN"
+  # Map GITHUB_TOKEN to MKDOCS_GIT_COMMITTERS_APIKEY if needed
+  if [ -n "$GITHUB_TOKEN" ] && [ -z "$MKDOCS_GIT_COMMITTERS_APIKEY" ]; then
+    echo "Mapping GITHUB_TOKEN to MKDOCS_GIT_COMMITTERS_APIKEY for mkdocs..."
+    export MKDOCS_GIT_COMMITTERS_APIKEY="$GITHUB_TOKEN"
   fi
 else
   echo "Warning: .env file not found"
