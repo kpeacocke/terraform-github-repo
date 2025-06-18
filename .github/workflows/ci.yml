@@ -34,7 +34,7 @@ jobs:
       working_directory: "."
       backend: false
     secrets:
-      github_token: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   terraform-validation-1-6:
     name: "Terraform Validation (1.6.0)"
@@ -47,7 +47,7 @@ jobs:
       working_directory: "."
       backend: false
     secrets:
-      github_token: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   terraform-additional-checks:
     name: "Additional Terraform Checks"
@@ -126,7 +126,7 @@ jobs:
       output_file: "README.md"
       git_push: true
     secrets:
-      github_token: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
   markdown-lint:
     name: "Markdown Linting"

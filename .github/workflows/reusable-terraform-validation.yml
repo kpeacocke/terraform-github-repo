@@ -20,7 +20,7 @@ on:
         type: boolean
         default: false
     secrets:
-      github_token:
+      GITHUB_TOKEN:
         description: 'GitHub token for API access'
         required: true
 
