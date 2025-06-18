@@ -66,6 +66,68 @@ The following workflows have been refactored to use the reusable components:
 - Used the reusable Terraform docs workflow for PR-based documentation updates
 - Maintained specialized GitHub Pages deployment logic
 
+## Documentation Deployment Fixes
+
+The documentation deployment process (specifically the `docs-update` job in the release workflow) was improved to address two critical issues:
+
+### 1. Python SSL Module Initialization Error
+
+- Added explicit installation of OpenSSL dependencies in workflows:
+
+  ```yaml
+  - name: Install OpenSSL dependencies
+    run: |
+      sudo apt-get update
+      sudo apt-get install -y libssl-dev openssl ca-certificates
+  ```
+  
+- Created a dedicated script (`scripts/fix-python-ssl.sh`) to properly configure SSL environment variables:
+
+  ```bash
+  export PYTHONHTTPSVERIFY=0
+  export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+  export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+  ```
+  
+- Added trusted hosts for pip package installation to bypass verification issues:
+
+  ```bash
+  pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org ...
+  ```
+
+### 2. MkDocs 'latest' Alias Collision
+
+- Created `scripts/fix-mike-aliases.sh` to detect and remove conflicting aliases:
+
+  ```bash
+  # Check if 'latest' alias exists and remove it
+  if grep -q "latest" .mike; then
+    grep -v "latest" .mike.bak > .mike
+    git commit -m "fix: removed latest alias to avoid collision"
+  fi
+  ```
+  
+- Modified mike deployment commands to avoid parallel alias updates by separating version deployment from alias setting:
+
+  ```bash
+  # First deploy the version
+  mike deploy --push $VERSION
+  # Then set the alias separately
+  mike alias --push $VERSION latest
+  # Finally set the default
+  mike set-default --push latest
+  ```
+
+### 3. Testing and Documentation Improvements
+
+- Added `scripts/test-docs-deployment.sh` script for local testing of the full documentation pipeline
+- Created comprehensive troubleshooting documentation in `docs/development/docs-testing.md`
+- Enhanced error handling with better verbosity and fallback options
+- Streamlined branch management and git operations
+- Improved environment variable handling and debug output
+
+These improvements ensure the documentation deployment process is more resilient, easier to debug, and less prone to SSL-related failures or alias conflicts.
+
 ## Benefits
 
 1. **Consistency**: Standardized validation, security scanning, and documentation generation
