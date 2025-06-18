@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.1.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.17...v1.1.0) (2025-06-18)
+
+### 🚀 Features
+
+* enhance security and cleanup in CI workflows, add credential management guidelines ([7ad7806](https://github.com/kpeacocke/terraform-github-repo/commit/7ad7806d09856f9a1a4fe0eea9712b657ec509f4))
+
+### 📚 Documentation
+
+* update changelog for v1.0.17 ([14bb6d3](https://github.com/kpeacocke/terraform-github-repo/commit/14bb6d3b6ea10f6feed7e8c16f347d5cc6359083))
+
+
+Generating notes for 1.1.0
+
 ## [1.0.17](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.16...v1.0.17) (2025-06-18)
 
 ### 🐛 Bug Fixes
