@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.1.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.2...v1.1.3) (2025-06-18)
+
+### ♻️ Code Refactoring
+
+* standardize GitHub Actions workflows using reusable workflows for validation, security, and docs ([ffd645c](https://github.com/kpeacocke/terraform-github-repo/commit/ffd645c023ffb53ed81d052c6663a1d7d34a1c16))
+
+
+Generating notes for 1.1.3
+
 ## [1.1.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.1...v1.1.2) (2025-06-18)
 
 ### 🐛 Bug Fixes
