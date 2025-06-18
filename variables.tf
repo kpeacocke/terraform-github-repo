@@ -1,6 +1,7 @@
 variable "github_token" {
   description = "GitHub token for API access (used in provisioning wait step)"
   type        = string
+  sensitive   = true
 }
 
 variable "github_owner" {

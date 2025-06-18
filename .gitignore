@@ -6,6 +6,13 @@
 crash.log
 *.backup
 *.tfvars
+# Explicitly ignore all Terraform plan files
+*.tfplan
+# Explicitly ignore binary plans
+*.tfplan.binary
+tfplan.binary
+tfplan.bin
+*.binary
 
 # === Terratest / Test Artifacts ===
 *.out
@@ -103,3 +110,10 @@ site/
 
 # Local terraform-docs binary
 terraform-docs
+
+# === Environment & Secrets ===
+.env
+.env.*
+*.env
+credentials.json
+.secrets/

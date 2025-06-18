@@ -156,6 +156,8 @@ nav:
     - Testing: development/testing.md
     - Dependabot: development/dependabot.md
     - Security Hardening: development/security-hardening.md
+    - Security Credentials: development/security-credentials.md
+    - Sensitive Data: development/sensitive-data.md
     - Trivy Migration: development/trivy-migration.md
     - Release Process: development/releases.md
     - Architecture: development/architecture.md

@@ -56,7 +56,9 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: |
+          # Run plan without saving state file to avoid persisting sensitive data
+          terraform plan -no-color -compact-warnings
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TF_VAR_github_owner: ${{ github.repository_owner }}

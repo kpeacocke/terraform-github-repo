@@ -59,7 +59,13 @@ jobs:
         env:
           TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
           TF_VAR_github_owner: ${{ github.repository_owner }}
-        run: terraform plan -input=false -refresh=false -out=tfplan.binary && terraform show -json tfplan.binary > ci-tfplan.json
+        run: |
+          # Use -no-color to avoid ANSI escape codes and -compact-warnings for cleaner logs with less sensitive data
+          terraform plan -input=false -refresh=false -no-color -compact-warnings -out=tfplan.binary
+          # Convert to JSON for analysis but don't print sensitive values
+          terraform show -json tfplan.binary > ci-tfplan.json
+          # Remove the binary plan file immediately after use
+          rm -f tfplan.binary
 
       - name: Install conftest
         run: |

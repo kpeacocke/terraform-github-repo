@@ -68,7 +68,15 @@ This Terraform module provides a **production-ready**, **security-first** approa
 - ☑️ Security features (secret scanning, push protection, Dependabot alerts)
 - ☑️ **Auto-approve and auto-merge Dependabot PRs**
 
-## 🔧 Requirements
+## �‍💻 Development
+
+This repository includes a comprehensive set of guidance for developers:
+
+- 🔑 [**Security Credentials Guide**](./docs/development/security-credentials.md) - Important guidance on handling credentials securely
+- 📗 [**Contributing Guide**](./CONTRIBUTING.md) - How to contribute to this project 
+- 🧪 [**Testing Guide**](./docs/development/testing.md) - How to run tests locally
+
+## �🔧 Requirements
 
 | Name      | Version |
 |-----------|---------|

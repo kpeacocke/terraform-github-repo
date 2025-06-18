@@ -8,7 +8,14 @@ import (
 )
 
 // LoadDotEnv loads environment variables from a .env file in the project root.
+// This function will not override environment variables that are already set.
 func LoadDotEnv() {
+	// First check if file exists
+	if _, err := os.Stat(".env"); os.IsNotExist(err) {
+		log.Printf("[INFO] No .env file found. Using existing environment variables.")
+		return
+	}
+
 	file, err := os.Open(".env")
 	if err != nil {
 		log.Printf("[WARN] Could not open .env file: %v", err)
@@ -28,7 +35,11 @@ func LoadDotEnv() {
 		}
 		key := strings.TrimSpace(parts[0])
 		value := strings.Trim(strings.TrimSpace(parts[1]), `"`)
-		os.Setenv(key, value)
+		
+		// Only set if not already present in environment
+		if os.Getenv(key) == "" {
+			os.Setenv(key, value)
+		}
 	}
 	if err := scanner.Err(); err != nil {
 		log.Printf("[WARN] Error reading .env file: %v", err)
