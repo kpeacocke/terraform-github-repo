@@ -6,6 +6,14 @@ set -e
 
 echo "==== Mike Alias Conflict Resolution Tool ===="
 
+# Check if jq is available
+if ! command -v jq &> /dev/null; then
+    echo "Warning: jq is not installed. Will use grep/sed fallbacks."
+    JQ_AVAILABLE=false
+else
+    JQ_AVAILABLE=true
+fi
+
 # Get the latest version tag
 LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.1.0")
 echo "Latest version: $LATEST_TAG"
@@ -38,34 +46,41 @@ if git ls-remote --exit-code origin gh-pages &>/dev/null; then
     if grep -q '"latest":' .mike && grep -q '"version": "latest"' .mike; then
       echo "CONFLICT DETECTED: 'latest' is used as both a version name and an alias."
       
-      # First approach: try to remove 'latest' as a version if it exists
-      if jq 'del(.versions[] | select(.version == "latest"))' .mike > .mike.tmp; then
-        echo "Removed 'latest' as a version name"
+      # Completely rebuild the .mike file to avoid issues
+      echo "Creating backup of .mike file..."
+      cp .mike .mike.bak
+      
+      if [ "$JQ_AVAILABLE" = true ]; then
+        echo "Using jq to rebuild .mike file..."
+        # Extract all versions except 'latest'
+        VERSIONS=$(jq '.versions | map(select(.version != "latest"))' .mike)
+        
+        # Create new .mike file with only versions (no aliases)
+        jq --argjson vers "$VERSIONS" '{"versions": $vers}' .mike.bak > .mike.new
+        mv .mike.new .mike
+        HAS_CHANGES=true
+      else
+        # Fallback to grep if jq is not available
+        echo "Using grep to rebuild .mike file..."
+        grep -v '"latest":' .mike | grep -v '"version": "latest"' > .mike.tmp
         mv .mike.tmp .mike
         HAS_CHANGES=true
       fi
-      
-      # Second approach: check if we need to remove 'latest' as an alias
-      if grep -q '"latest":' .mike && grep -q '"version": "latest"' .mike; then
-        echo "Still have conflict, removing 'latest' as an alias"
-        # Use jq to remove the alias if available
-        if command -v jq &> /dev/null; then
-          jq 'del(.aliases.latest)' .mike > .mike.tmp
-          mv .mike.tmp .mike
-        else
-          # Fallback to grep if jq is not available
-          grep -v '"latest":' .mike > .mike.tmp
-          mv .mike.tmp .mike
-        fi
-        HAS_CHANGES=true
-      fi
-      
       # Commit changes if needed
       if [ "$HAS_CHANGES" = true ]; then
         git add .mike
         git commit -m "fix: resolved 'latest' alias/version conflict in mike configuration"
         git push origin gh-pages
         echo "✅ Fixed mike alias/version conflicts and pushed changes"
+      fi
+      
+      # Wait a moment for file system sync
+      sleep 2
+      
+      # Verify fix
+      if [ -f ".mike" ]; then
+        echo "Current .mike file content after fix:"
+        cat .mike
       fi
     else
       echo "No alias/version collision found for 'latest'"
@@ -81,3 +96,4 @@ else
 fi
 
 echo "Mike alias conflicts resolution complete!"
+echo "If problems persist, manually edit the .mike file or delete the gh-pages branch and redeploy."

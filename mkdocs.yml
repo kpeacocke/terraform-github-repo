@@ -78,11 +78,8 @@ extra:
   version:
     provider: mike
     default: latest
-    # Disable aliases that match version names to avoid conflicts
-    aliases_versions_match: false
-    # Ensure aliases are respected and consistent
+    # Simplified version configuration to avoid conflicts
     version_selector: true
-    tabs_above_content: true
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/kpeacocke
