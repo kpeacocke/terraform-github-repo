@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.0.15](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.14...v1.0.15) (2025-06-18)
+
+### 🐛 Bug Fixes
+
+* add fetch-depth:0 to docs checkout in release workflow ([8636b36](https://github.com/kpeacocke/terraform-github-repo/commit/8636b36b4bd802120ec3c590f7610a5f0672f446))
+
+### 📚 Documentation
+
+* update changelog for v1.0.14 ([6fb7298](https://github.com/kpeacocke/terraform-github-repo/commit/6fb7298fed75bd8d44c9dbcdf8e7ede6e114da0f))
+
+
+Generating notes for 1.0.15
+
 ## [1.0.14](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.13...v1.0.14) (2025-06-18)
 
 ### 🐛 Bug Fixes
