@@ -374,12 +374,21 @@ jobs:
           echo "==> GIT STATUS AFTER CHECKOUT"
           git status
           echo "==> Current branch: $(git rev-parse --abbrev-ref HEAD)"
+          echo "==> HEAD commit SHA: $(git rev-parse HEAD)"
           echo "==> Latest commit on this branch:"
           git log -1 --oneline
           echo "==> Last 10 commits:"
           git log --oneline -10
           echo "==> Files in repo root after checkout:"
           ls -al
+          echo "==> Files in .github/workflows after checkout:"
+          ls -al .github/workflows
+          echo "==> git ls-tree for mkdocs.yml:"
+          git ls-tree -r HEAD --name-only | grep mkdocs.yml || echo "Not found in git tree"
+          if git ls-tree -r HEAD --name-only | grep -q '^mkdocs.yml$'; then
+            echo "==> mkdocs.yml is present in the current commit. Showing contents:"
+            git show HEAD:mkdocs.yml | head -20
+          fi
           echo "==> Checking for mkdocs.yml with realpath:"
           if [ -f mkdocs.yml ]; then
             realpath mkdocs.yml || true
@@ -388,8 +397,6 @@ jobs:
           else
             echo "::error::mkdocs.yml is missing! Searching for mkdocs.yml in workspace..."
             find . -name mkdocs.yml
-            echo "==> git ls-tree for mkdocs.yml:"
-            git ls-tree -r HEAD --name-only | grep mkdocs.yml || echo "Not found in git tree"
             exit 1
           fi
 
