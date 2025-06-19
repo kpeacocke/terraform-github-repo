@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.1.20](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.19...v1.1.20) (2025-06-19)
+
+### 🐛 Bug Fixes
+
+* enhance checkout step with additional logging and mkdocs.yml presence verification ([9936108](https://github.com/kpeacocke/terraform-github-repo/commit/9936108c8c006b37d4cdc4bfb450307243750fbc))
+
+
+Generating notes for 1.1.20
+
 ## [1.1.19](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.18...v1.1.19) (2025-06-19)
 
 ### 🐛 Bug Fixes
