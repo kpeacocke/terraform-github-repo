@@ -343,7 +343,7 @@ jobs:
         run: |
           # Run the fix-mike-aliases script to clean up any alias conflicts before deployment
           chmod +x ./scripts/fix-mike-aliases.sh
-          ./scripts/fix-mike-aliases.sh
+          ./scripts/fix-mike-aliases.sh || true
 
       - name: Deploy versioned documentation
         run: |
