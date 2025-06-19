@@ -359,6 +359,8 @@ jobs:
       - name: Ensure clean checkout of main and mkdocs.yml presence
         run: |
           set -x
+          echo "==> ENFORCING WORKING DIRECTORY TO REPO ROOT"
+          cd "$(git rev-parse --show-toplevel)"
           echo "==> GIT STATUS BEFORE CHECKOUT"
           git status
           echo "==> GIT BRANCHES"
@@ -366,26 +368,28 @@ jobs:
           echo "==> PWD: $(pwd)"
           echo "==> Listing files in current directory:"
           ls -al
-          echo "==> Listing files in parent directory:"
-          ls -al ..
-          echo "==> Listing files in repo root:"
-          git rev-parse --show-toplevel && ls -al $(git rev-parse --show-toplevel)
           echo "==> Fetching and checking out main branch..."
           git fetch origin main
           git checkout main
           echo "==> GIT STATUS AFTER CHECKOUT"
           git status
           echo "==> Current branch: $(git rev-parse --abbrev-ref HEAD)"
-          echo "==> Files in workspace after checkout:"
-          ls -al
+          echo "==> Latest commit on this branch:"
+          git log -1 --oneline
+          echo "==> Last 10 commits:"
+          git log --oneline -10
           echo "==> Files in repo root after checkout:"
-          git rev-parse --show-toplevel && ls -al $(git rev-parse --show-toplevel)
+          ls -al
+          echo "==> Checking for mkdocs.yml with realpath:"
           if [ -f mkdocs.yml ]; then
+            realpath mkdocs.yml || true
             echo "==> mkdocs.yml found! Showing first 20 lines:"
             head -20 mkdocs.yml
           else
             echo "::error::mkdocs.yml is missing! Searching for mkdocs.yml in workspace..."
             find . -name mkdocs.yml
+            echo "==> git ls-tree for mkdocs.yml:"
+            git ls-tree -r HEAD --name-only | grep mkdocs.yml || echo "Not found in git tree"
             exit 1
           fi
 
