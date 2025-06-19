@@ -1,5 +1,23 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+<!-- markdownlint-disable MD024 -->
+
+## [1.1.12](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.11...v1.1.12) (2025-06-19)
+
+### 🐛 Bug Fixes
+
+* standardize token parameter name in workflows and enhance mike alias conflict resolution ([904b16a](https://github.com/kpeacocke/terraform-github-repo/commit/904b16a2adaa283881dbf0b8c88445366e75e8fe))
+
+
+Generating notes for 1.1.12
+
+# Changelog
+
 
 
 ## [1.1.11](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.10...v1.1.11) (2025-06-18)
