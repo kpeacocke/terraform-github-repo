@@ -46,7 +46,7 @@ jobs:
       output_file: "README.md"
       git_push: true
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ secrets.GITHUB_TOKEN }}
 
   build-and-deploy-docs:
     if: github.ref == 'refs/heads/main' || github.event_name == 'release'
@@ -196,13 +196,6 @@ jobs:
 
       - name: Fix Mike Alias Conflicts
         run: |
-          # Run the fix-mike-aliases script to clean up any alias conflicts
-          chmod +x ./scripts/fix-mike-aliases.sh
-          ./scripts/fix-mike-aliases.sh
-
-      - name: Fix Mike alias conflicts
-        run: |
-          # Run the fix-mike-aliases script to clean up any alias conflicts before deployment
           chmod +x ./scripts/fix-mike-aliases.sh
           ./scripts/fix-mike-aliases.sh
 
@@ -262,7 +255,12 @@ jobs:
             
             # Step 2: Only after successful version deployment, create the alias separately
             echo "Step 2: Setting version ${{ steps.version.outputs.version }} as 'latest' alias..."
-            mike alias --push --update ${{ steps.version.outputs.version }} latest
+            # Only set alias if not already present as a version or alias
+            if ! mike list | grep -wq 'latest'; then
+              mike alias --push --update ${{ steps.version.outputs.version }} latest
+            else
+              echo "Alias 'latest' already exists, skipping."
+            fi
           else
             # For main branch, update latest documentation
             echo "Deploying latest documentation from main branch..."

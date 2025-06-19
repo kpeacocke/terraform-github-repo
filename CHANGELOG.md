@@ -1,182 +1,192 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-<!-- markdownlint-disable MD024 -->
 
 ## [1.1.11](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.10...v1.1.11) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.1.11)
 
 * enhance MkDocs deployment process and resolve Mike alias conflicts ([66c4e3a](https://github.com/kpeacocke/terraform-github-repo/commit/66c4e3af032eecbc856d4053662740b683d03887))
 
 
 Generating notes for 1.1.11
 
+
 ## [1.1.10](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.9...v1.1.10) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.1.10)
 
 * remove unsupported --no-redirect flag from mike commands ([2bd99d9](https://github.com/kpeacocke/terraform-github-repo/commit/2bd99d9bec102a925f72b25213e2c9e0a8f2907e))
 
 
 Generating notes for 1.1.10
 
+
 ## [1.1.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.8...v1.1.9) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.1.9)
 
 * resolve mike alias collision error between version name and alias ([407ae87](https://github.com/kpeacocke/terraform-github-repo/commit/407ae8742907273f9b6e9c2b5e3e3c7595fd1d6f))
 
 
 Generating notes for 1.1.9
 
+
 ## [1.1.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.7...v1.1.8) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.1.8)
 
 * update TFLint action to use terraform-linters/setup-tflint@v4.1.1 ([dc55f5f](https://github.com/kpeacocke/terraform-github-repo/commit/dc55f5f68d3e12b13f6557a6a658f792cd55ea7f))
 
 
 Generating notes for 1.1.8
 
+
 ## [1.1.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.6...v1.1.7) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.1.7)
 
 * resolve docs-update job failures by addressing SSL module and mike alias collision issues ([72ccd07](https://github.com/kpeacocke/terraform-github-repo/commit/72ccd079be73bdd474216f700cedecd2f48594d0))
 
-### 📚 Documentation
+### 📚 Documentation (1.1.7)
 
 * add documentation for docs-update job fixes ([dfd5557](https://github.com/kpeacocke/terraform-github-repo/commit/dfd5557b8a33069d56e079d9c9830c4d708d4b89))
 
 
 Generating notes for 1.1.7
 
+
 ## [1.1.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.5...v1.1.6) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.1.6)
 
 * resolve workflow validation errors in build.yml ([3793b9f](https://github.com/kpeacocke/terraform-github-repo/commit/3793b9f20dd44a246bd1310400565dd3632319ba))
 
 
 Generating notes for 1.1.6
 
+
 ## [1.1.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.4...v1.1.5) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.1.5)
 
 * make GitHub token optional in reusable workflows ([8c3c99a](https://github.com/kpeacocke/terraform-github-repo/commit/8c3c99a1383f3534600b08d63e79ffb75dfebbc7))
 
 
 Generating notes for 1.1.5
 
+
 ## [1.1.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.3...v1.1.4) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.1.4)
 
 * standardize GITHUB_TOKEN parameter name in reusable workflows ([b7f7cda](https://github.com/kpeacocke/terraform-github-repo/commit/b7f7cda0f0ec3e3b0928e341b0e8118e483608f2))
 
 
 Generating notes for 1.1.4
 
+
 ## [1.1.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.2...v1.1.3) (2025-06-18)
 
-### ♻️ Code Refactoring
+### ♻️ Code Refactoring (1.1.3)
 
 * standardize GitHub Actions workflows using reusable workflows for validation, security, and docs ([ffd645c](https://github.com/kpeacocke/terraform-github-repo/commit/ffd645c023ffb53ed81d052c6663a1d7d34a1c16))
 
 
 Generating notes for 1.1.3
 
+
 ## [1.1.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.1...v1.1.2) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.1.2)
 
 * streamline Git configuration and deployment process in documentation workflow ([bcf66ff](https://github.com/kpeacocke/terraform-github-repo/commit/bcf66ff71b1c1b6df9b9b4d4a422ed60de56ef76))
 
-### 📚 Documentation
+### 📚 Documentation (1.1.2)
 
 * update changelog for v1.1.1 ([f230070](https://github.com/kpeacocke/terraform-github-repo/commit/f2300707c5d53c2c1335d81a09c5e592882cb910))
 
 
 Generating notes for 1.1.2
 
+
 ## [1.1.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.0...v1.1.1) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.1.1)
 
 * refine permissions and enhance deployment process in GitHub Actions ([34efcad](https://github.com/kpeacocke/terraform-github-repo/commit/34efcadb9fed8ae7b5b66c567cf0fd57799d7ae6))
 
-### 📚 Documentation
+### 📚 Documentation (1.1.1)
 
 * update changelog for v1.1.0 ([2884765](https://github.com/kpeacocke/terraform-github-repo/commit/288476537082d712212ae3e6561238630a7529e6))
 
 
 Generating notes for 1.1.1
 
+
 ## [1.1.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.17...v1.1.0) (2025-06-18)
 
-### 🚀 Features
+### 🚀 Features (1.1.0)
 
 * enhance security and cleanup in CI workflows, add credential management guidelines ([7ad7806](https://github.com/kpeacocke/terraform-github-repo/commit/7ad7806d09856f9a1a4fe0eea9712b657ec509f4))
 
-### 📚 Documentation
+### 📚 Documentation (1.1.0)
 
 * update changelog for v1.0.17 ([14bb6d3](https://github.com/kpeacocke/terraform-github-repo/commit/14bb6d3b6ea10f6feed7e8c16f347d5cc6359083))
 
 
 Generating notes for 1.1.0
 
+
 ## [1.0.17](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.16...v1.0.17) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.17)
 
 * add required permissions to build-and-deploy-docs job ([8cb07f9](https://github.com/kpeacocke/terraform-github-repo/commit/8cb07f96f81ae35267b07b9e0393ce845bb6e727))
 
-### 📚 Documentation
+### 📚 Documentation (1.0.17)
 
 * update changelog for v1.0.16 ([c15deaf](https://github.com/kpeacocke/terraform-github-repo/commit/c15deafccf1e10591ea7fca9dddfbea1d371f78f))
 
 
 Generating notes for 1.0.17
 
+
 ## [1.0.16](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.15...v1.0.16) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.16)
 
 * update GitHub Pages deployment permissions ([5f62ddc](https://github.com/kpeacocke/terraform-github-repo/commit/5f62ddc694bdd6c7919a6b5ca1cdd1732f184bbf))
 
-### 📚 Documentation
+### 📚 Documentation (1.0.16)
 
 * update changelog for v1.0.15 ([6ddc6d4](https://github.com/kpeacocke/terraform-github-repo/commit/6ddc6d463e9e55e12b296ca1562273cdead0564c))
 
 
 Generating notes for 1.0.16
 
+
 ## [1.0.15](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.14...v1.0.15) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.15)
 
 * add fetch-depth:0 to docs checkout in release workflow ([8636b36](https://github.com/kpeacocke/terraform-github-repo/commit/8636b36b4bd802120ec3c590f7610a5f0672f446))
 
-### 📚 Documentation
+### 📚 Documentation (1.0.15)
 
 * update changelog for v1.0.14 ([6fb7298](https://github.com/kpeacocke/terraform-github-repo/commit/6fb7298fed75bd8d44c9dbcdf8e7ede6e114da0f))
 
 
 Generating notes for 1.0.15
 
+
 ## [1.0.14](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.13...v1.0.14) (2025-06-18)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.14)
 
 * resolve git-committers authentication and gh-pages branch conflicts ([e9c7ea1](https://github.com/kpeacocke/terraform-github-repo/commit/e9c7ea17dd0ebeb61760829fa8b924932e3a44f0))
 
-### 📚 Documentation
+### 📚 Documentation (1.0.14)
 
 * fix MkDocs strict mode issues and add missing documentation files ([5178769](https://github.com/kpeacocke/terraform-github-repo/commit/51787691079219b8a9783adbea7bf798440c7b21))
 * update changelog for v1.0.13 ([6b18a34](https://github.com/kpeacocke/terraform-github-repo/commit/6b18a34df643b5a36adf7443bf772d43a21dfaa4))
@@ -184,81 +194,90 @@ Generating notes for 1.0.15
 
 Generating notes for 1.0.14
 
+
 ## [1.0.13](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.12...v1.0.13) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.13)
 
 * correct emoji extension paths in MkDocs configuration ([eb62851](https://github.com/kpeacocke/terraform-github-repo/commit/eb62851536287a71ee8d309f324b20118c11b480))
 
 
 Generating notes for 1.0.13
 
+
 ## [1.0.12](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.11...v1.0.12) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.12)
 
 * update MkDocs dependencies and improve documentation build process ([ab17abc](https://github.com/kpeacocke/terraform-github-repo/commit/ab17abc8f33f48ec4cef402203e9bfb35ebf52cc))
 
 
 Generating notes for 1.0.12
 
+
 ## [1.0.11](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.10...v1.0.11) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.11)
 
 * update documentation dependencies and improve build output ([136f56f](https://github.com/kpeacocke/terraform-github-repo/commit/136f56f3803445571caf22ee79bcaf4a5bd386e8))
 
 
 Generating notes for 1.0.11
 
+
 ## [1.0.10](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.9...v1.0.10) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.10)
 
 * update permissions and enhance documentation deployment process ([7b37bfe](https://github.com/kpeacocke/terraform-github-repo/commit/7b37bfeed28139c708ecdcfa95f8d4f1afc17b02))
 
 
 Generating notes for 1.0.10
 
+
 ## [1.0.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.8...v1.0.9) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.9)
 
 * add permissions for discussions in terraform-registry and notify jobs ([d9af872](https://github.com/kpeacocke/terraform-github-repo/commit/d9af8728ea57f2245af964aff262f44d248efd58))
 
 
 Generating notes for 1.0.9
 
+
 ## [1.0.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.7...v1.0.8) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.8)
 
 * enhance release comment handling by using discussion URL or creating a new issue ([a5e94f6](https://github.com/kpeacocke/terraform-github-repo/commit/a5e94f6cdc1c3f6170b6761d35d51ce26d1a112c))
 
 
 Generating notes for 1.0.8
 
+
 ## [1.0.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.6...v1.0.7) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.7)
 
 * update GitHub API call to create release comment for improved functionality ([a5770fa](https://github.com/kpeacocke/terraform-github-repo/commit/a5770fa1326296699731a2586ca63343715c0545))
 
 
 Generating notes for 1.0.7
 
+
 ## [1.0.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.5...v1.0.6) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.6)
 
 * add GitHub token to Terraform plan steps for enhanced security ([51a53e3](https://github.com/kpeacocke/terraform-github-repo/commit/51a53e3084bb5be167f4a3b43729e31f12426708))
 
 
 Generating notes for 1.0.6
 
+
 ## [1.0.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.4...v1.0.5) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.5)
 
 * refactor issue fetching logic in traceability workflow for improved error handling ([dd9c35c](https://github.com/kpeacocke/terraform-github-repo/commit/dd9c35cc8cb69977cd7cf51642727a316ff3083e))
 * remove custom_dir from theme configuration in mkdocs.yml ([9be77af](https://github.com/kpeacocke/terraform-github-repo/commit/9be77af56dfc3ecdfa05024dbf2c93b449981cb6))
@@ -266,45 +285,50 @@ Generating notes for 1.0.6
 
 Generating notes for 1.0.5
 
+
 ## [1.0.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.3...v1.0.4) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.4)
 
 * implement code changes to enhance functionality and improve performance ([c74db8b](https://github.com/kpeacocke/terraform-github-repo/commit/c74db8bb1dd0ca9168c1e2a3f8233215e958cd62))
 
 
 Generating notes for 1.0.4
 
+
 ## [1.0.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.2...v1.0.3) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.3)
 
 * update Go version and SonarCloud action, refactor E2E tests for better structure ([1bc2c1b](https://github.com/kpeacocke/terraform-github-repo/commit/1bc2c1b8086d28e46b6ce1e091d880d7c514c359))
 
 
 Generating notes for 1.0.3
 
+
 ## [1.0.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.1...v1.0.2) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.2)
 
 * update Terraform provider versions in SonarCloud configuration ([7f6b0ee](https://github.com/kpeacocke/terraform-github-repo/commit/7f6b0eedd4de562ae80e620bb48eaa176a476763))
 
 
 Generating notes for 1.0.2
 
+
 ## [1.0.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.0...v1.0.1) (2025-06-17)
 
-### 🐛 Bug Fixes
+### 🐛 Bug Fixes (1.0.1)
 
 * add check for changes before committing coverage report to wiki ([d97aaec](https://github.com/kpeacocke/terraform-github-repo/commit/d97aaec6764e82b27a59609f3a3c39cf18be25f9))
 
 
 Generating notes for 1.0.1
 
+
 ## 1.0.0 (2025-06-17)
 
-### 🚀 Features
+### 🚀 Features (1.0.0)
 
 * add .gitignore template and languages variable with validation ([4c8b169](https://github.com/kpeacocke/terraform-github-repo/commit/4c8b169abf4481280d9e47752ba78276e50f70ad))
 * add backend configuration section to README ([1e73419](https://github.com/kpeacocke/terraform-github-repo/commit/1e73419db2177fbc67eb44f1b9bd199d16a709ac))
@@ -422,29 +446,27 @@ Generating notes for 1.0.1
 
 Generating notes for 1.0.0
 
-# Changelog
 
-All notable changes to this project will be documented in this file automatically by semantic-release
 
 ## [1.1.0] - 2025-06-05
 
 ### Added
 
-- Refactored `variables.tf` and `outputs.tf` for clarity, registry readiness, and added `try(...)` error handling
-- Taskfile `docs` task and Husky pre-commit hook to auto-inject Terraform docs via `terraform-docs`
-- Complete `examples/minimal` with local backend config, variables, and outputs
+* Refactored `variables.tf` and `outputs.tf` for clarity, registry readiness, and added `try(...)` error handling
+* Taskfile `docs` task and Husky pre-commit hook to auto-inject Terraform docs via `terraform-docs`
+* Complete `examples/minimal` with local backend config, variables, and outputs
 
 ### Changed
 
-- Updated `README.md` for Terraform Registry conventions and integrated `terraform-docs` injection
-- `.terraform-docs.yml` fixed to use proper map format for `sections`
+* Updated `README.md` for Terraform Registry conventions and integrated `terraform-docs` injection
+* `.terraform-docs.yml` fixed to use proper map format for `sections`
 
 ### Fixed
 
-- Removed unsupported output attributes (`.html_url`/`.url`)
-- Disabled TFLint unused declarations rule to avoid false positives
+* Removed unsupported output attributes (`.html_url`/`.url`)
+* Disabled TFLint unused declarations rule to avoid false positives
 
 ### Maintenance
 
-- Increased commitlint header length limit to 120 characters
-- Tagged and published versions v1.0.0 and v1.1.0
+* Increased commitlint header length limit to 120 characters
+* Tagged and published versions v1.0.0 and v1.1.0

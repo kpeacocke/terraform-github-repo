@@ -28,6 +28,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const pr = context.payload.pull_request;
+            // Skip traceability check for Dependabot PRs
+            if (pr.user && pr.user.login === 'dependabot[bot]') {
+              console.log('Dependabot PR detected, skipping traceability check.');
+              return;
+            }
+
             const body = pr.body || "";
             const issueRefRegex = /#(\d+)/g;
             const matches = [...body.matchAll(issueRefRegex)];
@@ -38,7 +44,7 @@ jobs:
             }
 
             const issueNumber = matches[0][1]; // just check the first one
-            
+
             try {
               const issue = await github.rest.issues.get({
                 owner: context.repo.owner,

@@ -45,7 +45,8 @@ jobs:
         uses: aquasecurity/trivy-action@fbd16365eb88e12433951383f5e99bd901fc618f # v0.18.0
         with:
           scan-type: ${{ inputs.target_type }}
-          scan-ref: ${{ inputs.working_directory }}
+          scan-ref: ${{ inputs.target_type != 'image' && inputs.working_directory || '' }}
+          image-ref: ${{ inputs.target_type == 'image' && inputs.working_directory || '' }}
           format: ${{ inputs.format }}
           output: 'trivy-results.${{ inputs.format }}'
           severity: ${{ inputs.severity }}
