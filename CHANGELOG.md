@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.1.14](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.13...v1.1.14) (2025-06-19)
+
+### 🐛 Bug Fixes
+
+* ensure fix-mike-aliases script runs without failing the deployment ([ca2fcdd](https://github.com/kpeacocke/terraform-github-repo/commit/ca2fcdda1ba15f6ea8b70250a7ace7f4fc67863e))
+
+
+Generating notes for 1.1.14
+
 ## [1.1.13](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.12...v1.1.13) (2025-06-19)
 
 ### 🐛 Bug Fixes
