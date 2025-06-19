@@ -285,8 +285,9 @@ jobs:
       contents: write
       pages: write
     
+
     steps:
-      - name: Checkout code
+      - name: Checkout main branch (ensure mkdocs.yml is present)
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           ref: main
