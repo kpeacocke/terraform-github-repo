@@ -346,59 +346,17 @@ jobs:
           chmod +x ./scripts/fix-mike-aliases.sh
           ./scripts/fix-mike-aliases.sh || true
 
-      - name: Debug - Show working directory and files before MkDocs build
+      - name: Ensure mkdocs.yml is present in repo root
         run: |
           echo "PWD: $(pwd)"
-          echo "Files in PWD:"
+          echo "Files in repo root:"
           ls -al
-          echo "Files in parent directory:"
-          ls -al ..
-          echo "Files in repo root (if different):"
-          git rev-parse --show-toplevel && ls -al $(git rev-parse --show-toplevel)
-
-      - name: Ensure clean checkout of main and mkdocs.yml presence
-        run: |
-          set -x
-          echo "==> ENFORCING WORKING DIRECTORY TO REPO ROOT"
-          cd "$(git rev-parse --show-toplevel)"
-          echo "==> GIT STATUS BEFORE CHECKOUT"
-          git status
-          echo "==> GIT BRANCHES"
-          git branch -a
-          echo "==> PWD: $(pwd)"
-          echo "==> Listing files in current directory:"
-          ls -al
-          echo "==> Fetching and checking out main branch..."
-          git fetch origin main
-          git checkout main
-          echo "==> GIT STATUS AFTER CHECKOUT"
-          git status
-          echo "==> Current branch: $(git rev-parse --abbrev-ref HEAD)"
-          echo "==> HEAD commit SHA: $(git rev-parse HEAD)"
-          echo "==> Latest commit on this branch:"
-          git log -1 --oneline
-          echo "==> Last 10 commits:"
-          git log --oneline -10
-          echo "==> Files in repo root after checkout:"
-          ls -al
-          echo "==> Files in .github/workflows after checkout:"
-          ls -al .github/workflows
-          echo "==> git ls-tree for mkdocs.yml:"
-          git ls-tree -r HEAD --name-only | grep mkdocs.yml || echo "Not found in git tree"
-          if git ls-tree -r HEAD --name-only | grep -q '^mkdocs.yml$'; then
-            echo "==> mkdocs.yml is present in the current commit. Showing contents:"
-            git show HEAD:mkdocs.yml | head -20
-          fi
-          echo "==> Checking for mkdocs.yml with realpath:"
-          if [ -f mkdocs.yml ]; then
-            realpath mkdocs.yml || true
-            echo "==> mkdocs.yml found! Showing first 20 lines:"
-            head -20 mkdocs.yml
-          else
-            echo "::error::mkdocs.yml is missing! Searching for mkdocs.yml in workspace..."
-            find . -name mkdocs.yml
+          if [ ! -f mkdocs.yml ]; then
+            echo "::error::mkdocs.yml is missing in repo root!"
             exit 1
           fi
+          echo "==> mkdocs.yml found! Showing first 20 lines:"
+          head -20 mkdocs.yml
 
       - name: Deploy versioned documentation
         run: |
