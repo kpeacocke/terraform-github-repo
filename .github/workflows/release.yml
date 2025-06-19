@@ -350,7 +350,7 @@ jobs:
           # Display installed packages for debugging
           echo "Installed Python packages:"
           pip list | grep -E "mergedeep|pyyaml|mkdocs|mike"
-          
+
           # Validate mkdocs configuration with error handling
           echo "Validating mkdocs configuration..."
           if ! mkdocs build --clean --strict; then
@@ -362,40 +362,45 @@ jobs:
               exit 1
             fi
           fi
-          
+
           echo "MkDocs build successful, proceeding with deployment"
-          
-          # Deploy new version - using a simplified and more reliable approach
+
           VERSION="${{ needs.release.outputs.version }}"
           echo "Deploying version $VERSION to GitHub Pages..."
-          
+
           # Clean up any local mike state
           rm -rf .mike 2>/dev/null || true
-          
-          # Step 1: First deploy only the version without any aliases
+
+          # Only deploy real version numbers, never 'latest' as a version
+          if [ "$VERSION" = "latest" ]; then
+            echo "Error: Refusing to deploy a version literally named 'latest'. Only use 'latest' as an alias."
+            exit 1
+          fi
+
+          # Step 1: Deploy the new version (no aliases)
           echo "Step 1: Deploying version $VERSION (no aliases)..."
-          mike deploy --push $VERSION --title "$VERSION"
-          
+          mike deploy --push "$VERSION" --title "$VERSION"
+
           # Wait to ensure changes are registered
           sleep 5
-          
-          # Step 2: Only after successful version deployment, create the alias separately
+
+          # Step 2: Set 'latest' as an alias for this version
           echo "Step 2: Setting version $VERSION as 'latest' alias..."
-          mike alias --push --update $VERSION latest
-          
+          mike alias --push --update "$VERSION" latest
+
           # Wait again before setting default
           sleep 5
-          
+
           # Step 3: Set the default version
           echo "Step 3: Setting 'latest' as the default version..."
           mike set-default --push latest
-          
+
           # Verify deployment structure
           echo "Deployment complete. Running verification..."
-          
+
           # Get current branch
           CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-          
+
           # Check the gh-pages branch structure if possible
           if git fetch origin gh-pages && git checkout gh-pages; then
             echo "✅ gh-pages branch exists and is accessible"
@@ -405,7 +410,7 @@ jobs:
             else
               echo "⚠️ .mike file does not exist!"
             fi
-            
+
             # Return to original branch
             git checkout $CURRENT_BRANCH
           else

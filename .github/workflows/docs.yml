@@ -197,7 +197,7 @@ jobs:
       - name: Fix Mike Alias Conflicts
         run: |
           chmod +x ./scripts/fix-mike-aliases.sh
-          ./scripts/fix-mike-aliases.sh
+          ./scripts/fix-mike-aliases.sh || true
 
       - name: Build and deploy with versioning
         run: |
