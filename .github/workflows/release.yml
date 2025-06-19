@@ -345,6 +345,16 @@ jobs:
           chmod +x ./scripts/fix-mike-aliases.sh
           ./scripts/fix-mike-aliases.sh || true
 
+      - name: Debug - Show working directory and files before MkDocs build
+        run: |
+          echo "PWD: $(pwd)"
+          echo "Files in PWD:"
+          ls -al
+          echo "Files in parent directory:"
+          ls -al ..
+          echo "Files in repo root (if different):"
+          git rev-parse --show-toplevel && ls -al $(git rev-parse --show-toplevel)
+
       - name: Deploy versioned documentation
         run: |
           # Display installed packages for debugging
