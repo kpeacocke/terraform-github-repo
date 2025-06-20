@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.1.22](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.21...v1.1.22) (2025-06-20)
+
+### 🐛 Bug Fixes
+
+* add debug step to show working directory and environment variables after checkout ([0a2a91f](https://github.com/kpeacocke/terraform-github-repo/commit/0a2a91fa5dfb41c13ea7cc79ca216ede08b944fe))
+* update debug step name for clarity in release workflow ([76e822a](https://github.com/kpeacocke/terraform-github-repo/commit/76e822aeb058c8baff0256bbe65f43c93372da04))
+
+
+Generating notes for 1.1.22
+
 ## [1.1.21](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.20...v1.1.21) (2025-06-19)
 
 ### 🐛 Bug Fixes
