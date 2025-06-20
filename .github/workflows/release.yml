@@ -311,26 +311,12 @@ jobs:
           # Upgrade pip first
           python -m pip install --upgrade pip setuptools wheel
           
-          # Clear pip cache to ensure clean environment
-          pip cache purge
-          
           # Install critical dependencies first with specific versions
           pip install --no-cache-dir pyyaml==6.0.1 mergedeep==1.3.4 markupsafe==2.1.3 jinja2==3.1.2 packaging==23.2
           
-          # Wait a moment to ensure dependencies are properly registered
-          sleep 2
-          
-          # Install remaining dependencies - use --no-deps for mike to avoid dependency conflicts
+          # Install remaining dependencies
           pip install --no-cache-dir -r docs/requirements.txt
           pip install --no-cache-dir --no-deps mike==2.0.0
-          
-          # Show detailed dependency information for debugging
-          echo "Key package versions:"
-          pip list | grep -E "mergedeep|pyyaml|mkdocs|mike|jinja2|markupsafe"
-          
-          # Show all installed packages for debugging
-          echo "All installed packages:"
-          pip list
 
       - name: Setup Git
         run: |
@@ -349,35 +335,20 @@ jobs:
 
       - name: Ensure mkdocs.yml is present in repo root
         run: |
-          echo "PWD: $(pwd)"
-          echo "Files in repo root:"
-          ls -al
           if [ ! -f mkdocs.yml ]; then
             echo "::error::mkdocs.yml is missing in repo root!"
-            find . -name "mkdocs.yml" -exec echo "Found mkdocs.yml at: {}" \;
             exit 1
           fi
-          echo "==> mkdocs.yml found! Showing first 20 lines:"
-          head -20 mkdocs.yml
         working-directory: ${{ github.workspace }}
 
       - name: Deploy versioned documentation
         run: |
-          # Display installed packages for debugging
-          echo "Installed Python packages:"
-          pip list | grep -E "mergedeep|pyyaml|mkdocs|mike"
-
-          # Validate mkdocs configuration with error handling
+          # Ensure we're on main branch with mkdocs.yml
+          git checkout main
+          
+          # Validate mkdocs configuration
           echo "Validating mkdocs configuration..."
-          if ! mkdocs build --clean --strict; then
-            echo "::warning::MkDocs build failed with strict mode, trying with verbose output"
-            if ! mkdocs build --verbose; then
-              echo "::error::MkDocs build failed! Checking Python environment..."
-              python -c "import sys; print(sys.path)"
-              python -c "import yaml, mergedeep; print('YAML version:', yaml.__version__, 'Mergedeep version:', mergedeep.__version__)"
-              exit 1
-            fi
-          fi
+          mkdocs build --clean --strict
 
           echo "MkDocs build successful, proceeding with deployment"
 
@@ -393,45 +364,16 @@ jobs:
             exit 1
           fi
 
-          # Step 1: Deploy the new version (no aliases)
-          echo "Step 1: Deploying version $VERSION (no aliases)..."
-          mike deploy --push "$VERSION" --title "$VERSION"
+          # Deploy the version and set as latest
+          echo "Deploying version $VERSION..."
+          mike deploy --push "$VERSION" latest --title "$VERSION" --update-aliases
 
-          # Wait to ensure changes are registered
-          sleep 5
-
-          # Step 2: Set 'latest' as an alias for this version
-          echo "Step 2: Setting version $VERSION as 'latest' alias..."
-          mike alias --push --update "$VERSION" latest
-
-          # Wait again before setting default
-          sleep 5
-
-          # Step 3: Set the default version
-          echo "Step 3: Setting 'latest' as the default version..."
+          # Set as default
+          echo "Setting 'latest' as the default version..."
           mike set-default --push latest
 
-          # Verify deployment structure
-          echo "Deployment complete. Running verification..."
-
-          # Get current branch
-          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-
-          # Check the gh-pages branch structure if possible
-          if git fetch origin gh-pages && git checkout gh-pages; then
-            echo "✅ gh-pages branch exists and is accessible"
-            if [ -f ".mike" ]; then
-              echo "✅ .mike file exists with the following content:"
-              cat .mike
-            else
-              echo "⚠️ .mike file does not exist!"
-            fi
-
-            # Return to original branch
-            git checkout $CURRENT_BRANCH
-          else
-            echo "⚠️ Could not access gh-pages branch for verification"
-          fi
+          echo "Deployment complete."
+        working-directory: ${{ github.workspace }}
         env:
           # Increase Python's error verbosity
           PYTHONVERBOSE: 1
@@ -442,6 +384,9 @@ jobs:
 
       - name: Update changelog in docs
         run: |
+          # Ensure we're on main branch
+          git checkout main
+          
           # Copy changelog to docs
           cp CHANGELOG.md docs/changelog.md
           
@@ -449,6 +394,7 @@ jobs:
           git add docs/changelog.md
           git commit -m "docs: update changelog for ${{ needs.release.outputs.version }}" || exit 0
           git push origin main
+        working-directory: ${{ github.workspace }}
 
   # Notification and cleanup
   notify:
