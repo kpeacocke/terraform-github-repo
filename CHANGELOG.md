@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.1.24](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.23...v1.1.24) (2025-06-20)
+
+### 🐛 Bug Fixes
+
+* add debug output for mkdocs.yml location in release workflow ([2d52fb2](https://github.com/kpeacocke/terraform-github-repo/commit/2d52fb27257297af25785a763c8bdec51b278647))
+
+
+Generating notes for 1.1.24
+
 ## [1.1.23](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.22...v1.1.23) (2025-06-20)
 
 ### 🐛 Bug Fixes
