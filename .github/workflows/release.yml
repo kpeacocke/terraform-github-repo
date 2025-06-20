@@ -294,17 +294,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0  # Needed for git-revision-date-localized plugin
 
-      - name: Debug - Show working directory and files (immediately after checkout)
-        run: |
-          echo "==> DEBUG: Immediately after checkout"
-          echo "PWD: $(pwd)"
-          echo "Files in PWD:"
-          ls -al
-          echo "Files in repo root (if different):"
-          ls -al "$GITHUB_WORKSPACE" || true
-          echo "Environment variables:"
-          env | sort
-          echo "==> END DEBUG"
 
       - name: Setup Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -369,6 +358,7 @@ jobs:
           fi
           echo "==> mkdocs.yml found! Showing first 20 lines:"
           head -20 mkdocs.yml
+        working-directory: ${{ github.workspace }}
 
       - name: Deploy versioned documentation
         run: |
