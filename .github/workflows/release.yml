@@ -294,7 +294,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0  # Needed for git-revision-date-localized plugin
 
-      - name: Debug: Show working directory and files (immediately after checkout)
+      - name: Debug - Show working directory and files (immediately after checkout)
         run: |
           echo "==> DEBUG: Immediately after checkout"
           echo "PWD: $(pwd)"
