@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.1.25](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.24...v1.1.25) (2025-06-20)
+
+### ♻️ Code Refactoring
+
+* streamline dependency installation and mkdocs deployment steps ([04f1bc9](https://github.com/kpeacocke/terraform-github-repo/commit/04f1bc93a167d950f8bf805e1b918e5f16c2fbae))
+
+
+Generating notes for 1.1.25
+
 ## [1.1.24](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.23...v1.1.24) (2025-06-20)
 
 ### 🐛 Bug Fixes
