@@ -463,6 +463,17 @@ jobs:
       discussions: write
     
     steps:
+      - name: Verify presence of required scripts
+        run: |
+          echo "Verifying presence of required scripts..."
+          for script in notify_success.py notify_failure.py cleanup_releases.py; do
+            if [ ! -f "scripts/$script" ]; then
+              echo "::error::Missing script: $script"
+              exit 1
+            fi
+          done
+          echo "✅ All required scripts are present."
+
       - name: Notify success
         run: |
           echo "Notifying success..."
