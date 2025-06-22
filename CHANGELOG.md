@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.3.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.2.0...v1.3.0) (2025-06-22)
+
+### 🚀 Features
+
+* add alias conflict check before deploying documentation ([64853a2](https://github.com/kpeacocke/terraform-github-repo/commit/64853a2c36a38c5f336f73490a316a1977fc3c8c))
+
+
+Generating notes for 1.3.0
+
 ## [1.2.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.27...v1.2.0) (2025-06-22)
 
 ### 🚀 Features
