@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.4.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.3.0...v1.4.0) (2025-06-22)
+
+### 🚀 Features
+
+* add verification step for required scripts before notification ([fa78c79](https://github.com/kpeacocke/terraform-github-repo/commit/fa78c79a7af682f9058e0decf6009315e362feba))
+
+### 📚 Documentation
+
+* update changelog for v1.3.0 ([1032ebd](https://github.com/kpeacocke/terraform-github-repo/commit/1032ebd28fa85d769e61b1307008605edbc175c9))
+
+
+Generating notes for 1.4.0
+
 ## [1.3.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.2.0...v1.3.0) (2025-06-22)
 
 ### 🚀 Features
