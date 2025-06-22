@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.4.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.0...v1.4.1) (2025-06-22)
+
+### 🐛 Bug Fixes
+
+* set working directory for script presence check in release workflow ([4581404](https://github.com/kpeacocke/terraform-github-repo/commit/4581404435562b973a9e0f65f7212f89197dab87))
+
+### 📚 Documentation
+
+* update changelog for v1.4.0 ([bb48672](https://github.com/kpeacocke/terraform-github-repo/commit/bb486720e61f733ad1f642f2d836d1875482fd04))
+
+
+Generating notes for 1.4.1
+
 ## [1.4.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.3.0...v1.4.0) (2025-06-22)
 
 ### 🚀 Features
