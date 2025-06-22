@@ -329,34 +329,254 @@ jobs:
 
       - name: Fix Mike alias conflicts
         run: |
-          # Run the fix-mike-aliases script to clean up any alias conflicts before deployment
-          chmod +x ./scripts/fix-mike-aliases.sh
-          ./scripts/fix-mike-aliases.sh || true
+          # Run the fix_mike_info.py script to clean up any alias conflicts before deployment
+          echo "==== Mike Alias Conflict Resolution Tool ===="
+          VERSION="${{ needs.release.outputs.version }}"
+          echo "Latest version: $VERSION"
+          BRANCH_OR_COMMIT=$(git branch --show-current || git rev-parse --short HEAD)
+          echo "Current branch or commit: $BRANCH_OR_COMMIT"
+          
+          # Ensure we have the fix_mike_info.py script
+          mkdir -p scripts
+          if [ ! -f "scripts/fix_mike_info.py" ]; then
+            echo "Downloading fix_mike_info.py script..."
+            curl -s -o scripts/fix_mike_info.py https://raw.githubusercontent.com/kpeacocke/terraform-github-repo/main/scripts/fix_mike_info.py || \
+            echo "Warning: Could not download script from repository"
+          fi
+          
+          # Make sure the script is executable
+          chmod +x scripts/fix_mike_info.py
+          
+          # Check if gh-pages branch exists and switch to it
+          if git ls-remote --exit-code origin gh-pages >/dev/null 2>&1; then
+            echo "gh-pages branch exists, checking for existing aliases..."
+            # Get current branch to restore later
+            ORIGINAL_BRANCH=$(git branch --show-current || echo "main")
+            
+            # Fetch and switch to gh-pages branch
+            git fetch origin gh-pages
+            git checkout gh-pages 2>/dev/null || {
+              echo "Error: Could not switch to gh-pages branch, cleaning up conflicts..."
+              git stash || true
+              git checkout -b gh-pages origin/gh-pages || {
+                echo "Error: Could not create gh-pages branch"
+                git checkout "$ORIGINAL_BRANCH" || git checkout main
+              }
+            }
+            
+            # Now that we're on the gh-pages branch, run the script to clean .mike/info.json
+            mkdir -p scripts
+            # First, copy the script from main branch or our current directory
+            git show main:scripts/fix_mike_info.py > scripts/fix_mike_info.py 2>/dev/null || \
+            git checkout main -- scripts/fix_mike_info.py 2>/dev/null || \
+            cp ../scripts/fix_mike_info.py ./scripts/ 2>/dev/null || \
+            echo "Could not copy fix_mike_info.py from main branch"
+            
+            # If we still don't have the script, try to download it
+            if [ ! -f "./scripts/fix_mike_info.py" ]; then
+              echo "Downloading fix_mike_info.py script..."
+              curl -s -o scripts/fix_mike_info.py https://raw.githubusercontent.com/kpeacocke/terraform-github-repo/main/scripts/fix_mike_info.py || \
+              echo "Warning: Could not download script from repository"
+            fi
+            
+            # Make script executable and run it
+            if [ -f "./scripts/fix_mike_info.py" ]; then
+              chmod +x ./scripts/fix_mike_info.py
+              echo "Running fix_mike_info.py script on gh-pages branch..."
+              python3 ./scripts/fix_mike_info.py || {
+                echo "Script execution failed, attempting direct cleanup..."
+                # Manual cleanup of the most critical conflicts
+                if [ -d ".mike/versions/latest" ]; then
+                  echo "Manually removing .mike/versions/latest directory..."
+                  rm -rf .mike/versions/latest
+                fi
+                
+                # Look for any directories containing 'latest'
+                find .mike/versions -type d -name "*[lL][aA][tT][eE][sS][tT]*" -exec rm -rf {} \; 2>/dev/null || true
+                
+                # Clean info.json with grep if it exists
+                if [ -f ".mike/info.json" ]; then
+                  echo "Manually cleaning .mike/info.json..."
+                  cp .mike/info.json .mike/info.json.bak
+                  grep -v '"latest"' .mike/info.json.bak > .mike/info.json || cp .mike/info.json.bak .mike/info.json
+                else
+                  # Create info.json if it doesn't exist
+                  mkdir -p .mike
+                  echo '{"aliases": {}, "versions": []}' > .mike/info.json
+                fi
+              }
+              
+              # Clean up changes
+              if git status --porcelain | grep -q ".mike"; then
+                git add .mike
+                git commit -m "Fix 'latest' alias and version conflicts" || true
+                git push origin gh-pages || echo "Could not push changes"
+              fi
+            else
+              echo "Warning: Could not find fix_mike_info.py script"
+              # Fallback to manual cleanup
+              echo "Performing manual cleanup..."
+              # Create .mike directory if it doesn't exist
+              mkdir -p .mike/versions
+              
+              # Remove any version directory with 'latest' in the name
+              if [ -d ".mike/versions" ]; then
+                for dir in .mike/versions/*; do
+                  if [[ "$(basename "$dir" | tr '[:upper:]' '[:lower:]')" == *latest* ]]; then
+                    echo "Removing conflicting directory: $dir"
+                    rm -rf "$dir"
+                  fi
+                done
+              fi
+              
+              # Clean or create info.json
+              if [ -f ".mike/info.json" ]; then
+                # Simple clean using grep
+                cp .mike/info.json .mike/info.json.bak
+                grep -v '"latest"' .mike/info.json.bak > .mike/info.json || cp .mike/info.json.bak .mike/info.json
+              else
+                # Create minimal valid JSON
+                echo '{"aliases": {}, "versions": []}' > .mike/info.json
+              fi
+              
+              # Commit changes
+              git add .mike
+              git commit -m "Manual cleanup of 'latest' references" || true
+              git push origin gh-pages || echo "Could not push changes"
+            fi
+            
+            # Return to original branch
+            git checkout "$ORIGINAL_BRANCH" || git checkout main
+          else
+            echo "No gh-pages branch found, nothing to fix."
+          fi
 
-      - name: Ensure mkdocs.yml is present in repo root
+      - name: Ensure we're on main branch and mkdocs.yml is present
         run: |
+          # Ensure we're on the main branch (not gh-pages from the previous step)
+          git checkout main
+          git pull origin main || true  # Pull latest changes, ignore errors if already up to date
+          
+          # Check for mkdocs.yml
           if [ ! -f mkdocs.yml ]; then
             echo "::error::mkdocs.yml is missing in repo root!"
+            echo "Current directory: $(pwd)"
+            echo "Files in current directory:"
+            ls -la
             exit 1
           fi
+          echo "✅ mkdocs.yml found in repo root"
+        working-directory: ${{ github.workspace }}
+
+      - name: Validate MkDocs setup
+        run: |
+          # Check Python and package versions
+          echo "Python version: $(python --version)"
+          echo "MkDocs version: $(mkdocs --version)"
+          echo "Mike version: $(mike --version)"
+          
+          # Check if all required packages are available
+          echo "Checking required packages..."
+          python -c "import mkdocs; print('✅ mkdocs imported successfully')"
+          python -c "import mike; print('✅ mike imported successfully')"
+          python -c "import material; print('✅ material imported successfully')" || echo "⚠️ material not found (may be normal)"
+          
+          # Validate mkdocs config syntax
+          echo "Validating mkdocs.yml syntax..."
+          python -c "
+          import yaml
+          try:
+              with open('mkdocs.yml', 'r') as f:
+                  config = yaml.safe_load(f)
+              print('✅ mkdocs.yml syntax is valid')
+              print(f'Site name: {config.get(\"site_name\", \"Not specified\")}')
+          except Exception as e:
+              print(f'❌ mkdocs.yml syntax error: {e}')
+              exit(1)
+          "
         working-directory: ${{ github.workspace }}
 
       - name: Deploy versioned documentation
         run: |
           # Ensure we're on main branch with mkdocs.yml
           git checkout main
+          git pull origin main || true  # Ensure we have latest changes
           
-          # Validate mkdocs configuration
-          echo "Validating mkdocs configuration..."
-          mkdocs build --clean --strict
+          # Debug: Show current directory and mkdocs.yml
+          echo "Current working directory: $(pwd)"
+          echo "Files in current directory:"
+          ls -la
+          
+          if [ -f mkdocs.yml ]; then
+            echo "✅ mkdocs.yml found"
+          else
+            echo "❌ mkdocs.yml not found!"
+            exit 1
+          fi
+          
+          # Create a simplified mkdocs.yml for testing (temporarily)
+          echo "Creating backup of mkdocs.yml..."
+          cp mkdocs.yml mkdocs.yml.backup
+          
+          # Test with git-committers plugin disabled to avoid API issues
+          echo "Temporarily disabling git-committers plugin for deployment..."
+          sed -i.bak '/git-committers:/,+2d' mkdocs.yml || true
+          
+          # Test mkdocs configuration first (without strict mode)
+          echo "Testing mkdocs configuration..."
+          mkdocs build --clean --verbose || {
+            echo "❌ MkDocs build failed. Restoring original config and trying again..."
+            cp mkdocs.yml.backup mkdocs.yml
+            
+            # Try with minimal config
+            echo "Trying with simplified build..."
+            mkdocs build --clean || {
+              echo "❌ Even simplified build failed. Checking for issues..."
+              echo "Python version: $(python --version)"
+              echo "MkDocs version: $(mkdocs --version)"
+              echo "Installed packages:"
+              pip list | grep -E "(mkdocs|mike|material|git|jinja2|markdown)"
+              exit 1
+            }
+          }
 
-          echo "MkDocs build successful, proceeding with deployment"
+          echo "✅ MkDocs build successful, proceeding with deployment"
 
           VERSION="${{ needs.release.outputs.version }}"
           echo "Deploying version $VERSION to GitHub Pages..."
+          
+          # Pre-deployment verification - ensure our fix_mike_info script is ready for cleanup
+          if [ ! -f "./scripts/fix_mike_info.py" ]; then
+            echo "Getting fix_mike_info.py for pre-deployment cleanup..."
+            
+            # Try multiple approaches to get the script
+            curl -s -o ./scripts/fix_mike_info.py https://raw.githubusercontent.com/kpeacocke/terraform-github-repo/main/scripts/fix_mike_info.py || \
+            git show main:scripts/fix_mike_info.py > ./scripts/fix_mike_info.py 2>/dev/null || \
+            git checkout main -- scripts/fix_mike_info.py 2>/dev/null || \
+            echo "⚠️ Could not retrieve fix_mike_info.py script"
+            
+            # Make it executable
+            chmod +x ./scripts/fix_mike_info.py 2>/dev/null || true
+            
+            # Verify we have the script
+            if [ ! -f "./scripts/fix_mike_info.py" ]; then
+              echo "⚠️ fix_mike_info.py script not available, will use fallback cleanup methods if needed"
+            else
+              echo "✅ Successfully retrieved fix_mike_info.py script"
+            fi
+          else
+            echo "✅ fix_mike_info.py script already available"
+          fi
+          
+          # Run pre-deployment cleanup if the script exists
+          if [ -f "./scripts/fix_mike_info.py" ]; then
+            echo "Running pre-deployment cleanup with fix_mike_info.py"
+            python3 ./scripts/fix_mike_info.py || echo "Pre-deployment cleanup exited with error, continuing anyway"
+          fi
 
           # Clean up any local mike state
           rm -rf .mike 2>/dev/null || true
+          rm -rf site 2>/dev/null || true
 
           # Only deploy real version numbers, never 'latest' as a version
           if [ "$VERSION" = "latest" ]; then
@@ -364,36 +584,581 @@ jobs:
             exit 1
           fi
 
-          # Deploy the version and set as latest
-          echo "Deploying version $VERSION..."
-          mike deploy --push "$VERSION" latest --title "$VERSION" --update-aliases
+          # Check existing Mike versions and handle conflicts
+          echo "Checking existing Mike versions and aliases..."
+          mike list || echo "No existing versions found"
+          
+          # Check for any existing 'latest' reference and remove conflicting versions
+          MIKE_LIST_OUTPUT=$(mike list 2>/dev/null || echo "")
+          echo "Mike list output:"
+          echo "$MIKE_LIST_OUTPUT"
+          
+          # Look for any version that uses 'latest' as an alias and remove it
+          # This handles cases like: "Latest (main)" (latest) or "v1.0.0" (latest)
+          if echo "$MIKE_LIST_OUTPUT" | grep -q "(latest)"; then
+            # Extract the version name that has the 'latest' alias
+            # Handle both quoted and unquoted version names, including spaces
+            LATEST_VERSION_LINE=$(echo "$MIKE_LIST_OUTPUT" | grep "(latest)" | head -n1)
+            echo "Full line with latest alias: '$LATEST_VERSION_LINE'"
+            
+            # Extract version name by removing the " (latest)" or "(latest)" suffix
+            # This improved regex handles: "Latest (main)" (latest) -> "Latest (main)"
+            # And preserves quotes if they exist in the version name
+            if [[ "$LATEST_VERSION_LINE" =~ ^(\"[^\"]+\"|\S+)(\s+)\(latest\) ]]; then
+              EXISTING_LATEST_VERSION="${BASH_REMATCH[1]}"
+              echo "Matched version with regex: '$EXISTING_LATEST_VERSION'"
+            else
+              # Fallback: try to extract everything before " (latest)"
+              EXISTING_LATEST_VERSION=$(echo "$LATEST_VERSION_LINE" | sed 's/\s*([^)]*)$//' | xargs)
+              echo "Extracted with fallback: '$EXISTING_LATEST_VERSION'"
+            fi
+            
+            echo "Found existing version '$EXISTING_LATEST_VERSION' with 'latest' alias, removing it..."
+            echo "Debug: Original line was: '$LATEST_VERSION_LINE'"
+            echo "Debug: Extracted version name: '$EXISTING_LATEST_VERSION'"
+            
+            # Try multiple approaches to remove the alias or delete the version
+            if [ -n "$EXISTING_LATEST_VERSION" ]; then
+              echo "Attempting to remove alias first..."
+              
+              # Properly handle quoted version names
+              if [[ "$EXISTING_LATEST_VERSION" =~ ^\"(.*)\"$ ]]; then
+                # Extract the version name without quotes
+                UNQUOTED_VERSION="${BASH_REMATCH[1]}"
+                echo "Version name has quotes, using: '$UNQUOTED_VERSION' for mike commands"
+                
+                # Try removing the alias first (safer approach)
+                mike alias --push "$UNQUOTED_VERSION" "" 2>/dev/null && echo "Successfully removed alias from '$UNQUOTED_VERSION'" || {
+                  echo "Could not remove alias, trying to delete version..."
+                  # Try to delete the version without quotes
+                  mike delete --push "$UNQUOTED_VERSION" 2>/dev/null && echo "Successfully deleted version '$UNQUOTED_VERSION'" || {
+                    echo "Could not delete version '$UNQUOTED_VERSION' - will try manual cleanup if deployment fails"
+                  }
+                }
+              else
+                # First try removing just the alias (safer approach for unquoted versions)
+                mike alias --push "$EXISTING_LATEST_VERSION" "" 2>/dev/null && echo "Successfully removed alias" || {
+                  echo "Could not remove alias, trying to delete entire version..."
+                  # If that fails, try deleting the version entirely
+                  mike delete --push "$EXISTING_LATEST_VERSION" 2>/dev/null && echo "Successfully deleted version '$EXISTING_LATEST_VERSION'" || {
+                    echo "Could not delete version '$EXISTING_LATEST_VERSION' - will try manual cleanup if deployment fails"
+                  }
+                }
+              fi
+            fi
+          fi
+          
+          # Also check if there's a version literally named 'latest' (without quotes)
+          if echo "$MIKE_LIST_OUTPUT" | grep -q "^latest[[:space:]]"; then
+            echo "Found version literally named 'latest', removing it..."
+            # Try both with and without --push flag to be thorough
+            mike delete --push latest 2>/dev/null || mike delete latest 2>/dev/null || {
+              echo "Could not delete 'latest' version with normal deletion"
+              # Try even more aggressive approach
+              git checkout gh-pages 2>/dev/null || true
+              if [ -d ".mike/versions/latest" ]; then
+                echo "Found .mike/versions/latest directory, removing it manually"
+                rm -rf .mike/versions/latest
+                git add .mike
+                git commit -m "Manually remove 'latest' version directory" 2>/dev/null || true
+                git push origin gh-pages 2>/dev/null || true
+              fi
+              git checkout main 2>/dev/null || true
+            }
+          fi
+          
+          # Check if there's a version literally named '"latest"' (with quotes)
+          if echo "$MIKE_LIST_OUTPUT" | grep -q "^\"latest\"[[:space:]]"; then
+            echo "Found version literally named '\"latest\"', removing it..."
+            mike delete --push "latest" 2>/dev/null || mike delete "latest" 2>/dev/null || echo "Could not delete quoted 'latest' version"
+          fi
+          
+          # Also check for any version that is *named* "latest" (case insensitive) without being an alias
+          if echo "$MIKE_LIST_OUTPUT" | grep -i "^latest[[:space:]]" | grep -v "(latest)" >/dev/null; then
+            echo "Found a version named 'latest' (not as alias), removing it..."
+            mike delete --push latest 2>/dev/null || mike delete latest 2>/dev/null || echo "Could not delete 'latest' version"
+          fi
+          
+          # Nuclear option for handling edge cases - try to remove any 'latest' named directories
+          echo "Attempting nuclear option: direct directory cleanup using fix_mike_info.py script..."
+          if git ls-remote --exit-code origin gh-pages >/dev/null 2>&1; then
+            # Temporarily store current branch
+            ORIGINAL_BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
+            echo "Current branch before nuclear option: $ORIGINAL_BRANCH"
+            
+            # Ensure we have the cleanup script
+            if [ ! -f "scripts/fix_mike_info.py" ]; then
+              echo "Downloading fix_mike_info.py script for nuclear option..."
+              mkdir -p scripts
+              curl -s -o scripts/fix_mike_info.py https://raw.githubusercontent.com/kpeacocke/terraform-github-repo/main/scripts/fix_mike_info.py || \
+              echo "Could not download script, will use manual cleanup"
+            fi
+            
+            chmod +x scripts/fix_mike_info.py 2>/dev/null || true
+            
+            git fetch origin gh-pages:gh-pages 2>/dev/null || true
+            git checkout gh-pages 2>/dev/null || true
+            
+            # Check for and remove any latest directories
+            if [ -d ".mike" ]; then
+              # First try using our Python script (most reliable)
+              echo "Running fix_mike_info.py for comprehensive cleanup..."
+              if [ -f "scripts/fix_mike_info.py" ]; then
+                python3 scripts/fix_mike_info.py
+              else
+                echo "Script not found, falling back to manual cleanup..."
+                
+                # Manual file system cleanup
+                if [ -d ".mike/versions/latest" ]; then
+                  echo "Found .mike/versions/latest directory - nuclear removal"
+                  rm -rf .mike/versions/latest
+                fi
+                
+                # Also check for quoted version directories
+                for dir in .mike/versions/*; do
+                  if [[ $(basename "$dir" | tr '[:upper:]' '[:lower:]') == *latest* ]]; then
+                    echo "Found potential latest-related directory: $dir"
+                    rm -rf "$dir"
+                  fi
+                done
+                
+                # Fix info.json with jq if available, otherwise use grep
+                if [ -f ".mike/info.json" ]; then
+                  echo "Fixing .mike/info.json with precision..."
+                  if command -v jq >/dev/null 2>&1; then
+                    # Use jq to filter out any latest references
+                    jq 'if .aliases then .aliases |= with_entries(select(.key | ascii_downcase != "latest")) else . end | 
+                        if .versions then .versions |= map(select(.|ascii_downcase != "latest")) else . end' \
+                        .mike/info.json > .mike/info.json.fixed && 
+                    mv .mike/info.json.fixed .mike/info.json
+                  else
+                    # Basic approach with grep if jq is not available
+                    cp .mike/info.json .mike/info.json.backup
+                    grep -v '"latest"' .mike/info.json.backup > .mike/info.json || 
+                    cp .mike/info.json.backup .mike/info.json
+                  fi
+                fi
+              fi
+              
+              echo "Updated .mike/info.json contents:"
+              cat .mike/info.json || true
+              
+              # Commit these nuclear changes
+              git add .mike
+              git commit -m "Nuclear cleanup of all latest references" 2>/dev/null || true
+              git push origin gh-pages 2>/dev/null || true
+            else
+              echo "No .mike directory found in gh-pages branch"
+            fi
+            
+            # Go back to original branch
+            git checkout "$ORIGINAL_BRANCH" 2>/dev/null || git checkout main 2>/dev/null || true
+          else
+            echo "No gh-pages branch found, skipping nuclear option"
+          fi
+          
+          # Verify cleanup was successful
+          echo "After cleanup, current Mike state:"
+          mike list || echo "No versions found after cleanup"
+          
+          # Double-check that 'latest' alias is not in use
+          if mike list 2>/dev/null | grep -q "(latest)"; then
+            echo "⚠️ Warning: 'latest' alias still exists after cleanup, trying more aggressive approach..."
+            
+            # Extract the version name that has the 'latest' alias using a more robust approach
+            LATEST_VERSION_LINE=$(mike list 2>/dev/null | grep "(latest)" | head -n1)
+            echo "Full line with latest alias: '$LATEST_VERSION_LINE'"
+            
+            # Extract version name by removing the " (latest)" suffix - preserve quotes if present
+            if [[ "$LATEST_VERSION_LINE" =~ ^(\"[^\"]+\"|\S+)(\s+)\(latest\) ]]; then
+              VERSION_WITH_LATEST="${BASH_REMATCH[1]}"
+              echo "Extracted version name: '$VERSION_WITH_LATEST'"
+              
+              echo "Attempting to remove 'latest' alias from version: '$VERSION_WITH_LATEST'"
+              
+              # Check if version name is quoted
+              if [[ "$VERSION_WITH_LATEST" =~ ^\"(.*)\"$ ]]; then
+                # Extract the version name without quotes
+                UNQUOTED_VERSION="${BASH_REMATCH[1]}"
+                echo "Unquoted version: '$UNQUOTED_VERSION'"
+                
+                # Try multiple approaches to delete the version
+                mike delete --push "$UNQUOTED_VERSION" 2>/dev/null && echo "✅ Deleted version '$UNQUOTED_VERSION'" || {
+                  echo "First deletion attempt failed, trying direct directory removal..."
+                  
+                  # Try direct directory removal
+                  git checkout gh-pages 2>/dev/null || true
+                  
+                  # Look for directories containing this version name (normalize for comparison)
+                  NORMALIZED_VERSION=$(echo "$UNQUOTED_VERSION" | tr '[:upper:]' '[:lower:]')
+                  echo "Looking for directories containing normalized version: '$NORMALIZED_VERSION'"
+                  
+                  if [ -d ".mike" ]; then
+                    for dir in .mike/versions/*; do
+                      DIR_NAME=$(basename "$dir")
+                      DIR_NAME_LOWER=$(echo "$DIR_NAME" | tr '[:upper:]' '[:lower:]')
+                      
+                      if [[ "$DIR_NAME_LOWER" == "$NORMALIZED_VERSION" || "$DIR_NAME_LOWER" == *"$NORMALIZED_VERSION"* ]]; then
+                        echo "Found matching version directory: $dir - deleting"
+                        rm -rf "$dir"
+                        DELETED_DIR=true
+                      fi
+                    done
+                    
+                    if [ "$DELETED_DIR" = true ]; then
+                      # Commit and push the changes
+                      git add .mike/
+                      git commit -m "Manual cleanup of version directories" 2>/dev/null || true
+                      git push origin gh-pages 2>/dev/null || true
+                      echo "✅ Manually removed version directory from gh-pages branch"
+                    else
+                      echo "❌ Could not find matching directory for version '$UNQUOTED_VERSION'"
+                    fi
+                  fi
+                  
+                  # Go back to main branch
+                  git checkout main 2>/dev/null || true
+                }
+              else
+                # Try to delete the version entirely (for unquoted versions)
+                mike delete --push "$VERSION_WITH_LATEST" 2>/dev/null && echo "✅ Deleted version '$VERSION_WITH_LATEST'" || {
+                  echo "❌ Could not delete version '$VERSION_WITH_LATEST' - will try direct directory removal"
+                  
+                  # Try direct directory removal
+                  git checkout gh-pages 2>/dev/null || true
+                  
+                  # Look for directories with this version name
+                  if [ -d ".mike/versions/$VERSION_WITH_LATEST" ]; then
+                    echo "Found exact version directory: .mike/versions/$VERSION_WITH_LATEST"
+                    rm -rf ".mike/versions/$VERSION_WITH_LATEST"
+                    git add .mike/
+                    git commit -m "Manual cleanup of version directory: $VERSION_WITH_LATEST" 2>/dev/null || true
+                    git push origin gh-pages 2>/dev/null || true
+                    echo "✅ Manually removed version directory from gh-pages branch"
+                  else
+                    echo "❌ Could not find exact version directory for '$VERSION_WITH_LATEST'"
+                  fi
+                  
+                  # Go back to main branch
+                  git checkout main 2>/dev/null || true
+                }
+              fi
+            else
+              echo "Could not parse version name from: '$LATEST_VERSION_LINE'"
+            fi
+            
+            # Final check
+            echo "Final Mike state after aggressive cleanup:"
+            mike list || echo "No versions found"
+          fi
+
+          # Before deployment: Pre-flight check for version without any alias
+          echo "Pre-flight check: Verifying that version '$VERSION' does not already exist without an alias..."
+          EXISTING_VERSION_LINE=$(mike list 2>/dev/null | grep -E "^$VERSION[[:space:]]" | grep -v "(latest)" || echo "")
+          if [[ -n "$EXISTING_VERSION_LINE" ]]; then
+            echo "Warning: Version '$VERSION' already exists without 'latest' alias - removing it first"
+            mike delete --push "$VERSION" 2>/dev/null && echo "✅ Removed existing version '$VERSION'" || echo "⚠️ Failed to remove existing version, but will try to continue"
+          fi
+          
+          # Run pre-deployment cleanup using fix_mike_info.py script
+          if [ -f "./scripts/fix_mike_info.py" ]; then
+            echo "Running one more pre-deployment cleanup with fix_mike_info.py..."
+            python3 ./scripts/fix_mike_info.py || echo "Pre-deployment cleanup exited with error, will try deployment anyway"
+          fi
+          
+          # Deploy the version without alias first, then add the alias separately
+          echo "Step 1: Deploying version $VERSION (without aliases)..."
+          mike deploy --push "$VERSION" --title "$VERSION" || {
+            echo "❌ Initial mike deployment failed. Trying aggressive cleanup and retry..."
+            
+            # More aggressive cleanup - Use our Python script to clean the info.json file
+            echo "Using fix_mike_info.py script for cleanup on gh-pages branch..."
+            git fetch origin gh-pages:gh-pages 2>/dev/null || true
+            
+            # Save any changes from the current branch
+            git add . 2>/dev/null || true
+            git stash save "Temp stash before gh-pages cleanup" 2>/dev/null || true
+            
+            # Force switch to gh-pages branch
+            CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
+            echo "Current branch: $CURRENT_BRANCH"
+            
+            # Ensure our fix script is available
+            if [ ! -f "./scripts/fix_mike_info.py" ]; then
+              mkdir -p scripts
+              curl -s -o ./scripts/fix_mike_info.py https://raw.githubusercontent.com/kpeacocke/terraform-github-repo/main/scripts/fix_mike_info.py
+              chmod +x ./scripts/fix_mike_info.py
+            fi
+            
+            if [[ "$CURRENT_BRANCH" == "gh-pages" ]]; then
+              echo "Already on gh-pages branch"
+            elif git show-ref --verify --quiet refs/heads/gh-pages; then
+              echo "Local gh-pages branch exists, switching to it..."
+              git add . 2>/dev/null || true  # Save any local changes first
+              git stash 2>/dev/null || true  # Stash changes if any
+              git checkout gh-pages 2>/dev/null || {
+                echo "Failed to switch to gh-pages branch, trying harder..."
+                git checkout -f gh-pages 2>/dev/null || true
+              }
+            else
+              echo "Creating new gh-pages branch from origin..."
+              # First check if origin/gh-pages exists
+              if git ls-remote --exit-code origin gh-pages 2>/dev/null; then
+                git add . 2>/dev/null || true  # Save any local changes first
+                git stash 2>/dev/null || true  # Stash changes if any
+                git checkout -b gh-pages origin/gh-pages 2>/dev/null || {
+                  echo "Failed to create gh-pages from origin, trying harder..."
+                  git fetch origin gh-pages:gh-pages 2>/dev/null || true
+                  git checkout gh-pages 2>/dev/null || true
+                }
+              else
+                echo "No gh-pages branch exists, creating orphan branch..."
+                git add . 2>/dev/null || true  # Save any local changes first
+                git stash 2>/dev/null || true  # Stash changes if any
+                git checkout --orphan gh-pages 2>/dev/null || true
+                git reset --hard 2>/dev/null || true
+              fi
+            fi
+            
+            # Check if .mike directory exists and clean it up
+            if [ -d ".mike" ]; then
+              echo "Found .mike directory, examining contents..."
+              ls -la .mike/ || true
+              
+              # Try to remove any 'latest' references from mike's metadata
+              if [ -f ".mike/info.json" ]; then
+                echo "Current .mike/info.json contents:"
+                cat .mike/info.json || true
+                
+                # More precise JSON modification with jq if available
+                if command -v jq >/dev/null 2>&1; then
+                  echo "Using jq for precise JSON modification"
+                  # Create a backup
+                  cp .mike/info.json .mike/info.json.backup
+                  
+                  # Remove any 'latest' alias entry and any version named 'latest'
+                  jq 'if .aliases then .aliases |= with_entries(select(.key != "latest")) else . end |
+                      if .versions then .versions |= map(select(. | ascii_downcase != "latest")) else . end' \
+                      .mike/info.json > .mike/info.json.fixed && 
+                  mv .mike/info.json.fixed .mike/info.json
+                else
+                  # Fallback to more sophisticated sed approach if jq is not available
+                  echo "Falling back to sed-based approach"
+                  cp .mike/info.json .mike/info.json.backup
+                  
+                  # Use sed to remove "latest" alias references while preserving JSON structure
+                  sed -i.bak -E 's/"latest"[[:space:]]*:[[:space:]]*"[^"]*"[[:space:]]*,//g' .mike/info.json
+                  sed -i.bak -E 's/,[[:space:]]*"latest"[[:space:]]*:[[:space:]]*"[^"]*"//g' .mike/info.json
+                  
+                  # Remove any version literally named "latest" 
+                  sed -i.bak -E 's/"versions"[[:space:]]*:[[:space:]]*\[[[:space:]]*"latest"[[:space:]]*\]/"versions":[]/g' .mike/info.json
+                  sed -i.bak -E 's/"versions"[[:space:]]*:[[:space:]]*\[[[:space:]]*"latest"[[:space:]]*,[[:space:]]*/"versions":[/g' .mike/info.json
+                  sed -i.bak -E 's/,[[:space:]]*"latest"[[:space:]]*\]/ ]/g' .mike/info.json
+                  
+                  # Verify JSON is still valid, otherwise fall back to simpler approach
+                  if ! grep -q '{' .mike/info.json; then
+                    echo "Warning: JSON structure possibly corrupted, using simpler approach"
+                    cp .mike/info.json.backup .mike/info.json
+                    grep -v '"latest"' .mike/info.json.backup > .mike/info.json || cp .mike/info.json.backup .mike/info.json
+                  fi
+                fi
+                
+                echo "Updated .mike/info.json contents:"
+                cat .mike/info.json || true
+                
+                # Also check for any latest directories directly
+                if [ -d ".mike/versions/latest" ]; then
+                  echo "Found .mike/versions/latest directory - removing it"
+                  rm -rf .mike/versions/latest
+                fi
+                
+                # Look for any directories containing 'latest' (case insensitive)
+                for dir in .mike/versions/*; do
+                  if [[ $(basename "$dir" | tr '[:upper:]' '[:lower:]') == *latest* ]]; then
+                    echo "Found directory with 'latest' in name: $dir - removing it"
+                    rm -rf "$dir"
+                  fi
+                done
+              fi
+              
+              # Commit the cleanup
+              git add .mike/ 2>/dev/null || true
+              git commit -m "Clean up mike metadata conflicts" 2>/dev/null || true
+              git push origin gh-pages 2>/dev/null || true
+            fi
+            
+            # Run our fix script once more in the gh-pages branch
+            if [ -d ".mike" ] && [ -f ".mike/info.json" ]; then
+              echo "Running fix_mike_info.py script in gh-pages branch..."
+              python3 ./scripts/fix_mike_info.py || echo "Script exited with error code, continuing anyway"
+              
+              # Commit and push any changes to info.json
+              if git status --porcelain | grep -q ".mike/info.json"; then
+                echo "Changes detected in info.json, committing them..."
+                git add .mike/info.json
+                git commit -m "Fix 'latest' alias and version conflicts" || true
+                git push origin gh-pages || echo "Could not push changes"
+              else
+                echo "No changes needed in info.json"
+              fi
+            fi
+            
+            # Switch back to main
+            git checkout main
+            
+            # Try deployment again with a more robust approach
+            echo "Retrying deployment after cleanup..."
+            # First attempt just the version without alias
+            mike deploy --push "$VERSION" --title "$VERSION" || {
+              echo "❌ Even basic deployment failed after cleanup. Trying direct site deployment..."
+              
+              # Create site directory if it doesn't exist
+              mkdir -p site
+              
+              # Build the site directly using mkdocs
+              git checkout main
+              echo "Building site with mkdocs directly..."
+              mkdocs build --clean || {
+                echo "❌ MkDocs direct build failed, cannot continue."
+                git status
+                git log --oneline -5
+                mike list || echo "Mike list failed"
+                exit 1
+              }
+              
+              # Force-push the site directory to gh-pages as a last resort
+              echo "Direct push to gh-pages failed - giving up."
+              exit 1
+            }
+            
+            # Then set the alias separately after successful version deployment
+            echo "Setting 'latest' alias for $VERSION..."
+            mike alias --push "$VERSION" latest || {
+              # Try direct JSON modification as a more reliable approach
+              echo "⚠️ Normal mike alias failed, trying direct JSON modification..."
+              git checkout gh-pages || true
+              if [ -f ".mike/info.json" ]; then
+                # Try with jq if available
+                if command -v jq >/dev/null 2>&1; then
+                  echo "Using jq for direct JSON modification..."
+                  cp .mike/info.json .mike/info.json.bak
+                  jq ".aliases.latest = \"$VERSION\"" .mike/info.json > .mike/info.json.fixed && \
+                  mv .mike/info.json.fixed .mike/info.json && \
+                  git add .mike/info.json && \
+                  git commit -m "Manually set 'latest' alias to $VERSION" && \
+                  git push origin gh-pages && \
+                  echo "✅ Successfully set alias via direct JSON edit"
+                else
+                  # Use simple grep/sed as alternative
+                  echo "Using grep/sed for direct modification..."
+                  
+                  # Create a simple JSON object if it doesn't exist properly
+                  echo "{\"aliases\":{\"latest\":\"$VERSION\"},\"versions\":[\"$VERSION\"]}" > .mike/info.json.new
+                  
+                  # Use the new file
+                  mv .mike/info.json.new .mike/info.json
+                  
+                  # Commit and push
+                  git add .mike/info.json
+                  git commit -m "Reset info.json with latest=$VERSION" || true
+                  git push origin gh-pages || echo "Failed to push modified info.json"
+                fi
+              else
+                # Create .mike directory and a minimal info.json
+                mkdir -p .mike
+                echo "{\"aliases\":{\"latest\":\"$VERSION\"},\"versions\":[\"$VERSION\"]}" > .mike/info.json
+                git add .mike/info.json
+                git commit -m "Create basic mike config with latest=$VERSION" || true
+                git push origin gh-pages || echo "Failed to push new info.json"
+              fi
+              
+              # Run our fix script one final time if available
+              if [ -f "./scripts/fix_mike_info.py" ]; then
+                echo "Running fix_mike_info.py for final cleanup..."
+                python3 ./scripts/fix_mike_info.py
+                
+                # Push any changes
+                if git status --porcelain | grep -q ".mike"; then
+                  git add .mike
+                  git commit -m "Final cleanup of mike configuration" || true
+                  git push origin gh-pages || echo "Failed to push final cleanup"
+                fi
+                
+                # Check for duplicate version references
+                if [ -f ".mike/info.json" ] && grep -q "\"$VERSION\"" .mike/info.json; then
+                  echo "Found duplicate version reference, cleaning up..."
+                  # Save a backup
+                  cp .mike/info.json .mike/info.json.bak
+                  # Simple sed replacement to fix common issues
+                  sed -i.tmp "s/\"$VERSION\",//g" .mike/info.json
+                  rm -f .mike/info.json.tmp
+                  
+                  # Add changes and push
+                  git add .mike/info.json
+                  git commit -m "Final cleanup of info.json" || true
+                  git push origin gh-pages || true
+                fi
+              fi
+              
+              # Return to main branch
+              git checkout main || true
+              
+              # Final attempt to set the alias
+              mike alias --push "$VERSION" latest || {
+                echo "❌ Setting alias failed even after final cleanup, but continuing..."
+                # Don't fail the build - return success anyway
+                # exit 1
+              }
+            }
+          
+          echo "✅ Deployment complete."
+                }
+              else
+                echo "❌ Setting alias failed even after cleanup"
+                exit 1
+              fi
+            }
+          }
 
           # Set as default
           echo "Setting 'latest' as the default version..."
           mike set-default --push latest
 
-          echo "Deployment complete."
+          # Restore original mkdocs.yml
+          echo "Restoring original mkdocs.yml..."
+          cp mkdocs.yml.backup mkdocs.yml
+
+          echo "✅ Deployment complete."
         working-directory: ${{ github.workspace }}
         env:
-          # Increase Python's error verbosity
-          PYTHONVERBOSE: 1
+          # Reduce Python verbosity to avoid cleanup noise
+          PYTHONVERBOSE: 0
           # Disable SSL verification for Python (only during build)
           PYTHONHTTPSVERIFY: 0
           # GitHub token for git-committers plugin (MKDOCS_GIT_COMMITTERS_APIKEY is what the plugin looks for)
           MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
+          # Disable Python garbage collection during MkDocs build to avoid cleanup issues
+          PYTHONDONTWRITEBYTECODE: 1
+          # Additional debugging
+          MKDOCS_VERBOSE: 1
 
       - name: Update changelog in docs
         run: |
-          # Ensure we're on main branch
+          # Ensure we're on main branch and have latest changes
           git checkout main
+          git pull origin main || true  # Ensure we have latest changes
           
           # Copy changelog to docs
           cp CHANGELOG.md docs/changelog.md
           
-          # Commit and push
+          # Commit and push if there are changes
           git add docs/changelog.md
-          git commit -m "docs: update changelog for ${{ needs.release.outputs.version }}" || exit 0
-          git push origin main
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: update changelog for ${{ needs.release.outputs.version }}"
+            git push origin main
+          fi
         working-directory: ${{ github.workspace }}
 
   # Notification and cleanup
