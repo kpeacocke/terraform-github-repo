@@ -171,38 +171,31 @@ def fix_mike_info_file() -> bool:
     try:
         with open(MIKE_INFO_FILE, "r") as f:
             data: Dict[str, Any] = json.load(f)
-    except json.JSONDecodeError as e:
-        print(f"Error parsing {MIKE_INFO_FILE}: {e}")
-        print("Creating backup of corrupted file...")
+    except json.JSONDecodeError:
+        print(f"Corrupted JSON in {MIKE_INFO_FILE}. Restoring from backup.")
+        if os.path.exists(MIKE_INFO_FILE + ".bak"):
+            shutil.copy(MIKE_INFO_FILE + ".bak", MIKE_INFO_FILE)
+        else:
+            print("No backup available. Creating a new info.json.")
+            with open(MIKE_INFO_FILE, "w") as f:
+                json.dump({"aliases": {}, "versions": []}, f)
+        sys.exit(1)
 
-        # Backup corrupted file
-        backup_path = f"{MIKE_INFO_FILE}.corrupted"
-        if os.path.exists(backup_path):
-            try:
-                os.remove(backup_path)
-            except Exception as e:
-                print(f"Failed to remove old backup: {e}")
+    # Remove 'latest' references
+    if "latest" in data.get("aliases", {}):
+        del data["aliases"]["latest"]
+    if "latest" in data.get("versions", []):
+        data["versions"].remove("latest")
 
-        try:
-            os.rename(MIKE_INFO_FILE, backup_path)
-        except Exception as e:
-            print(f"Failed to create backup: {e}")
+    # Backup current info.json
+    shutil.copy(MIKE_INFO_FILE, MIKE_INFO_FILE + ".bak")
 
-        # Create a minimal valid JSON structure
-        data = {"aliases": {}, "versions": []}
-        changes_made = True
-    else:
-        # Clean the data
-        aliases_changed = clean_aliases(data)
-        versions_changed = clean_versions(data)
-        title_map_changed = fix_version_title_map(data)
-        changes_made = aliases_changed or versions_changed or title_map_changed
+    # Write cleaned data back to info.json
+    with open(MIKE_INFO_FILE, "w") as f:
+        json.dump(data, f, indent=2)
 
-    # Save changes if needed
-    if changes_made:
-        return save_mike_info(data)
-
-    return changes_made
+    print("Cleanup completed.")
+    return True
 
 
 def create_mike_dir() -> bool:
