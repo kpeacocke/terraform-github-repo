@@ -7,6 +7,10 @@ def deploy_docs(version: str) -> None:
     try:
         print(f"Deploying versioned documentation for version: {version}")
 
+        # Check and resolve alias conflicts
+        print("Checking for alias conflicts...")
+        subprocess.run(["mike", "delete", "latest"], check=False)
+
         # Run Mike commands to deploy documentation
         subprocess.run(["mike", "deploy", version, "latest"], check=True)
         subprocess.run(["mike", "set-default", "latest"], check=True)
