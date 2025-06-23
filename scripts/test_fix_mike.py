@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """Test the fix_mike_info.py script"""
+
+from fix_mike_info import (
+    is_latest_name,
+    clean_aliases,
+    clean_versions,
+    fix_version_title_map
+)
 import os
 import sys
 import json
 import shutil
 from pathlib import Path
 
-# Import the script to test
 sys.path.append(str(Path(__file__).parent))
-from fix_mike_info import (
-    is_latest_name, 
-    clean_aliases, 
-    clean_versions, 
-    fix_version_title_map
-)
 
 # Create a test directory
 TEST_DIR = Path(".mike_test")
@@ -25,7 +25,7 @@ TEST_DIR.mkdir(exist_ok=True)
 (TEST_DIR / "versions" / "1.0.0").mkdir(exist_ok=True)
 
 # Create a test info.json
-test_info = {
+test_info: dict[str, dict[str, str] | list[str] | dict[str, str]] = {
     "aliases": {"latest": "1.0.0", "stable": "1.0.0"},
     "versions": ["1.0.0", "latest", "Latest (main)"],
     "version_title_map": {"latest": "Latest Version", "1.0.0": "Version 1.0.0"}
@@ -40,7 +40,14 @@ print(f"info.json: {json.dumps(test_info, indent=2)}")
 
 # Test functions individually
 print("\n=== Testing is_latest_name ===")
-test_names = ["latest", "Latest", "LATEST", "Latest (main)", '"Latest (main)"', "1.0.0"]
+test_names = [
+    "latest",
+    "Latest",
+    "LATEST",
+    "Latest (main)",
+    '"Latest (main)"',
+    "1.0.0"
+]
 for name in test_names:
     print(f"{name}: {is_latest_name(name)}")
 

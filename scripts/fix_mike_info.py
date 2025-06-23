@@ -38,9 +38,7 @@ def is_latest_name(name: str) -> bool:
 
     # Check for patterns like "Latest (main)" with or without quotes
     if re.match(
-        r'^latest.*\(.*\)$', name_lower
-    ) or re.match(
-        r'^"?latest.*\(.*\)"?$', name_lower
+        r'^"?latest[^()]*\([^()]*\)"?$', name_lower
     ):
         return True
 
