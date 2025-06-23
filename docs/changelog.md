@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.4.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.1...v1.4.2) (2025-06-23)
+
+### 📚 Documentation
+
+* update changelog for v1.4.1 ([7892d70](https://github.com/kpeacocke/terraform-github-repo/commit/7892d70c693567e601941475efa8a7efebaf7f71))
+
+### ♻️ Code Refactoring
+
+* remove obsolete fix_mike_info.py script ([b4927dc](https://github.com/kpeacocke/terraform-github-repo/commit/b4927dc7ddb88e7cc8a1d216f2458dec31609c36))
+
+
+Generating notes for 1.4.2
+
 ## [1.4.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.0...v1.4.1) (2025-06-22)
 
 ### 🐛 Bug Fixes
