@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.4.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.7...v1.4.8) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* expand CodeQL analysis to include Python ([2dc7f91](https://github.com/kpeacocke/terraform-github-repo/commit/2dc7f9152e066fbcc4c055ef83ab5a82ebef46fb))
+
+### 📚 Documentation
+
+* update changelog for v1.4.7 ([dc8b4ac](https://github.com/kpeacocke/terraform-github-repo/commit/dc8b4ac379b296ab496ba81e232f8b51a2850c67))
+
+
+Generating notes for 1.4.8
+
 ## [1.4.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.6...v1.4.7) (2025-06-23)
 
 ### 🐛 Bug Fixes
