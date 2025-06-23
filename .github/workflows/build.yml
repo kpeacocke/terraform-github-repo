@@ -137,6 +137,8 @@ jobs:
     name: "MkDocs Build and Deploy"
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    permissions:
+       contents: write
     steps:
       - name: Checkout main branch
         uses: actions/checkout@v4
