@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * configure git user for CHANGELOG.md updates in workflow ([188aeb9](https://github.com/kpeacocke/terraform-github-repo/commit/188aeb9bf47466bb283a132bc965124a5402febe))
 
-
 Generating notes for 1.8.3
 
 ## [1.8.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.1...v1.8.2) (2025-06-23)
@@ -21,7 +20,6 @@ Generating notes for 1.8.3
 ### 🐛 Bug Fixes
 
 * add permissions for MkDocs build and deploy job ([e7999e0](https://github.com/kpeacocke/terraform-github-repo/commit/e7999e061b0c6ca23ac4840c0bfb30e705f8cd58))
-
 
 Generating notes for 1.8.2
 
@@ -31,7 +29,6 @@ Generating notes for 1.8.2
 
 * add MKDOCS_GIT_COMMITTERS_APIKEY environment variable for MkDocs build ([4bc61d4](https://github.com/kpeacocke/terraform-github-repo/commit/4bc61d4b6459fc8ff33df11ebc55e790c7324b9f))
 
-
 Generating notes for 1.8.1
 
 ## [1.8.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.7.0...v1.8.0) (2025-06-23)
@@ -40,7 +37,6 @@ Generating notes for 1.8.1
 
 * add Workflow Refactoring section to documentation navigation ([d283e98](https://github.com/kpeacocke/terraform-github-repo/commit/d283e98dbaf529f177a17b4d1f24b7a332280980))
 
-
 Generating notes for 1.8.0
 
 ## [1.7.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.6.0...v1.7.0) (2025-06-23)
@@ -48,7 +44,6 @@ Generating notes for 1.8.0
 ### 🚀 Features
 
 * update MkDocs installation to include additional plugins ([379af2e](https://github.com/kpeacocke/terraform-github-repo/commit/379af2eb111744e8f72b5453d8bb4b2ccd75ba9f))
-
 
 Generating notes for 1.7.0
 
