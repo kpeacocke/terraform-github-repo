@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.4.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.5...v1.4.6) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* update GitHub and null provider versions in README.md ([11897f3](https://github.com/kpeacocke/terraform-github-repo/commit/11897f35804409200e48f07fcfd32761937aeee2))
+* update requirements and improve test scripts for fix_mike_info.py ([92dccdc](https://github.com/kpeacocke/terraform-github-repo/commit/92dccdceade7feac6b9beb8be810676a72f67ab4))
+
+### 📚 Documentation
+
+* **deps:** bump jinja2 from 3.1.2 to 3.1.6 in /docs ([40d89e4](https://github.com/kpeacocke/terraform-github-repo/commit/40d89e43770a8dc819cf72a693a9c5e0ceac921a))
+* **deps:** bump mkdocs-material from 9.4.14 to 9.6.14 in /docs ([99907a5](https://github.com/kpeacocke/terraform-github-repo/commit/99907a5eca26cbf6865730cdc00ab229a977329f))
+* **deps:** bump mkdocs-minify-plugin from 0.7.1 to 0.8.0 in /docs ([2673aa0](https://github.com/kpeacocke/terraform-github-repo/commit/2673aa0974aebc91566d32e34655902e0de41e05))
+* update changelog for v1.4.5 ([aa2e6a1](https://github.com/kpeacocke/terraform-github-repo/commit/aa2e6a11b7aa0783945201efad5f18e5ccb0f460))
+* update terraform-docs [skip ci] ([788c3cb](https://github.com/kpeacocke/terraform-github-repo/commit/788c3cb9cbd80feea6d6feb45e2663a176b6fa61))
+* update terraform-docs [skip ci] ([03be4ce](https://github.com/kpeacocke/terraform-github-repo/commit/03be4ced9575019d99395b37ed6010aa0d0ae6a0))
+* update terraform-docs [skip ci] ([8cdde00](https://github.com/kpeacocke/terraform-github-repo/commit/8cdde0023c98fb1539f58b870bbfffdb0c2e5b92))
+
+
+Generating notes for 1.4.6
+
 ## [1.4.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.4...v1.4.5) (2025-06-23)
 
 ### 🐛 Bug Fixes
