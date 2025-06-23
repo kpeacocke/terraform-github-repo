@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.8.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.2...v1.8.3) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* configure git user for CHANGELOG.md updates in workflow ([188aeb9](https://github.com/kpeacocke/terraform-github-repo/commit/188aeb9bf47466bb283a132bc965124a5402febe))
+
+
+Generating notes for 1.8.3
+
 ## [1.8.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.1...v1.8.2) (2025-06-23)
 
 ### 🐛 Bug Fixes
