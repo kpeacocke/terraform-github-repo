@@ -2,26 +2,26 @@ package terraform.extra_guardrails
 
 # 1. Enforce minimum Terraform version
 
-deny[msg] if {
+ deny contains msg if {
 	not input.terraform_version
 	msg := "Terraform version must be specified in the configuration."
 }
 
-deny[msg] if {
+ deny contains msg if {
 	input.terraform_version < "1.3.0"
 	msg := sprintf("Terraform version must be >= 1.3.0, found %v", [input.terraform_version])
 }
 
 # 2. Require provider version pinning
 # Deny if any provider has no version constraint
-deny[msg] if {
+ deny contains msg if {
 	provider := input.provider_versions[_]
 	not provider.version
 	msg := sprintf("Provider \"%s\" must have a version constraint.", [provider.name])
 }
 
 # Deny if any provider uses a wildcard version
-deny[msg] if {
+ deny contains msg if {
 	some provider
 	input.provider_versions[provider] == "*"
 	msg := sprintf("Provider \"%s\" must not use a wildcard version (*).", [provider])
@@ -30,7 +30,7 @@ deny[msg] if {
 # 3. Disallow hardcoded secrets
 # Disallow hardcoded passwords
 
-deny[msg] if {
+ deny contains msg if {
 	rc := input.resource_changes[_]
 	some k
 	val := rc.change.after[k]
@@ -41,7 +41,7 @@ deny[msg] if {
 
 # Disallow hardcoded tokens
 
-deny[msg] if {
+ deny contains msg if {
 	rc := input.resource_changes[_]
 	some k
 	val := rc.change.after[k]
@@ -52,7 +52,7 @@ deny[msg] if {
 
 # Disallow hardcoded generic secrets
 
-deny[msg] if {
+ deny contains msg if {
 	rc := input.resource_changes[_]
 	some k
 	val := rc.change.after[k]
@@ -63,7 +63,7 @@ deny[msg] if {
 
 # 4. Enforce resource naming conventions
 
-deny[msg] if {
+ deny contains msg if {
 	rc := input.resource_changes[_]
 	name := rc.change.after.name
 	not contains(name, "prod")
@@ -74,7 +74,7 @@ deny[msg] if {
 
 # 5. Require variable descriptions
 
-deny[msg] if {
+ deny contains msg if {
 	v := input.variables[_]
 	not v.description
 	msg := sprintf("Variable %v must have a description", [v.name])
@@ -82,7 +82,7 @@ deny[msg] if {
 
 # 6. Restrict use of deprecated or dangerous resources
 
-deny[msg] if {
+ deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_instance"
 	msg := "Use of aws_instance is discouraged; use modules or managed services."
@@ -90,14 +90,14 @@ deny[msg] if {
 
 # 7. Require logging and monitoring
 
-deny[msg] if {
+ deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
 	not rc.change.after.logging
 	msg := "S3 bucket must have logging enabled."
 }
 
-deny[msg] if {
+   deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_db_instance"
 	not rc.change.after.monitoring_interval
@@ -106,13 +106,13 @@ deny[msg] if {
 
 # 8. Enforce cost estimation
 
-deny[msg] if {
+deny contains msg if {
 	msg := sprintf("Infracost estimate exceeds $1000: $%v", [input.infracost_total])
 }
 
 # 9. Restrict public IP assignment
 
-deny[msg] if {
+deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_instance"
 	rc.change.after.associate_public_ip_address
@@ -121,7 +121,7 @@ deny[msg] if {
 
 # 10. Require MFA for IAM users/groups
 
-deny[msg] if {
+deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_iam_user"
 	not rc.change.after.mfa_enabled
@@ -130,14 +130,14 @@ deny[msg] if {
 
 # 11. Enforce least privilege for IAM policies
 
-deny[msg] if {
+deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_iam_policy"
 	contains(rc.change.after.policy, "\"Action\": \"*\"")
 	msg := "IAM policy must not allow Action: *"
 }
 
-deny[msg] if {
+deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_iam_policy"
 	contains(rc.change.after.policy, "\"Resource\": \"*\"")
@@ -146,7 +146,7 @@ deny[msg] if {
 
 # 12. Require backup/retention policies
 
-deny[msg] if {
+deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_db_instance"
 	not rc.change.after.backup_retention_period
@@ -156,7 +156,7 @@ deny[msg] if {
 # 13. Restrict region usage (configurable)
 allow_regions := {"us-east-1", "us-west-2", "eu-west-1"}
 
-deny[msg] if {
+deny contains msg if {
 	rc := input.resource_changes[_]
 	region := rc.change.after.region
 	not allow_regions[region]
@@ -165,14 +165,14 @@ deny[msg] if {
 
 # 14. Require HTTPS for endpoints
 
-deny[msg] if {
+deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_lb_listener"
 	rc.change.after.protocol != "HTTPS"
 	msg := "Load balancer listener must use HTTPS."
 }
 
-deny[msg] if {
+deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_api_gateway_stage"
 	not rc.change.after.variables.endpoint_type == "EDGE"
@@ -181,13 +181,13 @@ deny[msg] if {
 
 # 15. Disallow inline IAM policies
 
-deny[msg] if {
+deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_iam_user_policy"
 	msg := "Inline IAM user policies are not allowed."
 }
 
-deny[msg] if {
+ deny contains msg if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_iam_role_policy"
 	msg := "Inline IAM role policies are not allowed."
