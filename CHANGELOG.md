@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.8.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.0...v1.8.1) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* add MKDOCS_GIT_COMMITTERS_APIKEY environment variable for MkDocs build ([4bc61d4](https://github.com/kpeacocke/terraform-github-repo/commit/4bc61d4b6459fc8ff33df11ebc55e790c7324b9f))
+
+
+Generating notes for 1.8.1
+
 ## [1.8.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.7.0...v1.8.0) (2025-06-23)
 
 ### 🚀 Features
