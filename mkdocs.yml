@@ -162,4 +162,5 @@ nav:
     - Docs Testing: development/docs-testing.md
     - Release Process: development/releases.md
     - Architecture: development/architecture.md
+    - Workflow Refactoring: development/workflow-refactoring.md
   - Changelog: changelog.md
