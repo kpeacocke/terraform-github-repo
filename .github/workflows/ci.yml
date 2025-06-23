@@ -170,10 +170,10 @@ jobs:
 
       - name: Install OpenTofu
         run: |
-          wget https://github.com/opentofu/opentofu/releases/download/v1.6.2/tofu_1.6.2_linux_amd64.tar.gz
-          tar -xzf tofu_1.6.2_linux_amd64.tar.gz
-          sudo mv tofu /usr/local/bin/
-          tofu version
+          wget https://github.com/opentofu/opentofu/releases/download/v1.6.2/opentofu_1.6.2_linux_amd64.tar.gz
+          tar -xzf opentofu_1.6.2_linux_amd64.tar.gz
+          sudo mv opentofu /usr/local/bin/
+          opentofu version
 
       - name: Install Terraform
         run: |

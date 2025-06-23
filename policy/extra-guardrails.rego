@@ -7,9 +7,8 @@ deny[msg] if {
 	msg := "Terraform version must be specified in the configuration."
 }
 
-deny[msg] if {
-	input.terraform_version < "1.3.0"
-	msg := sprintf("Terraform version must be >= 1.3.0, found %v", [input.terraform_version])
+deny[sprintf("Terraform version must be >= 1.3.0, found %v", [input.terraform_version])] if{
+    input.terraform_version < "1.3.0"
 }
 
 # 2. Require provider version pinning
