@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.4.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.3...v1.4.4) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* ensure mkdocs.yml is present by checking out the main branch in release workflow ([e986212](https://github.com/kpeacocke/terraform-github-repo/commit/e9862123496ed315b34b07067cce527d8e790df2))
+
+### 📚 Documentation
+
+* update changelog for v1.4.3 ([71c3678](https://github.com/kpeacocke/terraform-github-repo/commit/71c36781b52f0f93f16998552a71d7f9f4554a1e))
+
+
+Generating notes for 1.4.4
+
 ## [1.4.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.2...v1.4.3) (2025-06-23)
 
 ### 🐛 Bug Fixes
