@@ -33,7 +33,8 @@ terraform init
 terraform apply
 ```
 
-The example uses `terraform.tfvars` for variable values. To override any input, you can either edit `terraform.tfvars` or pass `-var` flags:
+The example uses `terraform.tfvars` for variable values. To override any input, you can either edit
+`terraform.tfvars` or pass `-var` flags:
 
 ```bash
 terraform apply -var="name=my-repo" -var="owner=my-org"

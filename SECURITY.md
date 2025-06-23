@@ -2,7 +2,9 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability, please report it by emailing [security@kpeacocke.com](mailto:security@kpeacocke.com) or opening a [GitHub Security Advisory](https://docs.github.com/en/code-security/getting-started/creating-a-security-advisory).
+If you discover a security vulnerability, please report it by emailing  
+[security@kpeacocke.com](mailto:security@kpeacocke.com) or opening a  
+[GitHub Security Advisory](https://docs.github.com/en/code-security/getting-started/creating-a-security-advisory).
 
 We take all disclosures seriously and will respond as quickly as possible.
 
