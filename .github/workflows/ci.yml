@@ -74,7 +74,8 @@ jobs:
           TF_VAR_github_owner: ${{ github.repository_owner }}
         run: |
           # Use -no-color to avoid ANSI escape codes and -compact-warnings for cleaner logs with less sensitive data
-          terraform plan -input=false -refresh=false -no-color -compact-warnings -out=tfplan.binary
+          terraform plan -input=false -refresh=false -no-color -compact-warnings \
+            -var="name=${{ github.workflow }}" -var="owners=[\"@${{ github.repository_owner }}\"]" -out=tfplan.binary
           # Convert to JSON for analysis but don't print sensitive values
           terraform show -json tfplan.binary > ci-tfplan.json
           # Remove the binary plan file immediately after use
@@ -170,6 +171,7 @@ jobs:
       - name: Run Terratest suite
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
         run: |
           export GO111MODULE=on
           go mod tidy
