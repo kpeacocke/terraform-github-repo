@@ -480,7 +480,7 @@ jobs:
             fi
           done
           echo "✅ All required scripts are present."
-          working-directory: ${{ github.workspace }}
+        working-directory: ${{ github.workspace }}
 
       - name: Notify success
         run: |
@@ -515,7 +515,7 @@ jobs:
           ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0 
-          
+
       - name: Cleanup old pre-releases
         run: |
           echo "Cleaning up old pre-releases..."
