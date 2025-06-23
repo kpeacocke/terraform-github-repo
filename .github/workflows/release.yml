@@ -149,6 +149,17 @@ jobs:
           echo "version=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
           echo "published=true" >> $GITHUB_OUTPUT
 
+      - name: Reduce multiple blank lines in CHANGELOG.md to one
+        run: |
+          awk 'BEGIN{blank=0} /^$/ {blank++; if(blank<2) print; next} {blank=0; print}' CHANGELOG.md > CHANGELOG.md.tmp && mv CHANGELOG.md.tmp CHANGELOG.md
+          git add CHANGELOG.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit after cleaning CHANGELOG.md"
+          else
+            git commit -m "chore: reduce multiple blank lines in CHANGELOG.md to one"
+            git push origin main
+          fi
+
   # Terraform Registry publishing
   terraform-registry:
     needs: [validate, release]
