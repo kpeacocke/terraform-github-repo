@@ -7,6 +7,77 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.8.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.2...v1.8.3) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* configure git user for CHANGELOG.md updates in workflow ([188aeb9](https://github.com/kpeacocke/terraform-github-repo/commit/188aeb9bf47466bb283a132bc965124a5402febe))
+
+Generating notes for 1.8.3
+
+## [1.8.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.1...v1.8.2) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* add permissions for MkDocs build and deploy job ([e7999e0](https://github.com/kpeacocke/terraform-github-repo/commit/e7999e061b0c6ca23ac4840c0bfb30e705f8cd58))
+
+Generating notes for 1.8.2
+
+## [1.8.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.0...v1.8.1) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* add MKDOCS_GIT_COMMITTERS_APIKEY environment variable for MkDocs build ([4bc61d4](https://github.com/kpeacocke/terraform-github-repo/commit/4bc61d4b6459fc8ff33df11ebc55e790c7324b9f))
+
+Generating notes for 1.8.1
+
+## [1.8.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.7.0...v1.8.0) (2025-06-23)
+
+### 🚀 Features
+
+* add Workflow Refactoring section to documentation navigation ([d283e98](https://github.com/kpeacocke/terraform-github-repo/commit/d283e98dbaf529f177a17b4d1f24b7a332280980))
+
+Generating notes for 1.8.0
+
+## [1.7.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.6.0...v1.7.0) (2025-06-23)
+
+### 🚀 Features
+
+* update MkDocs installation to include additional plugins ([379af2e](https://github.com/kpeacocke/terraform-github-repo/commit/379af2eb111744e8f72b5453d8bb4b2ccd75ba9f))
+
+Generating notes for 1.7.0
+
+## [1.6.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.5.0...v1.6.0) (2025-06-23)
+
+### 🚀 Features
+
+* enhance MkDocs installation step to include additional plugins ([823c6da](https://github.com/kpeacocke/terraform-github-repo/commit/823c6da68b4e5dd09cfe243aeec7f1f8ae921e80))
+
+Generating notes for 1.6.0
+
+## [1.5.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.10...v1.5.0) (2025-06-23)
+
+### 🚀 Features
+
+* add installation steps for OpenTofu and Terraform in CI workflow ([ae26a50](https://github.com/kpeacocke/terraform-github-repo/commit/ae26a504e5be503b0b21a0a43ff132af5e7b4b81))
+* add MkDocs build and deploy workflow for documentation ([6c20ff5](https://github.com/kpeacocke/terraform-github-repo/commit/6c20ff52143a0d5fa9391c15aa7c976241b31343))
+
+### 🐛 Bug Fixes
+
+* clean up CHANGELOG.md and improve formatting in documentation ([0976105](https://github.com/kpeacocke/terraform-github-repo/commit/097610559efb89825fa6bd240a7acd1963eb9b51))
+* correct syntax for deny rules in extra-guardrails.rego ([1f585a9](https://github.com/kpeacocke/terraform-github-repo/commit/1f585a98658ea47daebd987b6e5e876eec2fe881))
+* update provider versions in README.md for accuracy ([af83485](https://github.com/kpeacocke/terraform-github-repo/commit/af83485b741d075602ed73fccae3a66fb4887e52))
+
+### 📚 Documentation
+
+* update changelog for v1.4.10 ([1200e27](https://github.com/kpeacocke/terraform-github-repo/commit/1200e277243a08153a13eaf8b8b316a8618b3f39))
+
+### ♻️ Code Refactoring
+
+* reorganize deny rules for clarity and consistency in extra-guardrails.rego ([711d951](https://github.com/kpeacocke/terraform-github-repo/commit/711d951bcc0da093bacb389e4ed4f74bd985782b))
+
+Generating notes for 1.5.0
+
 ## [1.4.10](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.9...v1.4.10) (2025-06-23)
 
 ### 🐛 Bug Fixes
@@ -18,7 +89,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * update changelog for v1.4.9 ([c7b91b4](https://github.com/kpeacocke/terraform-github-repo/commit/c7b91b43e3f2d1034679b6872e69783d0db68611))
 * update terraform-docs [skip ci] ([9334845](https://github.com/kpeacocke/terraform-github-repo/commit/9334845433b51e6c26cd302f8dbd225057323c45))
-
 
 Generating notes for 1.4.10
 
