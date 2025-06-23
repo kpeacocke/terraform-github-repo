@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.8.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.1...v1.8.2) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* add permissions for MkDocs build and deploy job ([e7999e0](https://github.com/kpeacocke/terraform-github-repo/commit/e7999e061b0c6ca23ac4840c0bfb30e705f8cd58))
+
+
+Generating notes for 1.8.2
+
 ## [1.8.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.0...v1.8.1) (2025-06-23)
 
 ### 🐛 Bug Fixes
