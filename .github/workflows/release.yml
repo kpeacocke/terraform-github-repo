@@ -463,6 +463,13 @@ jobs:
       discussions: write
     
     steps:
+      - name: Checkout main branch (ensure mkdocs.yml is present)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 
+
       - name: Verify presence of required scripts
         run: |
           echo "Verifying presence of required scripts..."
@@ -502,6 +509,13 @@ jobs:
       issues: read
     
     steps:
+      - name: Checkout main branch (ensure mkdocs.yml is present)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 
+          
       - name: Cleanup old pre-releases
         run: |
           echo "Cleaning up old pre-releases..."
