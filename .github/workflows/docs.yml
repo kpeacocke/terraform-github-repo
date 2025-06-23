@@ -46,7 +46,7 @@ jobs:
       output_file: "README.md"
       git_push: true
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ secrets.GITHUB_TOKEN }}
 
   build-and-deploy-docs:
     if: github.ref == 'refs/heads/main' || github.event_name == 'release'
@@ -78,20 +78,34 @@ jobs:
       - name: Install MkDocs dependencies
         run: |
           # Upgrade pip first
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip setuptools wheel
+          
+          # Clear pip cache to ensure clean environment
+          pip cache purge
           
           # Install with certificate verification configured during build
           export PYTHONHTTPSVERIFY=0
           export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
           export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
           
+          # Install critical dependencies first with specific versions
+          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --no-cache-dir pyyaml==6.0.1 mergedeep==1.3.4 markupsafe==2.1.3 jinja2==3.1.2 packaging==23.2
+          
+          # Wait a moment to ensure dependencies are properly registered
+          sleep 2
+          
           # Install requirements from file with SSL handling
-          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r docs/requirements.txt
+          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --no-cache-dir -r docs/requirements.txt
           
           # Ensure core dependencies are installed, even if requirements.txt changes
-          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org mkdocs-material>=9.4.0 "mkdocs-material-extensions>=1.1" pymdown-extensions>=10.2 mike>=2.0.0
+          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --no-cache-dir --no-deps mike==2.0.0
           
-          # List installed packages for debugging
+          # Show detailed dependency information for debugging
+          echo "Key package versions:"
+          pip list | grep -E "mergedeep|pyyaml|mkdocs|mike|jinja2|markupsafe"
+          
+          # List all installed packages for debugging
+          echo "All installed packages:"
           pip list
 
       - name: Apply Python SSL fixes
@@ -182,9 +196,8 @@ jobs:
 
       - name: Fix Mike Alias Conflicts
         run: |
-          # Run the fix-mike-aliases script to clean up any alias conflicts
           chmod +x ./scripts/fix-mike-aliases.sh
-          ./scripts/fix-mike-aliases.sh
+          ./scripts/fix-mike-aliases.sh || true
 
       - name: Build and deploy with versioning
         run: |
@@ -193,12 +206,14 @@ jobs:
           export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
           export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
           
-          # Check mkdocs config and build docs
+          # Validate mkdocs configuration with error handling
           echo "Validating mkdocs configuration..."
           if ! mkdocs build --clean --strict; then
-            echo "::warning::MkDocs build failed with strict mode, trying with more verbose output"
+            echo "::warning::MkDocs build failed with strict mode, trying with verbose output"
             if ! mkdocs build --verbose; then
-              echo "::error::MkDocs build failed even with verbose output. Check logs for details."
+              echo "::error::MkDocs build failed! Checking Python environment..."
+              python -c "import sys; print(sys.path)"
+              python -c "import yaml, mergedeep; print('YAML version:', yaml.__version__, 'Mergedeep version:', mergedeep.__version__)"
               exit 1
             fi
           fi
@@ -210,10 +225,6 @@ jobs:
           else
             echo "Site directory created successfully with $(find site -type f | wc -l) files"
           fi
-          
-          # Setup git for GitHub Pages with proper merge strategy
-          echo "Fetching gh-pages branch..."
-          git fetch origin gh-pages || echo "No gh-pages branch yet - will be created"
           
           # Configure Git for GitHub Pages deployment
           echo "Setting up Git configuration for branch management..."
@@ -234,27 +245,64 @@ jobs:
           if [[ "${{ steps.version.outputs.is_release }}" == "true" ]]; then
             # For releases, create a versioned deployment
             echo "Deploying versioned documentation for release ${{ steps.version.outputs.version }}..."
-            # Deploy without any aliases first
+            
+            # Step 1: First deploy only the version without any aliases
+            echo "Step 1: Deploying version ${{ steps.version.outputs.version }} (no aliases)..."
             mike deploy --push ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}"
             
-            # Wait a moment to ensure file system changes are registered
-            sleep 2
+            # Wait to ensure changes are registered
+            sleep 5
             
-            # Add the alias separately with update flag to overwrite any existing alias
-            echo "Setting version ${{ steps.version.outputs.version }} as 'latest'..."
-            mike alias --push --update ${{ steps.version.outputs.version }} latest
+            # Step 2: Only after successful version deployment, create the alias separately
+            echo "Step 2: Setting version ${{ steps.version.outputs.version }} as 'latest' alias..."
+            # Only set alias if not already present as a version or alias
+            if ! mike list | grep -wq 'latest'; then
+              mike alias --push --update ${{ steps.version.outputs.version }} latest
+            else
+              echo "Alias 'latest' already exists, skipping."
+            fi
           else
-            # For main branch, update latest (delete first if exists)
+            # For main branch, update latest documentation
             echo "Deploying latest documentation from main branch..."
-            mike delete --push latest || echo "No latest version to delete"
-            mike deploy --push latest --title "Latest (main)"
             
-            # Make sure it's the default
+            # Step 1: First delete any existing 'latest' version if it exists
+            mike delete latest --push || echo "No latest version to delete, continuing..."
+            
+            # Wait to ensure changes are registered
             sleep 2
+            
+            # Step 2: Deploy 'latest' version without any aliases
+            mike deploy --push latest --title "Latest (main)"
           fi
-           # Always set latest as default (with separate command to avoid race conditions)
+          
+          # Wait again before setting default
+          sleep 5
+          
+          # Step 3: Always set 'latest' as the default version
           echo "Setting 'latest' as the default version..."
           mike set-default --push latest
+          
+          # Verify deployment structure
+          echo "Deployment complete. Running verification..."
+          
+          # Get current branch
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          
+          # Check the gh-pages branch structure if possible
+          if git fetch origin gh-pages && git checkout gh-pages; then
+            echo "✅ gh-pages branch exists and is accessible"
+            if [ -f ".mike" ]; then
+              echo "✅ .mike file exists with the following content:"
+              cat .mike
+            else
+              echo "⚠️ .mike file does not exist!"
+            fi
+            
+            # Return to original branch
+            git checkout $CURRENT_BRANCH
+          else
+            echo "⚠️ Could not access gh-pages branch for verification"
+          fi
         env:
           # Increase Python's error verbosity
           PYTHONVERBOSE: 1

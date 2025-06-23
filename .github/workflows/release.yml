@@ -285,13 +285,15 @@ jobs:
       contents: write
       pages: write
     
+
     steps:
-      - name: Checkout code
+      - name: Checkout main branch (ensure mkdocs.yml is present)
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0  # Needed for git-revision-date-localized plugin
+
 
       - name: Setup Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -307,19 +309,14 @@ jobs:
       - name: Install MkDocs dependencies
         run: |
           # Upgrade pip first
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip setuptools wheel
           
-          # Install with certificate verification disabled during build
-          export PYTHONHTTPSVERIFY=0
+          # Install critical dependencies first with specific versions
+          pip install --no-cache-dir pyyaml==6.0.1 mergedeep==1.3.4 markupsafe==2.1.3 jinja2==3.1.2 packaging==23.2
           
-          # Install basic dependencies first
-          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org mike mkdocs-material>=9.4.0 "mkdocs-material-extensions>=1.1"
-          
-          # Then install the rest of the dependencies from requirements.txt
-          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r docs/requirements.txt
-          
-          # Show installed packages to help with debugging
-          pip list
+          # Install remaining dependencies
+          pip install --no-cache-dir -r docs/requirements.txt
+          pip install --no-cache-dir --no-deps mike==2.0.0
 
       - name: Setup Git
         run: |
@@ -330,85 +327,129 @@ jobs:
         run: |
           source ./scripts/fix-python-ssl.sh
 
+      - name: Fix Mike alias conflicts
+        run: |
+          echo "==== Mike Alias Conflict Resolution Tool ===="
+          VERSION="${{ needs.release.outputs.version }}"
+          echo "Latest version: $VERSION"
+          BRANCH_OR_COMMIT=$(git branch --show-current || git rev-parse --short HEAD)
+          echo "Current branch or commit: $BRANCH_OR_COMMIT"
+
+          # Ensure we have the fix_mike_info.py script
+          mkdir -p scripts
+          if [ ! -f "scripts/fix_mike_info.py" ]; then
+            echo "Downloading fix_mike_info.py script..."
+            curl -s -o scripts/fix_mike_info.py https://raw.githubusercontent.com/kpeacocke/terraform-github-repo/main/scripts/fix_mike_info.py || \
+            echo "Warning: Could not download script from repository"
+          fi
+
+          # Make sure the script is executable
+          chmod +x scripts/fix_mike_info.py
+
+          # Check if gh-pages branch exists and switch to it
+          if git ls-remote --exit-code origin gh-pages >/dev/null 2>&1; then
+            echo "gh-pages branch exists, checking for existing aliases..."
+            # Get current branch to restore later
+            ORIGINAL_BRANCH=$(git branch --show-current || echo "main")
+
+            # Fetch and switch to gh-pages branch
+            git fetch origin gh-pages
+            git checkout gh-pages 2>/dev/null || {
+              echo "Error: Could not switch to gh-pages branch, cleaning up conflicts..."
+              git stash || true
+              git checkout -b gh-pages origin/gh-pages || {
+                echo "Error: Could not create gh-pages branch"
+                git checkout "$ORIGINAL_BRANCH" || git checkout main
+              }
+            }
+
+            # Run the script to clean .mike/info.json
+            python3 ./scripts/fix_mike_info.py || {
+              echo "Script execution failed, attempting direct cleanup..."
+              # Manual cleanup of the most critical conflicts
+              if [ -d ".mike/versions/latest" ]; then
+                echo "Manually removing .mike/versions/latest directory..."
+                rm -rf .mike/versions/latest
+              fi
+
+              # Look for any directories containing 'latest'
+              find .mike/versions -type d -name "*[lL][aA][tT][eE][sS][tT]*" -exec rm -rf {} \; 2>/dev/null || true
+
+              # Clean info.json with grep if it exists
+              if [ -f ".mike/info.json" ]; then
+                echo "Manually cleaning .mike/info.json..."
+                cp .mike/info.json .mike/info.json.bak
+                grep -v '"latest"' .mike/info.json.bak > .mike/info.json || cp .mike/info.json.bak .mike/info.json
+              else
+                # Create info.json if it doesn't exist
+                mkdir -p .mike
+                echo '{"aliases": {}, "versions": []}' > .mike/info.json
+              fi
+            }
+
+            # Clean up changes
+            if git status --porcelain | grep -q ".mike"; then
+              git add .mike
+              git commit -m "Fix 'latest' alias and version conflicts" || true
+              git push origin gh-pages || echo "Could not push changes"
+            fi
+
+            # Return to original branch
+            git checkout "$ORIGINAL_BRANCH" || git checkout main
+          else
+            echo "No gh-pages branch found, nothing to fix."
+          fi
+
+      - name: Ensure we're on main branch and mkdocs.yml is present
+        run: |
+          # Ensure we're on the main branch (not gh-pages from the previous step)
+          git checkout main
+          git pull origin main || true  # Pull latest changes, ignore errors if already up to date
+          
+          # Check for mkdocs.yml
+          if [ ! -f mkdocs.yml ]; then
+            echo "::error::mkdocs.yml is missing in repo root!"
+            echo "Current directory: $(pwd)"
+            echo "Files in current directory:"
+            ls -la
+            exit 1
+          fi
+          echo "✅ mkdocs.yml found in repo root"
+        working-directory: ${{ github.workspace }}
+
+      - name: Validate MkDocs setup
+        run: |
+          echo "Validating MkDocs setup..."
+          python3 ./scripts/validate_mkdocs.py || {
+            echo "Validation failed. Check logs for details."
+            exit 1
+          }
+        working-directory: ${{ github.workspace }}
+
       - name: Deploy versioned documentation
         run: |
-          # Display installed packages for debugging
-          echo "Installed Python packages:"
-          pip list
-          
-          # Check mkdocs config
-          echo "Validating mkdocs configuration..."
-          mkdocs build --clean --strict || {
-            echo "::warning::MkDocs build failed with strict mode, trying with more verbose output"
-            mkdocs build --verbose
-          }
-          
-          # Setup git for GitHub Pages with proper merge strategy
-          echo "Fetching gh-pages branch..."
-          git fetch origin gh-pages || echo "No gh-pages branch yet - will be created"
-          
-          # Try to check out the branch if it exists remotely
-          if git branch -r | grep -q origin/gh-pages; then
-            echo "Found remote gh-pages branch, setting it up locally..."
-            if git show-ref --verify --quiet refs/heads/gh-pages; then
-              git checkout gh-pages
-              git pull origin gh-pages --ff-only || (echo "Cannot fast-forward, doing a merge..." && git merge origin/gh-pages)
-              git checkout -
-            else
-              git checkout -b gh-pages origin/gh-pages
-              git checkout -
-            fi
-          else
-            echo "No remote gh-pages branch exists yet - will be created by mike"
-          fi
-          
-          # Deploy new version
-          VERSION="${{ needs.release.outputs.version }}"
-          echo "Deploying version $VERSION to GitHub Pages..."
-          
-          # Check if 'latest' alias exists and delete it if it does
-          echo "Checking for existing 'latest' alias..."
-          if git ls-remote --exit-code origin gh-pages && git checkout gh-pages && grep -q "latest" .mike; then
-            echo "Removing existing 'latest' alias to avoid collision..."
-            git checkout main
-            mike delete latest --push || echo "Failed to delete latest alias, continuing anyway..."
-          else
-            echo "No existing 'latest' alias found or gh-pages not set up yet."
-            git checkout main || echo "Already on main branch"
-          fi
-          
-          # Deploy the new version without any aliases first
-          echo "Deploying version $VERSION (without aliases)..."
-          mike deploy --push $VERSION
-          
-          # Wait a moment to ensure file system changes are registered
-          sleep 2
-          
-          # Add the alias separately with update flag to overwrite existing aliases
-          echo "Setting version $VERSION as 'latest'..."
-          mike alias --push --update $VERSION latest
-          
-          # Set default version (with a pause to avoid race conditions)
-          sleep 2
-          echo "Setting 'latest' as the default version..."
-          mike set-default --push latest
-        env:
-          # Increase Python's error verbosity
-          PYTHONVERBOSE: 1
-          # Disable SSL verification for Python (only during build)
-          PYTHONHTTPSVERIFY: 0
-          # GitHub token for git-committers plugin (MKDOCS_GIT_COMMITTERS_APIKEY is what the plugin looks for)
-          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
+          echo "Deploying versioned documentation..."
+          python3 ./scripts/deploy_docs.py --version "${{ needs.release.outputs.version }}"
+        working-directory: ${{ github.workspace }}
 
       - name: Update changelog in docs
         run: |
+          # Ensure we're on main branch and have latest changes
+          git checkout main
+          git pull origin main || true  # Ensure we have latest changes
+          
           # Copy changelog to docs
           cp CHANGELOG.md docs/changelog.md
           
-          # Commit and push
+          # Commit and push if there are changes
           git add docs/changelog.md
-          git commit -m "docs: update changelog for ${{ needs.release.outputs.version }}" || exit 0
-          git push origin main
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: update changelog for ${{ needs.release.outputs.version }}"
+            git push origin main
+          fi
+        working-directory: ${{ github.workspace }}
 
   # Notification and cleanup
   notify:
@@ -422,65 +463,40 @@ jobs:
       discussions: write
     
     steps:
-      - name: Notify success
-        if: needs.terraform-registry.result == 'success' && needs.docs-update.result == 'success'
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+      - name: Checkout main branch (ensure mkdocs.yml is present)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
-          script: |
-            const version = "${{ needs.release.outputs.version }}";
-            const body = `
-            ## ✅ Release Complete
-            
-            **Version**: \`${version}\`
-            
-            ### What was published:
-            - 🏷️ GitHub Release with changelog
-            - 📦 Terraform Registry module
-            - 📚 Versioned documentation
-            
-            ### Links:
-            - [GitHub Release](https://github.com/kpeacocke/terraform-github-repo/releases/tag/${version})
-            - [Terraform Registry](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/${version})
-            - [Documentation](https://kpeacocke.github.io/terraform-github-repo/)
-            
-            The module is now available for use! 🎉
-            `;
-            
-            // Create an issue for the release announcement
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `🚀 Release ${version} Published`,
-              body,
-              labels: ['release', 'announcement']
-            });
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 
+
+      - name: Verify presence of required scripts
+        run: |
+          echo "Verifying presence of required scripts..."
+          for script in notify_success.py notify_failure.py cleanup_releases.py; do
+            if [ ! -f "./scripts/$script" ]; then
+              echo "::error::Missing script: $script"
+              exit 1
+            fi
+          done
+          echo "✅ All required scripts are present."
+        working-directory: ${{ github.workspace }}
+
+      - name: Notify success
+        run: |
+          echo "Notifying success..."
+          python3 ./scripts/notify_success.py --version "${{ needs.release.outputs.version }}" || {
+            echo "Notification failed. Check logs for details."
+            exit 1
+          }
 
       - name: Notify failure
-        if: needs.terraform-registry.result == 'failure' || needs.docs-update.result == 'failure'
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
-        with:
-          script: |
-            const version = "${{ needs.release.outputs.version }}";
-            const body = `
-            ## ❌ Release Partially Failed
-            
-            **Version**: \`${version}\`
-            
-            ### Status:
-            - GitHub Release: ✅ Success
-            - Terraform Registry: ${{ needs.terraform-registry.result == 'success' && '✅ Success' || '❌ Failed' }}
-            - Documentation: ${{ needs.docs-update.result == 'success' && '✅ Success' || '❌ Failed' }}
-            
-            Please check the workflow logs and take manual action if needed.
-            `;
-            
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `⚠️ Release ${version} Needs Attention`,
-              body,
-              labels: ['release', 'needs-attention']
-            });
+        run: |
+          echo "Notifying failure..."
+          python3 ./scripts/notify_failure.py --version "${{ needs.release.outputs.version }}" || {
+            echo "Notification failed. Check logs for details."
+            exit 1
+          }
 
   # Cleanup old releases (optional)
   cleanup:
@@ -493,34 +509,17 @@ jobs:
       issues: read
     
     steps:
-      - name: Cleanup old pre-releases
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+      - name: Checkout main branch (ensure mkdocs.yml is present)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
-          script: |
-            const { owner, repo } = context.repo;
-            
-            // Get all releases
-            const releases = await github.rest.repos.listReleases({
-              owner,
-              repo,
-              per_page: 100
-            });
-            
-            // Keep only the latest 10 releases, delete older pre-releases
-            const preReleases = releases.data
-              .filter(r => r.prerelease)
-              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-              .slice(10); // Keep latest 10, delete rest
-            
-            for (const release of preReleases) {
-              try:
-                await github.rest.repos.deleteRelease({
-                  owner,
-                  repo,
-                  release_id: release.id
-                });
-                console.log(`Deleted old pre-release: ${release.tag_name}`);
-              } catch (error) {
-                console.log(`Failed to delete ${release.tag_name}: ${error.message}`);
-              }
-            }
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 
+
+      - name: Cleanup old pre-releases
+        run: |
+          echo "Cleaning up old pre-releases..."
+          python3 ./scripts/cleanup_releases.py --keep 10 || {
+            echo "Cleanup failed. Check logs for details."
+            exit 1
+          }
