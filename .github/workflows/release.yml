@@ -467,7 +467,7 @@ jobs:
         run: |
           echo "Verifying presence of required scripts..."
           for script in notify_success.py notify_failure.py cleanup_releases.py; do
-            if [ ! -f "scripts/$script" ]; then
+            if [ ! -f "./scripts/$script" ]; then
               echo "::error::Missing script: $script"
               exit 1
             fi
