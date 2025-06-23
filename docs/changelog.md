@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.4.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.8...v1.4.9) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* update cloudflare/circl dependency to v1.6.1 ([a2a94c1](https://github.com/kpeacocke/terraform-github-repo/commit/a2a94c11c439dfb337f86e4fa2101f54aa4a4323))
+
+### 📚 Documentation
+
+* update changelog for v1.4.8 ([5a70a77](https://github.com/kpeacocke/terraform-github-repo/commit/5a70a774d2ef4f169e3ac8e4c32e6bbc6c4eac91))
+
+
+Generating notes for 1.4.9
+
 ## [1.4.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.7...v1.4.8) (2025-06-23)
 
 ### 🐛 Bug Fixes
