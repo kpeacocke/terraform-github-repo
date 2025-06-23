@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.4.10](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.9...v1.4.10) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* enhance terraform plan command with dynamic variables ([3a0fe31](https://github.com/kpeacocke/terraform-github-repo/commit/3a0fe31e1389096b062506bd55c97285e99e4e2f))
+* markdown linting issues ([a1fbbf3](https://github.com/kpeacocke/terraform-github-repo/commit/a1fbbf3240fc75128898d5119626daa9d044c9c4))
+
+### 📚 Documentation
+
+* update changelog for v1.4.9 ([c7b91b4](https://github.com/kpeacocke/terraform-github-repo/commit/c7b91b43e3f2d1034679b6872e69783d0db68611))
+* update terraform-docs [skip ci] ([9334845](https://github.com/kpeacocke/terraform-github-repo/commit/9334845433b51e6c26cd302f8dbd225057323c45))
+
+
+Generating notes for 1.4.10
+
 ## [1.4.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.8...v1.4.9) (2025-06-23)
 
 ### 🐛 Bug Fixes
