@@ -1,6 +1,7 @@
 # Release Automation Guide
 
-This document explains the automated release process for the terraform-github-repo module, including semantic versioning, Terraform Registry publishing, and documentation updates.
+This document explains the automated release process for the terraform-github-repo module, including semantic versioning,
+Terraform Registry publishing, and documentation updates.
 
 ## Overview
 
@@ -63,14 +64,14 @@ For controlled releases when needed:
 ### Commit Message Format
 
 ```markdown
-<type>[optional scope]: <description>
+`type`[optional scope]: `description`
 
 [optional body]
 
 [optional footer(s)]
 ```
 
-<type>[optional scope]: <description>
+`type`[optional scope]: `description`
 
 [optional body]
 
@@ -345,4 +346,5 @@ The release system integrates with:
 - **Terraform Cloud**: Module validation
 - **GitHub Pages**: Documentation hosting
 
-This ensures that every release maintains security, compatibility, and documentation consistency across the entire project lifecycle.
+This ensures that every release maintains security, compatibility, and documentation consistency  
+across the entire project lifecycle.

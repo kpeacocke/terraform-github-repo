@@ -1,6 +1,7 @@
 # Contributing
 
-Thank you for your interest in contributing to the Terraform GitHub Repository module! This guide will help you understand how to contribute to this project.
+Thank you for your interest in contributing to the Terraform GitHub Repository module!  
+This guide will help you understand how to contribute to this project.
 
 ## Getting Started
 
@@ -90,7 +91,8 @@ This project uses [Conventional Commits](https://www.conventionalcommits.org/) f
 
 ## Release Process
 
-Releases are automated using semantic-release. When your PR is merged to main, a new release will be created based on your commit messages.
+Releases are automated using semantic-release.
+When your PR is merged to main, a new release will be created based on your commit messages.
 
 ## Code of Conduct
 

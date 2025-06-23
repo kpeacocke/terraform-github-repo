@@ -8,6 +8,7 @@ This page documents all input variables that can be provided to the Terraform Gi
 |------|-------------|------|---------|:--------:|
 | name | Name of the repository | `string` | n/a | yes |
 
+<!-- markdownlint-disable MD013 -->
 ## Optional Inputs
 
 | Name | Description | Type | Default | Required |

@@ -1,6 +1,8 @@
 module github.com/kpeacocke/terraform-github-repo
 
-go 1.23.0
+go 1.24.1
+
+toolchain go1.24.4
 
 require (
 	github.com/Masterminds/sprig/v3 v3.3.0

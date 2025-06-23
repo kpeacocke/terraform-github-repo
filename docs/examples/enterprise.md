@@ -1,6 +1,7 @@
 # Enterprise Setup Example
 
-This example demonstrates how to use the module in an enterprise environment with team permissions and advanced security features.
+This example demonstrates how to use the module in an enterprise environment with team permissions  
+and advanced security features.
 
 ## Usage
 

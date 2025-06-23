@@ -37,4 +37,5 @@ module "github_repo" {
 
 ## Next Steps
 
-For more advanced usage, check out the [Advanced Configuration](advanced-configuration.md) guide or the [Security Features](security-features.md) documentation.
+For more advanced usage, check out the [Advanced Configuration](advanced-configuration.md) guide  
+or the [Security Features](security-features.md) documentation.

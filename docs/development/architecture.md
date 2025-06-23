@@ -1,6 +1,7 @@
 # Architecture
 
-This document outlines the architecture of the Terraform GitHub Repository module, explaining its design principles, components, and implementation details.
+This document outlines the architecture of the Terraform GitHub Repository module, explaining its design principles,
+components, and implementation details.
 
 ## Overall Architecture
 

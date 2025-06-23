@@ -5,7 +5,9 @@ This project includes CodeQL security analysis for Go and JavaScript code.
 ## Setup
 
 ### GitHub Actions (Automated)
+
 CodeQL analysis runs automatically on:
+
 - Push to main/master branch
 - Pull requests to main/master branch  
 - Weekly scheduled scans (Thursdays at 6:34 PM UTC)
@@ -13,13 +15,15 @@ CodeQL analysis runs automatically on:
 ### Local Analysis (Manual)
 
 #### Prerequisites
-1. Install CodeQL CLI: https://github.com/github/codeql-cli-binaries/releases
+
+1. Install CodeQL CLI: [https://github.com/github/codeql-cli-binaries/releases](https://github.com/github/codeql-cli-binaries/releases)
 2. Add CodeQL to your PATH
 3. Install the CodeQL VS Code extension (already configured)
 
 #### Running Analysis
 
 1. **Create CodeQL Database:**
+
    ```bash
    # From VS Code: Ctrl+Shift+P -> "Tasks: Run Task" -> "CodeQL Database Create"
    # Or manually:
@@ -27,6 +31,7 @@ CodeQL analysis runs automatically on:
    ```
 
 2. **Run Standard Security Analysis:**
+
    ```bash
    # From VS Code: Ctrl+Shift+P -> "Tasks: Run Task" -> "CodeQL Analyze"  
    # Or manually:
@@ -34,6 +39,7 @@ CodeQL analysis runs automatically on:
    ```
 
 3. **Run Custom Queries:**
+
    ```bash
    # From VS Code: Ctrl+Shift+P -> "Tasks: Run Task" -> "CodeQL Custom Queries"
    # Or manually:
@@ -58,6 +64,7 @@ The project includes custom security queries in `.github/codeql/queries/`:
 ## Excluded Paths
 
 The following paths are excluded from analysis:
+
 - `test/fixtures/**`
 - `examples/**`
 - `templates/**`

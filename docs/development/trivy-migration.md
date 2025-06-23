@@ -4,9 +4,11 @@ This document outlines the migration from tfsec to Trivy for security scanning i
 
 ## Why Migrate?
 
-As announced by Aqua Security, **tfsec is joining the Trivy family**. The tfsec project is being consolidated into Trivy to provide a unified security scanning experience.
+As announced by Aqua Security, **tfsec is joining the Trivy family**.  
+The tfsec project is being consolidated into Trivy to provide a unified security scanning experience.
 
-> **Official Statement**: "tfsec will continue to remain available for the time being, although our engineering attention will be directed at Trivy going forward."
+> **Official Statement**: "tfsec will continue to remain available for the time being, although our engineering
+> attention will be directed at Trivy going forward."
 >
 > Read more: <https://github.com/aquasecurity/tfsec/discussions/1994>
 
@@ -304,4 +306,5 @@ If you encounter issues during migration:
 3. **Test Locally**: Run `task trivy:all` to validate setup
 4. **GitHub Issues**: Report issues in the repository
 
-The migration to Trivy provides enhanced security scanning capabilities while maintaining the same level of protection and improving integration with modern CI/CD pipelines.
+The migration to Trivy provides enhanced security scanning capabilities while maintaining the same level of
+protection and improving integration with modern CI/CD pipelines.

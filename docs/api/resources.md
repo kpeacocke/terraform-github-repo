@@ -61,6 +61,7 @@ github_repository
 
 ## Resource Configuration
 
-Most resources in this module are created conditionally based on the provided input variables. For example, branch protection rules are only created if the `branch_protection` variable is provided.
+Most resources in this module are created conditionally based on the provided input variables.
+For example, branch protection rules are only created if the `branch_protection` variable is provided.
 
 For more detailed information about each resource and its configuration, see the source code or the module's README.

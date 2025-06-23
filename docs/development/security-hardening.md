@@ -1,6 +1,7 @@
 # GitHub Actions Security Hardening Guide
 
-This document outlines the comprehensive security hardening implemented for all GitHub Actions workflows in the terraform-github-repo module.
+This document outlines the comprehensive security hardening implemented for all GitHub Actions workflows  
+in the terraform-github-repo module.
 
 ## Overview
 
@@ -13,7 +14,8 @@ GitHub Actions security hardening focuses on two critical areas:
 
 ### 1. SHA Pinning for Supply Chain Security
 
-**Problem**: Using mutable tags like `@v4` or `@master` can lead to supply chain attacks where malicious code is injected into action updates.
+**Problem**: Using mutable tags like `@v4` or `@master` can lead to supply chain attacks where malicious code is
+injected into action updates.
 
 **Solution**: Pin all actions to specific SHA commits that are immutable.
 
@@ -75,7 +77,7 @@ jobs:
 | `aquasecurity/trivy-action` | `@master` | `@7c2007bcb556501da015201bcba5aa14069b74e2` | Security scanning |
 | `github/codeql-action/*` | `@v3` | `@eb055d739abdc2e8de2e5f4ba1a8b246daa31dc0` | CodeQL security analysis |
 | `terraform-docs/gh-actions` | `@v1` | `@e47bfa196e79fa50987ef99aadc16d521c4bd8a2` | Documentation generation |
-| `stefanzweifel/git-auto-commit-action` | `@v4` | `@8756aa072ef5b4a080af5dc8fef36c5d586e521d` | Auto-commit functionality |
+| `stefanzweifel/git-auto-commit-action` | `@v4` | `@8756aa072ef5b4a080af5dc8fef36c5d586e521d` | Auto- commit |
 
 ## Permission Matrix by Workflow
 
@@ -304,4 +306,5 @@ This security hardening is an ongoing process:
 3. **Education**: Team training on secure CI/CD practices
 4. **Innovation**: Adopting new security features as they become available
 
-The combination of SHA pinning and least-privilege permissions provides a robust security foundation for the CI/CD pipeline while maintaining functionality and ease of maintenance.
+The combination of SHA pinning and least-privilege permissions provides a robust security foundation for the CI/CD
+pipeline while maintaining functionality and ease of maintenance.

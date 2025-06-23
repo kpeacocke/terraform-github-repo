@@ -52,26 +52,26 @@ If credentials are ever compromised:
 If you suspect sensitive data may have been committed, use these steps:
 
 1. **Check for tokens in the repository**:
-   
+
    ```bash
    git grep -i "token\|secret\|password\|key\|credential" -- "*.tf" "*.tfvars" "*.sh" "*.md"
    ```
 
 2. **Check for accidentally committed plan files**:
-   
+
    ```bash
    git ls-files | grep -E "tfplan|\.binary$|plan\.json"
    ```
 
 3. **Use git-secrets or other scanning tools**:
-   
+
    ```bash
    # If git-secrets is installed
    git secrets --scan
    ```
 
 4. **If sensitive data is found**:
-   
+
    - Revoke the compromised credentials immediately
    - Create a new commit that replaces the sensitive data
    - Consider using BFG Repo-Cleaner or git-filter-repo to clean history

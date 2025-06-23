@@ -5,6 +5,7 @@ This document explains the automated dependency management setup using GitHub De
 ## Overview
 
 Dependabot is configured to automatically:
+
 - Update Terraform providers and modules
 - Update Go dependencies (for Terratest)
 - Update GitHub Actions
@@ -28,6 +29,7 @@ The main Dependabot configuration file that defines update schedules and setting
 ### `.github/workflows/dependabot-auto-validation.yml`
 
 Automated workflow that runs when Dependabot opens PRs to:
+
 1. Validate Terraform configurations across multiple versions
 2. Run Go tests (including race detection)
 3. Perform security scanning with Trivy
@@ -128,6 +130,7 @@ For PRs that require manual review (major version updates, security advisories):
 ### Validation Checks
 
 All dependency updates undergo:
+
 - Multi-version Terraform compatibility testing
 - Comprehensive Go test suite
 - Security vulnerability scanning
@@ -138,6 +141,7 @@ All dependency updates undergo:
 ### Modify Update Schedule
 
 Edit `.github/dependabot.yml` to change:
+
 - Update frequency (`daily`, `weekly`, `monthly`)
 - Specific days and times
 - Timezone settings
@@ -145,6 +149,7 @@ Edit `.github/dependabot.yml` to change:
 ### Add New Ecosystems
 
 To track additional dependency types:
+
 1. Add new package ecosystem entry to `dependabot.yml`
 2. Update validation workflow if needed
 3. Add corresponding tasks to `Taskfile.yml`
@@ -152,6 +157,7 @@ To track additional dependency types:
 ### Change Auto-merge Behavior
 
 Modify `.github/workflows/dependabot-auto-validation.yml`:
+
 - Remove auto-merge steps for manual review only
 - Add additional validation steps
 - Change approval requirements
@@ -161,6 +167,7 @@ Modify `.github/workflows/dependabot-auto-validation.yml`:
 ### GitHub Insights
 
 Monitor Dependabot activity:
+
 - Go to repository → Insights → Dependency graph → Dependabot
 - View update history and current status
 - Check for failed update attempts
@@ -168,6 +175,7 @@ Monitor Dependabot activity:
 ### Notifications
 
 Configure notifications for:
+
 - Failed Dependabot runs
 - Security advisories
 - Major version updates requiring review
@@ -184,6 +192,7 @@ Configure notifications for:
 ### Manual Intervention
 
 If Dependabot fails:
+
 1. Check the error in PR comments
 2. Run local validation: `./scripts/dependabot.sh simulate-pr`
 3. Fix issues manually and push updates
@@ -200,9 +209,11 @@ If Dependabot fails:
 ## Integration with CI/CD
 
 The Dependabot configuration integrates with:
+
 - **CodeQL**: Security analysis on updated dependencies
 - **Terraform Cloud**: Validation in cloud environments
 - **GitHub Actions**: Automated testing and deployment
 - **Documentation**: Automatic docs updates with new versions
 
-This ensures that dependency updates maintain security, compatibility, and documentation consistency across the entire project lifecycle.
+This ensures that dependency updates maintain security, compatibility, and documentation consistency  
+across the entire project lifecycle.

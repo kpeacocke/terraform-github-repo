@@ -1,6 +1,7 @@
 # GitHub Actions Workflow Refactoring
 
-This document summarizes the refactoring performed on the GitHub Actions workflows in this repository to improve maintainability, security, and standardization.
+This document summarizes the refactoring performed on the GitHub Actions workflows in this repository to improve
+maintainability, security, and standardization.
 
 ## Reusable Workflows
 
@@ -68,7 +69,8 @@ The following workflows have been refactored to use the reusable components:
 
 ## Documentation Deployment Fixes
 
-The documentation deployment process (specifically the `docs-update` job in the release workflow) was improved to address two critical issues:
+The documentation deployment process (specifically the `docs-update` job in the release workflow) was improved  
+to address two critical issues:
 
 ### 1. Python SSL Module Initialization Error
 
@@ -126,7 +128,8 @@ The documentation deployment process (specifically the `docs-update` job in the 
 - Streamlined branch management and git operations
 - Improved environment variable handling and debug output
 
-These improvements ensure the documentation deployment process is more resilient, easier to debug, and less prone to SSL-related failures or alias conflicts.
+These improvements ensure the documentation deployment process is more resilient and easier to debug, and
+less prone to SSL-related failures or alias conflicts.
 
 ## Benefits
 

@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * update changelog for v1.4.8 ([5a70a77](https://github.com/kpeacocke/terraform-github-repo/commit/5a70a774d2ef4f169e3ac8e4c32e6bbc6c4eac91))
 
-
 Generating notes for 1.4.9
 
 ## [1.4.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.7...v1.4.8) (2025-06-23)
@@ -30,7 +29,6 @@ Generating notes for 1.4.9
 
 * update changelog for v1.4.7 ([dc8b4ac](https://github.com/kpeacocke/terraform-github-repo/commit/dc8b4ac379b296ab496ba81e232f8b51a2850c67))
 
-
 Generating notes for 1.4.8
 
 ## [1.4.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.6...v1.4.7) (2025-06-23)
@@ -38,7 +36,6 @@ Generating notes for 1.4.8
 ### 🐛 Bug Fixes
 
 * update mkdocs version range in requirements.txt ([e30bd5c](https://github.com/kpeacocke/terraform-github-repo/commit/e30bd5c5985052975bf3424a1ca68aeca1c80bcc))
-
 
 Generating notes for 1.4.7
 
@@ -59,7 +56,6 @@ Generating notes for 1.4.7
 * update terraform-docs [skip ci] ([03be4ce](https://github.com/kpeacocke/terraform-github-repo/commit/03be4ced9575019d99395b37ed6010aa0d0ae6a0))
 * update terraform-docs [skip ci] ([8cdde00](https://github.com/kpeacocke/terraform-github-repo/commit/8cdde0023c98fb1539f58b870bbfffdb0c2e5b92))
 
-
 Generating notes for 1.4.6
 
 ## [1.4.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.4...v1.4.5) (2025-06-23)
@@ -71,7 +67,6 @@ Generating notes for 1.4.6
 ### 📚 Documentation
 
 * update changelog for v1.4.4 ([87479e4](https://github.com/kpeacocke/terraform-github-repo/commit/87479e48fb1832a82c80c8eafd7fcd082e6f8fc2))
-
 
 Generating notes for 1.4.5
 
@@ -85,7 +80,6 @@ Generating notes for 1.4.5
 
 * update changelog for v1.4.3 ([71c3678](https://github.com/kpeacocke/terraform-github-repo/commit/71c36781b52f0f93f16998552a71d7f9f4554a1e))
 
-
 Generating notes for 1.4.4
 
 ## [1.4.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.2...v1.4.3) (2025-06-23)
@@ -97,7 +91,6 @@ Generating notes for 1.4.4
 ### 📚 Documentation
 
 * update changelog for v1.4.2 ([8d4b0e2](https://github.com/kpeacocke/terraform-github-repo/commit/8d4b0e2fb89eaabf0bbcfe3feb95943b5b0707a2))
-
 
 Generating notes for 1.4.3
 
@@ -111,7 +104,6 @@ Generating notes for 1.4.3
 
 * remove obsolete fix_mike_info.py script ([b4927dc](https://github.com/kpeacocke/terraform-github-repo/commit/b4927dc7ddb88e7cc8a1d216f2458dec31609c36))
 
-
 Generating notes for 1.4.2
 
 ## [1.4.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.4.0...v1.4.1) (2025-06-22)
@@ -123,7 +115,6 @@ Generating notes for 1.4.2
 ### 📚 Documentation
 
 * update changelog for v1.4.0 ([bb48672](https://github.com/kpeacocke/terraform-github-repo/commit/bb486720e61f733ad1f642f2d836d1875482fd04))
-
 
 Generating notes for 1.4.1
 
@@ -137,7 +128,6 @@ Generating notes for 1.4.1
 
 * update changelog for v1.3.0 ([1032ebd](https://github.com/kpeacocke/terraform-github-repo/commit/1032ebd28fa85d769e61b1307008605edbc175c9))
 
-
 Generating notes for 1.4.0
 
 ## [1.3.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.2.0...v1.3.0) (2025-06-22)
@@ -145,7 +135,6 @@ Generating notes for 1.4.0
 ### 🚀 Features
 
 * add alias conflict check before deploying documentation ([64853a2](https://github.com/kpeacocke/terraform-github-repo/commit/64853a2c36a38c5f336f73490a316a1977fc3c8c))
-
 
 Generating notes for 1.3.0
 
@@ -155,7 +144,6 @@ Generating notes for 1.3.0
 
 * add deploy_docs script for versioned documentation deployment ([b53b425](https://github.com/kpeacocke/terraform-github-repo/commit/b53b425c5766065cb00484c70b3d29b04efba79d))
 
-
 Generating notes for 1.2.0
 
 ## [1.1.27](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.26...v1.1.27) (2025-06-22)
@@ -163,7 +151,6 @@ Generating notes for 1.2.0
 ### 🐛 Bug Fixes
 
 * add scripts for release management and MkDocs validation ([ad56933](https://github.com/kpeacocke/terraform-github-repo/commit/ad569336bc4e1e045ed94598bd63d4b5fbd9e482))
-
 
 Generating notes for 1.1.27
 
@@ -173,7 +160,6 @@ Generating notes for 1.1.27
 
 * add script to clean up Mike configuration and validate workflows ([010ce41](https://github.com/kpeacocke/terraform-github-repo/commit/010ce418b5a121cd4befcb261be1c4a69bc76c38))
 
-
 Generating notes for 1.1.26
 
 ## [1.1.25](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.24...v1.1.25) (2025-06-20)
@@ -181,7 +167,6 @@ Generating notes for 1.1.26
 ### ♻️ Code Refactoring
 
 * streamline dependency installation and mkdocs deployment steps ([04f1bc9](https://github.com/kpeacocke/terraform-github-repo/commit/04f1bc93a167d950f8bf805e1b918e5f16c2fbae))
-
 
 Generating notes for 1.1.25
 
@@ -191,7 +176,6 @@ Generating notes for 1.1.25
 
 * add debug output for mkdocs.yml location in release workflow ([2d52fb2](https://github.com/kpeacocke/terraform-github-repo/commit/2d52fb27257297af25785a763c8bdec51b278647))
 
-
 Generating notes for 1.1.24
 
 ## [1.1.23](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.22...v1.1.23) (2025-06-20)
@@ -199,7 +183,6 @@ Generating notes for 1.1.24
 ### 🐛 Bug Fixes
 
 * remove redundant debug step and set working directory for mkdocs.yml check ([8d56507](https://github.com/kpeacocke/terraform-github-repo/commit/8d56507b16dcfe2989ff50ad42dd03b31bedaf9c))
-
 
 Generating notes for 1.1.23
 
@@ -210,7 +193,6 @@ Generating notes for 1.1.23
 * add debug step to show working directory and environment variables after checkout ([0a2a91f](https://github.com/kpeacocke/terraform-github-repo/commit/0a2a91fa5dfb41c13ea7cc79ca216ede08b944fe))
 * update debug step name for clarity in release workflow ([76e822a](https://github.com/kpeacocke/terraform-github-repo/commit/76e822aeb058c8baff0256bbe65f43c93372da04))
 
-
 Generating notes for 1.1.22
 
 ## [1.1.21](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.20...v1.1.21) (2025-06-19)
@@ -218,7 +200,6 @@ Generating notes for 1.1.22
 ### 🐛 Bug Fixes
 
 * simplify mkdocs.yml presence check and remove redundant debug steps ([94f0a8d](https://github.com/kpeacocke/terraform-github-repo/commit/94f0a8d3a0cc469afd111936f53f74fa7caf5d77))
-
 
 Generating notes for 1.1.21
 
@@ -228,7 +209,6 @@ Generating notes for 1.1.21
 
 * enhance checkout step with additional logging and mkdocs.yml presence verification ([9936108](https://github.com/kpeacocke/terraform-github-repo/commit/9936108c8c006b37d4cdc4bfb450307243750fbc))
 
-
 Generating notes for 1.1.20
 
 ## [1.1.19](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.18...v1.1.19) (2025-06-19)
@@ -236,7 +216,6 @@ Generating notes for 1.1.20
 ### 🐛 Bug Fixes
 
 * enhance checkout step with additional logging and mkdocs.yml presence verification ([45edb24](https://github.com/kpeacocke/terraform-github-repo/commit/45edb244dd0411ac1979e5bfd4c233c5107af8f7))
-
 
 Generating notes for 1.1.19
 
@@ -246,7 +225,6 @@ Generating notes for 1.1.19
 
 * enhance checkout step with detailed logging and mkdocs.yml presence check ([621aab7](https://github.com/kpeacocke/terraform-github-repo/commit/621aab71f71851aa9ecabefd7090e9560d096ac1))
 
-
 Generating notes for 1.1.18
 
 ## [1.1.17](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.16...v1.1.17) (2025-06-19)
@@ -254,7 +232,6 @@ Generating notes for 1.1.18
 ### 🐛 Bug Fixes
 
 * ensure clean checkout of main and verify mkdocs.yml presence ([2c82513](https://github.com/kpeacocke/terraform-github-repo/commit/2c8251311e151bdaff8e881998b4c8b366f3c26a))
-
 
 Generating notes for 1.1.17
 
@@ -264,7 +241,6 @@ Generating notes for 1.1.17
 
 * update checkout step to ensure mkdocs.yml is present ([7a04e50](https://github.com/kpeacocke/terraform-github-repo/commit/7a04e503b528dc7eb17893dad432ae1542205507))
 
-
 Generating notes for 1.1.16
 
 ## [1.1.15](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.14...v1.1.15) (2025-06-19)
@@ -272,7 +248,6 @@ Generating notes for 1.1.16
 ### 🐛 Bug Fixes
 
 * add debug information before MkDocs build to assist troubleshooting ([469f2fb](https://github.com/kpeacocke/terraform-github-repo/commit/469f2fbc8f076917214ca7faa00cc46581937b0b))
-
 
 Generating notes for 1.1.15
 
@@ -282,7 +257,6 @@ Generating notes for 1.1.15
 
 * ensure fix-mike-aliases script runs without failing the deployment ([ca2fcdd](https://github.com/kpeacocke/terraform-github-repo/commit/ca2fcdda1ba15f6ea8b70250a7ace7f4fc67863e))
 
-
 Generating notes for 1.1.14
 
 ## [1.1.13](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.12...v1.1.13) (2025-06-19)
@@ -290,7 +264,6 @@ Generating notes for 1.1.14
 ### 🐛 Bug Fixes
 
 * improve error handling in deployment scripts and prevent deploying 'latest' as a version ([6e87500](https://github.com/kpeacocke/terraform-github-repo/commit/6e8750077e3ac8cc566ca389a91cbffe6619f5e0))
-
 
 Generating notes for 1.1.13
 
@@ -300,12 +273,9 @@ Generating notes for 1.1.13
 
 * standardize token parameter name in workflows and enhance mike alias conflict resolution ([904b16a](https://github.com/kpeacocke/terraform-github-repo/commit/904b16a2adaa283881dbf0b8c88445366e75e8fe))
 
-
 Generating notes for 1.1.12
 
-# Changelog
-
-
+## Changelog
 
 ## [1.1.11](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.10...v1.1.11) (2025-06-18)
 
@@ -313,9 +283,7 @@ Generating notes for 1.1.12
 
 * enhance MkDocs deployment process and resolve Mike alias conflicts ([66c4e3a](https://github.com/kpeacocke/terraform-github-repo/commit/66c4e3af032eecbc856d4053662740b683d03887))
 
-
 Generating notes for 1.1.11
-
 
 ## [1.1.10](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.9...v1.1.10) (2025-06-18)
 
@@ -323,9 +291,7 @@ Generating notes for 1.1.11
 
 * remove unsupported --no-redirect flag from mike commands ([2bd99d9](https://github.com/kpeacocke/terraform-github-repo/commit/2bd99d9bec102a925f72b25213e2c9e0a8f2907e))
 
-
 Generating notes for 1.1.10
-
 
 ## [1.1.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.8...v1.1.9) (2025-06-18)
 
@@ -333,9 +299,7 @@ Generating notes for 1.1.10
 
 * resolve mike alias collision error between version name and alias ([407ae87](https://github.com/kpeacocke/terraform-github-repo/commit/407ae8742907273f9b6e9c2b5e3e3c7595fd1d6f))
 
-
 Generating notes for 1.1.9
-
 
 ## [1.1.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.7...v1.1.8) (2025-06-18)
 
@@ -343,9 +307,7 @@ Generating notes for 1.1.9
 
 * update TFLint action to use terraform-linters/setup-tflint@v4.1.1 ([dc55f5f](https://github.com/kpeacocke/terraform-github-repo/commit/dc55f5f68d3e12b13f6557a6a658f792cd55ea7f))
 
-
 Generating notes for 1.1.8
-
 
 ## [1.1.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.6...v1.1.7) (2025-06-18)
 
@@ -357,9 +319,7 @@ Generating notes for 1.1.8
 
 * add documentation for docs-update job fixes ([dfd5557](https://github.com/kpeacocke/terraform-github-repo/commit/dfd5557b8a33069d56e079d9c9830c4d708d4b89))
 
-
 Generating notes for 1.1.7
-
 
 ## [1.1.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.5...v1.1.6) (2025-06-18)
 
@@ -367,9 +327,7 @@ Generating notes for 1.1.7
 
 * resolve workflow validation errors in build.yml ([3793b9f](https://github.com/kpeacocke/terraform-github-repo/commit/3793b9f20dd44a246bd1310400565dd3632319ba))
 
-
 Generating notes for 1.1.6
-
 
 ## [1.1.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.4...v1.1.5) (2025-06-18)
 
@@ -377,9 +335,7 @@ Generating notes for 1.1.6
 
 * make GitHub token optional in reusable workflows ([8c3c99a](https://github.com/kpeacocke/terraform-github-repo/commit/8c3c99a1383f3534600b08d63e79ffb75dfebbc7))
 
-
 Generating notes for 1.1.5
-
 
 ## [1.1.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.3...v1.1.4) (2025-06-18)
 
@@ -387,9 +343,7 @@ Generating notes for 1.1.5
 
 * standardize GITHUB_TOKEN parameter name in reusable workflows ([b7f7cda](https://github.com/kpeacocke/terraform-github-repo/commit/b7f7cda0f0ec3e3b0928e341b0e8118e483608f2))
 
-
 Generating notes for 1.1.4
-
 
 ## [1.1.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.2...v1.1.3) (2025-06-18)
 
@@ -397,9 +351,7 @@ Generating notes for 1.1.4
 
 * standardize GitHub Actions workflows using reusable workflows for validation, security, and docs ([ffd645c](https://github.com/kpeacocke/terraform-github-repo/commit/ffd645c023ffb53ed81d052c6663a1d7d34a1c16))
 
-
 Generating notes for 1.1.3
-
 
 ## [1.1.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.1...v1.1.2) (2025-06-18)
 
@@ -411,9 +363,7 @@ Generating notes for 1.1.3
 
 * update changelog for v1.1.1 ([f230070](https://github.com/kpeacocke/terraform-github-repo/commit/f2300707c5d53c2c1335d81a09c5e592882cb910))
 
-
 Generating notes for 1.1.2
-
 
 ## [1.1.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.1.0...v1.1.1) (2025-06-18)
 
@@ -425,9 +375,7 @@ Generating notes for 1.1.2
 
 * update changelog for v1.1.0 ([2884765](https://github.com/kpeacocke/terraform-github-repo/commit/288476537082d712212ae3e6561238630a7529e6))
 
-
 Generating notes for 1.1.1
-
 
 ## [1.1.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.17...v1.1.0) (2025-06-18)
 
@@ -439,9 +387,7 @@ Generating notes for 1.1.1
 
 * update changelog for v1.0.17 ([14bb6d3](https://github.com/kpeacocke/terraform-github-repo/commit/14bb6d3b6ea10f6feed7e8c16f347d5cc6359083))
 
-
 Generating notes for 1.1.0
-
 
 ## [1.0.17](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.16...v1.0.17) (2025-06-18)
 
@@ -453,9 +399,7 @@ Generating notes for 1.1.0
 
 * update changelog for v1.0.16 ([c15deaf](https://github.com/kpeacocke/terraform-github-repo/commit/c15deafccf1e10591ea7fca9dddfbea1d371f78f))
 
-
 Generating notes for 1.0.17
-
 
 ## [1.0.16](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.15...v1.0.16) (2025-06-18)
 
@@ -467,9 +411,7 @@ Generating notes for 1.0.17
 
 * update changelog for v1.0.15 ([6ddc6d4](https://github.com/kpeacocke/terraform-github-repo/commit/6ddc6d463e9e55e12b296ca1562273cdead0564c))
 
-
 Generating notes for 1.0.16
-
 
 ## [1.0.15](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.14...v1.0.15) (2025-06-18)
 
@@ -481,9 +423,7 @@ Generating notes for 1.0.16
 
 * update changelog for v1.0.14 ([6fb7298](https://github.com/kpeacocke/terraform-github-repo/commit/6fb7298fed75bd8d44c9dbcdf8e7ede6e114da0f))
 
-
 Generating notes for 1.0.15
-
 
 ## [1.0.14](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.13...v1.0.14) (2025-06-18)
 
@@ -496,9 +436,7 @@ Generating notes for 1.0.15
 * fix MkDocs strict mode issues and add missing documentation files ([5178769](https://github.com/kpeacocke/terraform-github-repo/commit/51787691079219b8a9783adbea7bf798440c7b21))
 * update changelog for v1.0.13 ([6b18a34](https://github.com/kpeacocke/terraform-github-repo/commit/6b18a34df643b5a36adf7443bf772d43a21dfaa4))
 
-
 Generating notes for 1.0.14
-
 
 ## [1.0.13](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.12...v1.0.13) (2025-06-17)
 
@@ -506,9 +444,7 @@ Generating notes for 1.0.14
 
 * correct emoji extension paths in MkDocs configuration ([eb62851](https://github.com/kpeacocke/terraform-github-repo/commit/eb62851536287a71ee8d309f324b20118c11b480))
 
-
 Generating notes for 1.0.13
-
 
 ## [1.0.12](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.11...v1.0.12) (2025-06-17)
 
@@ -516,9 +452,7 @@ Generating notes for 1.0.13
 
 * update MkDocs dependencies and improve documentation build process ([ab17abc](https://github.com/kpeacocke/terraform-github-repo/commit/ab17abc8f33f48ec4cef402203e9bfb35ebf52cc))
 
-
 Generating notes for 1.0.12
-
 
 ## [1.0.11](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.10...v1.0.11) (2025-06-17)
 
@@ -526,9 +460,7 @@ Generating notes for 1.0.12
 
 * update documentation dependencies and improve build output ([136f56f](https://github.com/kpeacocke/terraform-github-repo/commit/136f56f3803445571caf22ee79bcaf4a5bd386e8))
 
-
 Generating notes for 1.0.11
-
 
 ## [1.0.10](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.9...v1.0.10) (2025-06-17)
 
@@ -536,9 +468,7 @@ Generating notes for 1.0.11
 
 * update permissions and enhance documentation deployment process ([7b37bfe](https://github.com/kpeacocke/terraform-github-repo/commit/7b37bfeed28139c708ecdcfa95f8d4f1afc17b02))
 
-
 Generating notes for 1.0.10
-
 
 ## [1.0.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.8...v1.0.9) (2025-06-17)
 
@@ -546,9 +476,7 @@ Generating notes for 1.0.10
 
 * add permissions for discussions in terraform-registry and notify jobs ([d9af872](https://github.com/kpeacocke/terraform-github-repo/commit/d9af8728ea57f2245af964aff262f44d248efd58))
 
-
 Generating notes for 1.0.9
-
 
 ## [1.0.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.7...v1.0.8) (2025-06-17)
 
@@ -556,9 +484,7 @@ Generating notes for 1.0.9
 
 * enhance release comment handling by using discussion URL or creating a new issue ([a5e94f6](https://github.com/kpeacocke/terraform-github-repo/commit/a5e94f6cdc1c3f6170b6761d35d51ce26d1a112c))
 
-
 Generating notes for 1.0.8
-
 
 ## [1.0.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.6...v1.0.7) (2025-06-17)
 
@@ -566,9 +492,7 @@ Generating notes for 1.0.8
 
 * update GitHub API call to create release comment for improved functionality ([a5770fa](https://github.com/kpeacocke/terraform-github-repo/commit/a5770fa1326296699731a2586ca63343715c0545))
 
-
 Generating notes for 1.0.7
-
 
 ## [1.0.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.5...v1.0.6) (2025-06-17)
 
@@ -576,9 +500,7 @@ Generating notes for 1.0.7
 
 * add GitHub token to Terraform plan steps for enhanced security ([51a53e3](https://github.com/kpeacocke/terraform-github-repo/commit/51a53e3084bb5be167f4a3b43729e31f12426708))
 
-
 Generating notes for 1.0.6
-
 
 ## [1.0.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.4...v1.0.5) (2025-06-17)
 
@@ -587,9 +509,7 @@ Generating notes for 1.0.6
 * refactor issue fetching logic in traceability workflow for improved error handling ([dd9c35c](https://github.com/kpeacocke/terraform-github-repo/commit/dd9c35cc8cb69977cd7cf51642727a316ff3083e))
 * remove custom_dir from theme configuration in mkdocs.yml ([9be77af](https://github.com/kpeacocke/terraform-github-repo/commit/9be77af56dfc3ecdfa05024dbf2c93b449981cb6))
 
-
 Generating notes for 1.0.5
-
 
 ## [1.0.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.3...v1.0.4) (2025-06-17)
 
@@ -597,9 +517,7 @@ Generating notes for 1.0.5
 
 * implement code changes to enhance functionality and improve performance ([c74db8b](https://github.com/kpeacocke/terraform-github-repo/commit/c74db8bb1dd0ca9168c1e2a3f8233215e958cd62))
 
-
 Generating notes for 1.0.4
-
 
 ## [1.0.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.2...v1.0.3) (2025-06-17)
 
@@ -607,9 +525,7 @@ Generating notes for 1.0.4
 
 * update Go version and SonarCloud action, refactor E2E tests for better structure ([1bc2c1b](https://github.com/kpeacocke/terraform-github-repo/commit/1bc2c1b8086d28e46b6ce1e091d880d7c514c359))
 
-
 Generating notes for 1.0.3
-
 
 ## [1.0.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.1...v1.0.2) (2025-06-17)
 
@@ -617,9 +533,7 @@ Generating notes for 1.0.3
 
 * update Terraform provider versions in SonarCloud configuration ([7f6b0ee](https://github.com/kpeacocke/terraform-github-repo/commit/7f6b0eedd4de562ae80e620bb48eaa176a476763))
 
-
 Generating notes for 1.0.2
-
 
 ## [1.0.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.0.0...v1.0.1) (2025-06-17)
 
@@ -627,9 +541,7 @@ Generating notes for 1.0.2
 
 * add check for changes before committing coverage report to wiki ([d97aaec](https://github.com/kpeacocke/terraform-github-repo/commit/d97aaec6764e82b27a59609f3a3c39cf18be25f9))
 
-
 Generating notes for 1.0.1
-
 
 ## 1.0.0 (2025-06-17)
 
@@ -748,10 +660,7 @@ Generating notes for 1.0.1
 * streamline README structure. Esentially stopped mixing up this and template. I'm an idiot ([a652c79](https://github.com/kpeacocke/terraform-github-repo/commit/a652c79619d478c91ca873466c80ffd546d24d55))
 * update GitHub workflows to use escaped GitHub token syntax & improve variable descriptions ([c1bc946](https://github.com/kpeacocke/terraform-github-repo/commit/c1bc946a282bdcd25e1a240493c0e6379ed8a39f))
 
-
 Generating notes for 1.0.0
-
-
 
 ## [1.1.0] - 2025-06-05
 

@@ -1,8 +1,6 @@
 # Terraform GitHub Repository Module
 
-<div class="grid cards" markdown>
-
--   :material-rocket-launch:{ .lg .middle } __Quick Start__
+- :material-rocket-launch:{ .lg .middle } __Quick Start__
 
     ---
 
@@ -10,7 +8,7 @@
 
     [:octicons-arrow-right-24: Getting Started](getting-started/installation.md)
 
--   :material-shield-check:{ .lg .middle } __Security First__
+- :material-shield-check:{ .lg .middle } __Security First__
 
     ---
 
@@ -18,7 +16,7 @@
 
     [:octicons-arrow-right-24: Security Features](user-guide/security-features.md)
 
--   :material-book-open:{ .lg .middle } __Examples__
+- :material-book-open:{ .lg .middle } __Examples__
 
     ---
 
@@ -26,7 +24,7 @@
 
     [:octicons-arrow-right-24: View Examples](examples/basic.md)
 
--   :material-api:{ .lg .middle } __API Reference__
+- :material-api:{ .lg .middle } __API Reference__
 
     ---
 
@@ -34,23 +32,22 @@
 
     [:octicons-arrow-right-24: API Docs](api/inputs.md)
 
-</div>
-
 ## Overview
 
-The **Terraform GitHub Repository Module** is a comprehensive solution for managing GitHub repositories with enterprise-grade security, compliance, and DevOps automation.
+The __Terraform GitHub Repository Module__ is a comprehensive solution for managing GitHub repositories with
+enterprise-grade security, compliance, and DevOps automation.
 
 !!! info "Latest Version"
     [![Module Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.terraform.io%2Fv1%2Fmodules%2Fkpeacocke%2Fterraform-github-repo&query=%24.version&label=version&logo=terraform&logoColor=white&color=623CE4)](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest)
 
 ### Key Features
 
-- **GitFlow Enforcement** - Automatic branch protection with required status checks
-- **Security Scanning** - Integrated CodeQL analysis and secret scanning  
-- **Dependency Management** - Automated Dependabot with auto-merge capabilities
-- **Compliance Ready** - SOC2, ISO27001, and enterprise governance features
-- **Template Bootstrap** - Auto-generates standard files (README, LICENSE, SECURITY.md)
-- **Policy Enforcement** - Open Policy Agent integration for custom compliance rules
+- __GitFlow Enforcement__ - Automatic branch protection with required status checks
+- __Security Scanning__ - Integrated CodeQL analysis and secret scanning  
+- __Dependency Management__ - Automated Dependabot with auto-merge capabilities
+- __Compliance Ready__ - SOC2, ISO27001, and enterprise governance features
+- __Template Bootstrap__ - Auto-generates standard files (README, LICENSE, SECURITY.md)
+- __Policy Enforcement__ - Open Policy Agent integration for custom compliance rules
 
 ### Architecture Overview
 
@@ -112,30 +109,20 @@ module "github_repo" {
 
 ## Support
 
-<div class="grid cards" markdown>
+### Community Support
 
--   :material-chat:{ .lg .middle } __Community Support__
+- :material-chat:{ .lg .middle } __Community Support__  
+  Get help from the community  
+  [:octicons-arrow-right-24: Discussions](https://github.com/kpeacocke/terraform-github-repo/discussions)
 
-    ---
+### Report Issues
 
-    Get help from the community
+- :material-bug:{ .lg .middle } __Report Issues__  
+  Found a bug? Report it here  
+  [:octicons-arrow-right-24: Issues](https://github.com/kpeacocke/terraform-github-repo/issues)
 
-    [:octicons-arrow-right-24: Discussions](https://github.com/kpeacocke/terraform-github-repo/discussions)
+### Enterprise Support
 
--   :material-bug:{ .lg .middle } __Report Issues__
-
-    ---
-
-    Found a bug? Report it here
-
-    [:octicons-arrow-right-24: Issues](https://github.com/kpeacocke/terraform-github-repo/issues)
-
--   :material-email:{ .lg .middle } __Enterprise Support__
-
-    ---
-
-    Professional support available
-
-    [:octicons-arrow-right-24: Contact Us](mailto:kpeacocke@users.noreply.github.com)
-
-</div>
+- :material-email:{ .lg .middle } __Enterprise Support__  
+  Professional support available  
+  [:octicons-arrow-right-24: Contact Us](mailto:kpeacocke@users.noreply.github.com)

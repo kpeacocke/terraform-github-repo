@@ -1,6 +1,7 @@
 # Handling Sensitive Data in Terraform
 
-This document provides guidance on managing sensitive data in Terraform configurations, particularly for this module which handles GitHub tokens.
+This document provides guidance on managing sensitive data in Terraform configurations, particularly for this module.
+It specifically covers handling GitHub tokens.
 
 ## Mark Variables as Sensitive
 
@@ -43,7 +44,8 @@ env:
 
 ## Use Terraform's `nonsensitive()` Function Carefully
 
-The `nonsensitive()` function unwraps sensitive values and should be used cautiously, only in cases where you need to output a value and are certain it's safe to do so.
+The `nonsensitive()` function unwraps sensitive values and should be used cautiously.
+Only use it in cases where you need to output a value and are certain it's safe to do so.
 
 ## Avoid Logging Sensitive Values
 
