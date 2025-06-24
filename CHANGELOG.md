@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.8.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.7...v1.8.8) (2025-06-24)
+
+### 📚 Documentation
+
+* update changelog for v1.8.7 ([45d5ca1](https://github.com/kpeacocke/terraform-github-repo/commit/45d5ca1fbf17acef19b4e4e9bb832b7496fd2351))
+
+### ♻️ Code Refactoring
+
+* improve readability of S3 server-side encryption check in guardrails policy ([6e0e6c6](https://github.com/kpeacocke/terraform-github-repo/commit/6e0e6c6d197af47a0beb4ebd3a22b5a66f728028))
+* standardize deny message formatting in guardrails policy ([9ae6dc6](https://github.com/kpeacocke/terraform-github-repo/commit/9ae6dc63cbe974912c77656ad864cff1244e70cf))
+
+
+Generating notes for 1.8.8
+
 ## [1.8.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.6...v1.8.7) (2025-06-24)
 
 ### 📚 Documentation
