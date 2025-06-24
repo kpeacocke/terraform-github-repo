@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * simplify validation checks by removing helper function in guardrails policy ([896854b](https://github.com/kpeacocke/terraform-github-repo/commit/896854b8e1104236b9dc28acf177cdfd41bcbc2f))
 
-
 Generating notes for 1.8.7
 
 ## [1.8.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.5...v1.8.6) (2025-06-24)
