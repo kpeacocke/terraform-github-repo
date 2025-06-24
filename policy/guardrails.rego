@@ -1,16 +1,10 @@
 package terraform.guardrails
 
-# Helper: Only validate resources that are being created or updated
-valid_after(rc) = after if {
-    rc.change.after != null
-    after := rc.change.after
-}
-
 # 1. S3 must have server-side encryption
 deny[sprintf("S3 bucket %v must have server-side encryption enabled.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
-	valid_after(rc)
+	rc.change.after != null
 	not rc.change.after.server_side_encryption_configuration
 }
 
@@ -18,7 +12,7 @@ deny[sprintf("S3 bucket %v must have server-side encryption enabled.", [rc.addre
 deny[sprintf("S3 bucket %v must not have ACL set to public-read.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
-	valid_after(rc)
+	rc.change.after != null
 	rc.change.after.acl == "public-read"
 }
 
@@ -26,7 +20,7 @@ deny[sprintf("S3 bucket %v must not have ACL set to public-read.", [rc.address])
 deny[sprintf("Security group rule %v must not allow ingress from 0.0.0.0/0.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_security_group_rule"
-	valid_after(rc)
+	rc.change.after != null
 	rc.change.after.cidr_blocks[_] == "0.0.0.0/0"
 }
 
@@ -34,14 +28,14 @@ deny[sprintf("Security group rule %v must not allow ingress from 0.0.0.0/0.", [r
 deny[sprintf("IAM user %v is not allowed.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_iam_user"
-	valid_after(rc)
+	rc.change.after != null
 }
 
 # 5. RDS must have storage encryption
 deny[sprintf("RDS instance %v must have storage encryption enabled.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_db_instance"
-	valid_after(rc)
+	rc.change.after != null
 	not rc.change.after.storage_encrypted
 }
 
@@ -49,21 +43,21 @@ deny[sprintf("RDS instance %v must have storage encryption enabled.", [rc.addres
 deny[sprintf("S3 bucket %v must have tags.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
-	valid_after(rc)
+	rc.change.after != null
 	not rc.change.after.tags
 }
 
 deny[sprintf("S3 bucket %v must have an 'Environment' tag.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
-	valid_after(rc)
+	rc.change.after != null
 	not rc.change.after.tags.Environment
 }
 
 deny[sprintf("S3 bucket %v must have an 'Owner' tag.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
-	valid_after(rc)
+	rc.change.after != null
 	not rc.change.after.tags.Owner
 }
 
@@ -71,21 +65,21 @@ deny[sprintf("S3 bucket %v must have an 'Owner' tag.", [rc.address])] if {
 deny[sprintf("RDS instance %v must have tags.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_db_instance"
-	valid_after(rc)
+	rc.change.after != null
 	not rc.change.after.tags
 }
 
 deny[sprintf("RDS instance %v must have an 'Owner' tag.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_db_instance"
-	valid_after(rc)
+	rc.change.after != null
 	not rc.change.after.tags.Owner
 }
 
 deny[sprintf("RDS instance %v must have an 'Environment' tag.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_db_instance"
-	valid_after(rc)
+	rc.change.after != null
 	not rc.change.after.tags.Environment
 }
 
@@ -93,7 +87,7 @@ deny[sprintf("RDS instance %v must have an 'Environment' tag.", [rc.address])] i
 deny[sprintf("S3 bucket %v must have versioning enabled.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
-	valid_after(rc)
+	rc.change.after != null
 	not rc.change.after.versioning.enabled
 }
 
@@ -101,6 +95,6 @@ deny[sprintf("S3 bucket %v must have versioning enabled.", [rc.address])] if {
 deny[sprintf("S3 bucket %v must not have force_destroy set to true.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
-	valid_after(rc)
+	rc.change.after != null
 	rc.change.after.force_destroy
 }
