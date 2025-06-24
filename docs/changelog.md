@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.9.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.9.1...v1.9.2) (2025-06-24)
+
+### 🐛 Bug Fixes
+
+* update CI workflow to use GIT_COMMITTERS_TOKEN and enhance drift detection logic ([fb74a28](https://github.com/kpeacocke/terraform-github-repo/commit/fb74a28c3f698425a4442b3b8ddaced86af22f5f))
+* update drift check script to accept additional arguments and improve OpenTofu installation method ([e1180dd](https://github.com/kpeacocke/terraform-github-repo/commit/e1180dd36ac4758c25e5199204c9e8ee8ac87c6a))
+
+### 📚 Documentation
+
+* update changelog for v1.9.1 ([1cf1b9d](https://github.com/kpeacocke/terraform-github-repo/commit/1cf1b9d00979bd6b30e4b6562694c9cef4386343))
+* update terraform-docs [skip ci] ([f424ca8](https://github.com/kpeacocke/terraform-github-repo/commit/f424ca8189b05cbc4c6ca50b24c050017b26db88))
+
+Generating notes for 1.9.2
+
 ## [1.9.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.9.0...v1.9.1) (2025-06-24)
 
 ### 🐛 Bug Fixes
