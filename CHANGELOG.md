@@ -23,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * improve validation logic and error messages in guardrails policy ([3e04d8f](https://github.com/kpeacocke/terraform-github-repo/commit/3e04d8fd0574fe302d50ecc5489a2de2b4d54afc))
 * replace message variable with specific deny messages in guardrails policy ([b88396e](https://github.com/kpeacocke/terraform-github-repo/commit/b88396e31cd8ac338c9360e2968a39a397c7c5e2))
 
-
 Generating notes for 1.8.6
 
 ## [1.8.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.4...v1.8.5) (2025-06-24)
