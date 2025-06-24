@@ -203,8 +203,10 @@ jobs:
       - name: Fix Mike Alias Conflicts (If Needed)
         run: |
           chmod +x ./scripts/fix-mike-aliases.sh
-          # Run the updated conflict resolution script that doesn't switch branches
-          GITHUB_TOKEN="${{ secrets.GIT_COMMITTERS_TOKEN || secrets.GITHUB_TOKEN }}" ./scripts/fix-mike-aliases.sh
+          # Run the conflict resolution script directly
+          ./scripts/fix-mike-aliases.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN != '' && secrets.GIT_COMMITTERS_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Build and deploy with versioning
         run: |
