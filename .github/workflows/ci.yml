@@ -100,7 +100,11 @@ jobs:
         run: opa fmt -w policy/ && opa check policy/
 
       - name: Check for drift (no unexpected resource changes)
-        run: bash scripts/ci-check-drift.sh
+        env:
+          TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_github_owner: ${{ github.repository_owner }}
+        run: |
+          bash scripts/ci-check-drift.sh -var="name=${{ github.workflow }}" -var="owners=[\"@${{ github.repository_owner }}\"]"
 
   # Using reusable workflow for security scanning
   security-scan:
@@ -171,8 +175,8 @@ jobs:
       - name: Install OpenTofu (apt)
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget gpg
-          wget -qO - https://apt.opentofu.org/opentofu.gpg | sudo gpg --dearmor -o /usr/share/keyrings/opentofu-archive-keyring.gpg
+          sudo apt-get install -y curl gpg
+          curl -fsSL https://apt.opentofu.org/opentofu.gpg | sudo gpg --dearmor -o /usr/share/keyrings/opentofu-archive-keyring.gpg
           echo "deb [signed-by=/usr/share/keyrings/opentofu-archive-keyring.gpg] https://apt.opentofu.org stable main" | sudo tee /etc/apt/sources.list.d/opentofu.list
           sudo apt-get update
           sudo apt-get install -y opentofu
