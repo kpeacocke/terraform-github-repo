@@ -1,78 +1,106 @@
 package terraform.guardrails
 
-deny["S3 bucket must have server-side encryption enabled"] if {
+# Helper: Only validate resources that are being created or updated
+valid_after(rc) = after if {
+    rc.change.after != null
+    after := rc.change.after
+}
+
+# 1. S3 must have server-side encryption
+deny[sprintf("S3 bucket %v must have server-side encryption enabled.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
+	valid_after(rc)
 	not rc.change.after.server_side_encryption_configuration
 }
 
-deny["S3 bucket must not be public-read"] if {
+# 2. S3 must not be public-read
+deny[sprintf("S3 bucket %v must not have ACL set to public-read.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
+	valid_after(rc)
 	rc.change.after.acl == "public-read"
 }
 
-deny["Security group rule must not allow 0.0.0.0/0"] if {
+# 3. Security group rule must not allow 0.0.0.0/0
+deny[sprintf("Security group rule %v must not allow ingress from 0.0.0.0/0.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_security_group_rule"
+	valid_after(rc)
 	rc.change.after.cidr_blocks[_] == "0.0.0.0/0"
 }
 
-deny["IAM users are not allowed"] if {
+# 4. IAM users are not allowed
+deny[sprintf("IAM user %v is not allowed.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_iam_user"
+	valid_after(rc)
 }
 
-deny["RDS instance must have storage_encrypted=true"] if {
+# 5. RDS must have storage encryption
+deny[sprintf("RDS instance %v must have storage encryption enabled.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_db_instance"
+	valid_after(rc)
 	not rc.change.after.storage_encrypted
 }
 
-deny["S3 bucket must have an 'Environment' tag"] if {
+# 6. S3 must have required tags
+deny[sprintf("S3 bucket %v must have tags.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
-	not rc.change.after.tags.Environment
-}
-
-deny["S3 bucket must have an 'Owner' tag"] if {
-	rc := input.resource_changes[_]
-	rc.type == "aws_s3_bucket"
-	not rc.change.after.tags.Owner
-}
-
-deny["S3 bucket must have tags"] if {
-	rc := input.resource_changes[_]
-	rc.type == "aws_s3_bucket"
+	valid_after(rc)
 	not rc.change.after.tags
 }
 
-deny["RDS instance must have tags"] if {
+deny[sprintf("S3 bucket %v must have an 'Environment' tag.", [rc.address])] if {
 	rc := input.resource_changes[_]
-	rc.type == "aws_db_instance"
-	not rc.change.after.tags
-}
-
-deny["RDS instance must have an 'Owner' tag"] if {
-	rc := input.resource_changes[_]
-	rc.type == "aws_db_instance"
-	not rc.change.after.tags.Owner
-}
-
-deny["RDS instance must have an 'Environment' tag"] if {
-	rc := input.resource_changes[_]
-	rc.type == "aws_db_instance"
+	rc.type == "aws_s3_bucket"
+	valid_after(rc)
 	not rc.change.after.tags.Environment
 }
 
-deny["S3 bucket must have versioning enabled"] if {
+deny[sprintf("S3 bucket %v must have an 'Owner' tag.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
+	valid_after(rc)
+	not rc.change.after.tags.Owner
+}
+
+# 7. RDS must have required tags
+deny[sprintf("RDS instance %v must have tags.", [rc.address])] if {
+	rc := input.resource_changes[_]
+	rc.type == "aws_db_instance"
+	valid_after(rc)
+	not rc.change.after.tags
+}
+
+deny[sprintf("RDS instance %v must have an 'Owner' tag.", [rc.address])] if {
+	rc := input.resource_changes[_]
+	rc.type == "aws_db_instance"
+	valid_after(rc)
+	not rc.change.after.tags.Owner
+}
+
+deny[sprintf("RDS instance %v must have an 'Environment' tag.", [rc.address])] if {
+	rc := input.resource_changes[_]
+	rc.type == "aws_db_instance"
+	valid_after(rc)
+	not rc.change.after.tags.Environment
+}
+
+# 8. S3 must have versioning enabled
+deny[sprintf("S3 bucket %v must have versioning enabled.", [rc.address])] if {
+	rc := input.resource_changes[_]
+	rc.type == "aws_s3_bucket"
+	valid_after(rc)
 	not rc.change.after.versioning.enabled
 }
 
-deny["S3 bucket must not have force_destroy=true"] if {
+# 9. S3 must not use force_destroy
+deny[sprintf("S3 bucket %v must not have force_destroy set to true.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
+	valid_after(rc)
 	rc.change.after.force_destroy
 }
