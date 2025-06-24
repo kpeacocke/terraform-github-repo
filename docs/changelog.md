@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.8.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.5...v1.8.6) (2025-06-24)
+
+### 🐛 Bug Fixes
+
+* update provider version constraints in README and improve deny message in extra-guardrails policy ([2416770](https://github.com/kpeacocke/terraform-github-repo/commit/24167705ae110f9b2d447ec978f5731f0aa4f984))
+
+### 📚 Documentation
+
+* update changelog for v1.8.5 ([a3cd876](https://github.com/kpeacocke/terraform-github-repo/commit/a3cd87618a0346fccd81b24ff13f2555a432f04b))
+* update terraform-docs [skip ci] ([20d50f3](https://github.com/kpeacocke/terraform-github-repo/commit/20d50f301e6f1ed271bfe67909fd7650ec03b773))
+
+### ♻️ Code Refactoring
+
+* improve validation logic and error messages in guardrails policy ([3e04d8f](https://github.com/kpeacocke/terraform-github-repo/commit/3e04d8fd0574fe302d50ecc5489a2de2b4d54afc))
+* replace message variable with specific deny messages in guardrails policy ([b88396e](https://github.com/kpeacocke/terraform-github-repo/commit/b88396e31cd8ac338c9360e2968a39a397c7c5e2))
+
+Generating notes for 1.8.6
+
 ## [1.8.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.4...v1.8.5) (2025-06-24)
 
 ### 🐛 Bug Fixes
