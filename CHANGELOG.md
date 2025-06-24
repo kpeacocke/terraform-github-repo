@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.8.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.8...v1.8.9) (2025-06-24)
+
+### 📚 Documentation
+
+* update changelog for v1.8.8 ([dd5e280](https://github.com/kpeacocke/terraform-github-repo/commit/dd5e280a7d593f7e42549667939d577968e3a263))
+
+### ♻️ Code Refactoring
+
+* standardize deny message handling across policies ([cdfbbc6](https://github.com/kpeacocke/terraform-github-repo/commit/cdfbbc63ab149bafda7c9e18893760b3cc28871c))
+
+Generating notes for 1.8.9
+
 ## [1.8.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.7...v1.8.8) (2025-06-24)
 
 ### 📚 Documentation
