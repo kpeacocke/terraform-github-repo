@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.9.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.9...v1.9.0) (2025-06-24)
+
+### 🚀 Features
+
+* update provider versions and add sample plans for S3 and IAM resources ([3fc1b13](https://github.com/kpeacocke/terraform-github-repo/commit/3fc1b13537e0e7e1610bbcac4b7b63f2ba18241d))
+
+### 🐛 Bug Fixes
+
+* update OPA lint command and improve OpenTofu installation process ([e1194f3](https://github.com/kpeacocke/terraform-github-repo/commit/e1194f3a1ab95c68c809a95b04f7370283d4be5d))
+
+### 📚 Documentation
+
+* update changelog for v1.8.9 ([2cd0c5f](https://github.com/kpeacocke/terraform-github-repo/commit/2cd0c5fbd777fd38e5d9cdc0826b56e35d2e217f))
+* update terraform-docs [skip ci] ([4b9c516](https://github.com/kpeacocke/terraform-github-repo/commit/4b9c5167206ae45aac06fc43ae68093a7de496ce))
+
+
+Generating notes for 1.9.0
+
 ## [1.8.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.8...v1.8.9) (2025-06-24)
 
 ### 📚 Documentation
