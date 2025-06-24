@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.10.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.10.5...v1.10.6) (2025-06-24)
+
+### 🐛 Bug Fixes
+
+* update conflict resolution script execution in documentation workflow ([4d9552a](https://github.com/kpeacocke/terraform-github-repo/commit/4d9552a5754e6479a36a4aad7910bce7d3997439))
+
+### 📚 Documentation
+
+* update changelog for v1.10.5 ([309332b](https://github.com/kpeacocke/terraform-github-repo/commit/309332bcce746f45ec36b9244939240846d1595a))
+
+Generating notes for 1.10.6
+
 ## [1.10.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.10.4...v1.10.5) (2025-06-24)
 
 ### 🐛 Bug Fixes
