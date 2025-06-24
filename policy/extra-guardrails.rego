@@ -2,9 +2,8 @@ package terraform.extra_guardrails
 
 # 1. Enforce minimum Terraform version
 
-deny[msg] if {
+deny["Terraform version must be specified in the configuration."] if {
 	not input.terraform_version
-	msg := "Terraform version must be specified in the configuration."
 }
 
 deny[sprintf("Terraform version must be >= 1.3.0, found %v", [input.terraform_version])] if{
