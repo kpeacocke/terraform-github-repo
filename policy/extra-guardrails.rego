@@ -96,6 +96,7 @@ deny["RDS instance must have monitoring enabled."] if {
 # 8. Enforce cost estimation
 
 deny[sprintf("Infracost estimate exceeds $1000: $%v", [input.infracost_total])] if {
+	input.infracost_total > 1000
 }
 
 # 9. Restrict public IP assignment
