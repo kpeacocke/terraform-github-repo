@@ -22,7 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * update changelog for v1.8.9 ([2cd0c5f](https://github.com/kpeacocke/terraform-github-repo/commit/2cd0c5fbd777fd38e5d9cdc0826b56e35d2e217f))
 * update terraform-docs [skip ci] ([4b9c516](https://github.com/kpeacocke/terraform-github-repo/commit/4b9c5167206ae45aac06fc43ae68093a7de496ce))
 
-
 Generating notes for 1.9.0
 
 ## [1.8.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.8...v1.8.9) (2025-06-24)
