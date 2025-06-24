@@ -4,8 +4,9 @@ package terraform.guardrails
 deny[sprintf("S3 bucket %v must have server-side encryption enabled.", [rc.address])] if {
 	rc := input.resource_changes[_]
 	rc.type == "aws_s3_bucket"
-	rc.change.after != null
-	not rc.change.after.server_side_encryption_configuration
+	after := rc.change.after
+	after != null
+	not after.server_side_encryption_configuration
 }
 
 # 2. S3 must not be public-read
