@@ -185,8 +185,8 @@ See the [examples](./examples) directory for complete usage scenarios.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_github"></a> [github](#provider\_github) | ~> 6.6 |
-| <a name="provider_null"></a> [null](#provider\_null) | ~> 3.2 |
+| <a name="provider_github"></a> [github](#provider\_github) | 6.6.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
 
 ## Modules
 
