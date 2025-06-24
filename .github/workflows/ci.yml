@@ -34,7 +34,7 @@ jobs:
       working_directory: "."
       backend: false
     secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ secrets.GIT_COMMITTERS_TOKEN }}
 
   terraform-validation-1-6:
     name: "Terraform Validation (1.6.0)"
@@ -47,7 +47,7 @@ jobs:
       working_directory: "."
       backend: false
     secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ secrets.GIT_COMMITTERS_TOKEN }}
 
   terraform-additional-checks:
     name: "Additional Terraform Checks"
@@ -70,7 +70,7 @@ jobs:
 
       - name: Terraform plan (JSON)
         env:
-          TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_github_token: ${{ secrets.GIT_COMMITTERS_TOKEN }}
           TF_VAR_github_owner: ${{ github.repository_owner }}
         run: |
           # Use -no-color to avoid ANSI escape codes and -compact-warnings for cleaner logs with less sensitive data
@@ -101,7 +101,7 @@ jobs:
 
       - name: Check for drift (no unexpected resource changes)
         env:
-          TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_github_token: ${{ secrets.GIT_COMMITTERS_TOKEN }}
           TF_VAR_github_owner: ${{ github.repository_owner }}
           TF_VAR_name: ${{ github.workflow }}
           TF_VAR_owners: '["@${{ github.repository_owner }}"]'
@@ -133,7 +133,7 @@ jobs:
       output_file: "README.md"
       git_push: true
     secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ secrets.GIT_COMMITTERS_TOKEN }}
       
   markdown-lint:
     name: "Markdown Linting"
@@ -193,7 +193,7 @@ jobs:
 
       - name: Run Terratest suite
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
           GITHUB_OWNER: ${{ github.repository_owner }}
         run: |
           export GO111MODULE=on
