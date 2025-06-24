@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.8.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.3...v1.8.4) (2025-06-23)
+
+### 🐛 Bug Fixes
+
+* update Terraform version check message format in extra-guardrails policy ([0e4d8d0](https://github.com/kpeacocke/terraform-github-repo/commit/0e4d8d085e0449e7bfb1b6b36a3df0207c071219))
+
+### 📚 Documentation
+
+* update changelog for v1.8.3 ([89a392e](https://github.com/kpeacocke/terraform-github-repo/commit/89a392e0740683b7349102bced95f6e6db2289f1))
+* update terraform-docs [skip ci] ([924be9d](https://github.com/kpeacocke/terraform-github-repo/commit/924be9de9052bd702a505e95338ab861df193158))
+
+Generating notes for 1.8.4
+
 ## [1.8.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.2...v1.8.3) (2025-06-23)
 
 ### 🐛 Bug Fixes
