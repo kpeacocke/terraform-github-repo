@@ -1,0 +1,37 @@
+{
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.test",
+      "type": "aws_s3_bucket",
+      "change": {
+        "after": {
+          "acl": "public-read",
+          "name": "my-bucket",
+          "force_destroy": true,
+          "tags": {
+            "Owner": "DevOps"
+          }
+        }
+      }
+    },
+    {
+      "address": "aws_iam_user.test",
+      "type": "aws_iam_user",
+      "change": {
+        "after": {
+          "name": "testuser"
+        }
+      }
+    }
+  ],
+  "terraform_version": "1.2.0",
+  "variables": [
+    {
+      "name": "region",
+      "value": "us-east-2"
+    }
+  ],
+  "provider_versions": {
+    "aws": "*"
+  }
+}

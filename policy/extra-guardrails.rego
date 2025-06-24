@@ -1,5 +1,7 @@
 package terraform.extra_guardrails
 
+import rego.v1
+
 # 1. Enforce minimum Terraform version
 deny contains msg if {
 	not input.terraform_version

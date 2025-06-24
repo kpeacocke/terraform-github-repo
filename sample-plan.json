@@ -1,0 +1,19 @@
+{
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.test",
+      "type": "aws_s3_bucket",
+      "change": {
+        "after": {
+          "acl": "public-read",
+          "name": "my-bucket",
+          "force_destroy": true,
+          "tags": {
+            "Owner": "DevOps"
+          }
+        }
+      }
+    }
+  ],
+  "terraform_version": "1.2.0"
+}
