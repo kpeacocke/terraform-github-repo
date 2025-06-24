@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.10.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.10.6...v1.10.7) (2025-06-24)
+
+### 🐛 Bug Fixes
+
+* simplify mike alias conflict resolution script and update git author information ([311027e](https://github.com/kpeacocke/terraform-github-repo/commit/311027ef4ea6ea3faf22a2e5c14593478bb8a4a0))
+
+### 📚 Documentation
+
+* update changelog for v1.10.6 ([f595dee](https://github.com/kpeacocke/terraform-github-repo/commit/f595dee83c3abbad33c388492720e40fa33968c5))
+
+Generating notes for 1.10.7
+
 ## [1.10.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.10.5...v1.10.6) (2025-06-24)
 
 ### 🐛 Bug Fixes
