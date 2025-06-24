@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.10.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.10.3...v1.10.4) (2025-06-24)
+
+### 🐛 Bug Fixes
+
+* update mike deployment commands to remove --force flag and improve reliability ([9cd699b](https://github.com/kpeacocke/terraform-github-repo/commit/9cd699b7678de291c89747d854e280d2a9871a25))
+
+### 📚 Documentation
+
+* update changelog for v1.10.3 ([9c739ab](https://github.com/kpeacocke/terraform-github-repo/commit/9c739abba55d0ea116e8316aa1266f4469ba60d3))
+
+
+Generating notes for 1.10.4
+
 ## [1.10.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.10.2...v1.10.3) (2025-06-24)
 
 ### 🐛 Bug Fixes
