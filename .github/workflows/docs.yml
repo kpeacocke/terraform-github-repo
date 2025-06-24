@@ -208,6 +208,15 @@ jobs:
 
       - name: Build and deploy with versioning
         run: |
+          # Start by ensuring we're in the GitHub workspace
+          cd $GITHUB_WORKSPACE
+          echo "Starting in directory: $(pwd)"
+          
+          # Verify git repository status
+          if [ ! -d ".git" ]; then
+            echo "::error::Not in a git repository at the start of the workflow"
+            exit 1
+          fi
           # Set environment variables for Python SSL
           export PYTHONHTTPSVERIFY=0
           export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
@@ -242,6 +251,19 @@ jobs:
             echo "Site directory created successfully with $(find site -type f | wc -l) files"
           fi
           
+          # Ensure we're in a git repository
+          echo "Checking if we're in a git repository..."
+          if [ ! -d ".git" ]; then
+            echo "::warning::Not in a git repository, moving back to GITHUB_WORKSPACE"
+            cd $GITHUB_WORKSPACE
+            if [ ! -d ".git" ]; then
+              echo "::error::Still not in a git repository after moving to GITHUB_WORKSPACE"
+              echo "Current directory: $(pwd)"
+              ls -la
+              exit 1
+            fi
+          fi
+          
           # Configure Git for GitHub Pages deployment
           echo "Setting up Git configuration for branch management..."
           git config --global user.name "github-actions[bot]"
@@ -265,7 +287,7 @@ jobs:
             
             # Create the gh-pages branch using a temporary directory
             tmp_dir=$(mktemp -d)
-            cd $tmp_dir
+            pushd $tmp_dir
             git init
             git config --local user.name "github-actions[bot]"
             git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -274,8 +296,16 @@ jobs:
             git commit -m "Initial gh-pages branch"
             git remote add origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
             git push -f origin HEAD:gh-pages
-            cd -
+            popd
             rm -rf $tmp_dir
+            
+            # Verify we're back in the main repository
+            echo "Current directory after gh-pages creation: $(pwd)"
+            if [ ! -d ".git" ]; then
+              echo "::error::Not in a git repository after gh-pages creation"
+              cd $GITHUB_WORKSPACE
+              echo "Moved back to GITHUB_WORKSPACE: $(pwd)"
+            fi
             
             echo "gh-pages branch created successfully"
           else
@@ -347,12 +377,12 @@ jobs:
             echo "🔍 Creating temporary directory for verification: $TEMP_DIR"
             
             # Clone only the gh-pages branch to check structure
-            cd $TEMP_DIR
+            pushd $TEMP_DIR
             git clone --branch gh-pages --single-branch --depth 1 https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git gh-pages-check
             
             if [ -d "gh-pages-check" ]; then
               echo "✅ Successfully cloned gh-pages branch"
-              cd gh-pages-check
+              pushd gh-pages-check
               
               # Check for mike configuration and version files
               if [ -f ".mike" ]; then
@@ -370,8 +400,12 @@ jobs:
                 ls -la
               fi
               
-              # Return to workspace directory
-              cd ../../
+              # Return to temp directory
+              popd
+            fi
+            
+            # Return to workspace directory
+            popd
             else
               echo "⚠️ Failed to clone gh-pages branch for verification"
             fi
