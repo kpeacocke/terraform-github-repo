@@ -57,14 +57,17 @@ jobs:
       pages: write     # For GitHub Pages configuration
       id-token: write  # For deployment authentication
     steps:
-      - name: Checkout
+      - name: Checkout Main Branch
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0  # Needed for git-revision-date-localized plugin
-          # Force checkout of main branch to ensure docs are always built from main
+          # Force checkout of main branch to ensure docs are always built from main, regardless of trigger
           ref: main
-          # Set token for proper permissions for gh-pages branch operations
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Use GIT_COMMITTERS_TOKEN for higher permissions, falling back to GITHUB_TOKEN if not available
+          token: ${{ secrets.GIT_COMMITTERS_TOKEN || secrets.GITHUB_TOKEN }}
+          # Ensure clean checkout
+          clean: true
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -196,10 +199,11 @@ jobs:
             echo "GitHub Pages setup completed successfully."
           fi
 
-      - name: Fix Mike Alias Conflicts
+      - name: Fix Mike Alias Conflicts (If Needed)
         run: |
           chmod +x ./scripts/fix-mike-aliases.sh
-          ./scripts/fix-mike-aliases.sh || true
+          # Run the updated conflict resolution script that doesn't switch branches
+          GITHUB_TOKEN="${{ secrets.GIT_COMMITTERS_TOKEN || secrets.GITHUB_TOKEN }}" ./scripts/fix-mike-aliases.sh
 
       - name: Build and deploy with versioning
         run: |
@@ -247,92 +251,152 @@ jobs:
           git diff-index --quiet HEAD || git commit -m "chore: update generated documentation [skip ci]" || true
           
           # Make sure our main branch is clean and up to date
-          git checkout main -f
-          git pull origin main
+          git fetch origin main
+          git reset --hard origin/main
           
           # Check if gh-pages branch exists and create if needed
           if ! git ls-remote --exit-code --heads origin gh-pages; then
             echo "Creating gh-pages branch as it doesn't exist..."
-            git checkout --orphan gh-pages
-            git rm -rf .
+            # Create the branch without checking it out
+            git_current_sha=$(git rev-parse HEAD)
+            git_current_branch=$(git rev-parse --abbrev-ref HEAD)
+            echo "Current SHA: $git_current_sha, Current branch: $git_current_branch"
+            
+            # Create the gh-pages branch using a temporary directory
+            tmp_dir=$(mktemp -d)
+            cd $tmp_dir
+            git init
+            git config --local user.name "github-actions[bot]"
+            git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
             echo "# GitHub Pages Branch" > README.md
             git add README.md
             git commit -m "Initial gh-pages branch"
-            git push origin gh-pages
-            git checkout main -f
+            git remote add origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+            git push -f origin HEAD:gh-pages
+            cd -
+            rm -rf $tmp_dir
+            
+            echo "gh-pages branch created successfully"
+          else
+            echo "gh-pages branch already exists, skipping creation"
           fi
           
           # Clean up any previous mike state to avoid conflicts
           rm -rf .mike 2>/dev/null || true
           
+          # Store current git status for debugging
+          echo "Current git status before mike operations:"
+          git status
+          
+          # Define and export the mike config directly to avoid configuration errors
+          export MIKE_REMOTE_NAME=origin
+          export MIKE_BRANCH=gh-pages
+          export MIKE_MESSAGE="docs: update documentation for @{version} [skip ci]"
+          
+          # Force reload remote to ensure git operations can succeed
+          git fetch --all
+          
+          # Deploy based on event type with more reliable error handling
           if [[ "${{ steps.version.outputs.is_release }}" == "true" ]]; then
             # For releases, create a versioned deployment
             echo "Deploying versioned documentation for release ${{ steps.version.outputs.version }}..."
             
-            # Step 1: First deploy only the version without any aliases
-            echo "Step 1: Deploying version ${{ steps.version.outputs.version }} (no aliases)..."
-            mike deploy --push ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}"
+            # Don't use multiple steps for mike - execute a single reliable command
+            echo "Deploying version ${{ steps.version.outputs.version }} and updating aliases..."
+            mike deploy --force --push --update-aliases ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}" || {
+              echo "::error::Failed to deploy documentation with mike, retrying with verbose output"
+              mike deploy --force --push --update-aliases ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}" --verbose
+            }
             
-            # Wait to ensure changes are registered
-            sleep 5
-            
-            # Step 2: Only after successful version deployment, create the alias separately
-            echo "Step 2: Setting version ${{ steps.version.outputs.version }} as 'latest' alias..."
-            # Only set alias if not already present as a version or alias
-            if ! mike list | grep -wq 'latest'; then
-              mike alias --push --update ${{ steps.version.outputs.version }} latest
-            else
-              echo "Alias 'latest' already exists, skipping."
-            fi
+            # Set as latest alias in a single operation
+            echo "Setting version ${{ steps.version.outputs.version }} as 'latest' alias..."
+            mike alias --force --push --update ${{ steps.version.outputs.version }} latest
           else
             # For main branch, update latest documentation
             echo "Deploying latest documentation from main branch..."
             
-            # Step 1: First delete any existing 'latest' version if it exists
-            mike delete latest --push || echo "No latest version to delete, continuing..."
-            
-            # Wait to ensure changes are registered
-            sleep 2
-            
-            # Step 2: Deploy 'latest' version without any aliases
-            mike deploy --push latest --title "Latest (main)"
+            # Single command to deploy latest 
+            mike deploy --force --push --update-aliases latest --title "Latest (main)" || {
+              echo "::error::Failed to deploy latest documentation with mike, retrying with verbose output"
+              mike deploy --force --push --update-aliases latest --title "Latest (main)" --verbose
+            }
           fi
           
-          # Wait again before setting default
-          sleep 5
-          
-          # Step 3: Always set 'latest' as the default version
+          # Set default version in a single command with force flag
           echo "Setting 'latest' as the default version..."
-          mike set-default --push latest
+          mike set-default --force --push latest
           
-          # Verify deployment structure
-          echo "Deployment complete. Running verification..."
+          # Enhanced deployment verification
+          echo "Deployment complete. Running enhanced verification..."
           
-          # Get current branch
-          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          # Show all git branches and remotes for debugging
+          echo "Available Git branches and remotes:"
+          git branch -a
+          git remote -v
           
-          # Check the gh-pages branch structure if possible
-          if git fetch origin gh-pages && git checkout gh-pages; then
-            echo "✅ gh-pages branch exists and is accessible"
-            if [ -f ".mike" ]; then
-              echo "✅ .mike file exists with the following content:"
-              cat .mike
+          # Store original state to restore at end
+          ORIGINAL_SHA=$(git rev-parse HEAD)
+          
+          # Verify gh-pages remote branch exists
+          if git ls-remote --exit-code --heads origin gh-pages; then
+            echo "✅ gh-pages branch exists in remote"
+            
+            # Create a temporary directory for verification
+            TEMP_DIR=$(mktemp -d)
+            echo "🔍 Creating temporary directory for verification: $TEMP_DIR"
+            
+            # Clone only the gh-pages branch to check structure
+            cd $TEMP_DIR
+            git clone --branch gh-pages --single-branch --depth 1 https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git gh-pages-check
+            
+            if [ -d "gh-pages-check" ]; then
+              echo "✅ Successfully cloned gh-pages branch"
+              cd gh-pages-check
+              
+              # Check for mike configuration and version files
+              if [ -f ".mike" ]; then
+                echo "✅ .mike file exists with the following content:"
+                cat .mike
+              else
+                echo "⚠️ .mike file does not exist in gh-pages branch!"
+              fi
+              
+              if [ -d "latest" ]; then
+                echo "✅ 'latest' version directory exists"
+                find latest -type f | head -n 5
+              else
+                echo "⚠️ 'latest' version directory does not exist!"
+                ls -la
+              fi
+              
+              # Return to workspace directory
+              cd ../../
             else
-              echo "⚠️ .mike file does not exist!"
+              echo "⚠️ Failed to clone gh-pages branch for verification"
             fi
             
-            # Return to original branch
-            git checkout $CURRENT_BRANCH
+            # Clean up temporary directory
+            rm -rf $TEMP_DIR
           else
-            echo "⚠️ Could not access gh-pages branch for verification"
+            echo "⚠️ gh-pages branch does not exist in remote repository!"
           fi
+          
+          # Restore original state
+          git fetch
+          git reset --hard $ORIGINAL_SHA
+          echo "✅ Verification complete, git state restored"
         env:
           # Increase Python's error verbosity
           PYTHONVERBOSE: 1
-          # GitHub token for git operations and plugins
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GitHub token for git operations and plugins - use GIT_COMMITTERS_TOKEN for higher permissions
+          GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN || secrets.GITHUB_TOKEN }}
           # GitHub token for git-committers plugin (MKDOCS_GIT_COMMITTERS_APIKEY is what the plugin looks for)
           MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          # Additional git configuration for mike
+          GIT_AUTHOR_NAME: "github-actions[bot]"
+          GIT_AUTHOR_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
+          GIT_COMMITTER_NAME: "github-actions[bot]"
+          GIT_COMMITTER_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
