@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * standardize deny message handling across policies ([cdfbbc6](https://github.com/kpeacocke/terraform-github-repo/commit/cdfbbc63ab149bafda7c9e18893760b3cc28871c))
 
-
 Generating notes for 1.8.9
 
 ## [1.8.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.7...v1.8.8) (2025-06-24)
