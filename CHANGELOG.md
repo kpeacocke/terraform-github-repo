@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.8.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.4...v1.8.5) (2025-06-24)
+
+### 🐛 Bug Fixes
+
+* add condition to enforce cost estimation limit in extra-guardrails policy ([6a734e7](https://github.com/kpeacocke/terraform-github-repo/commit/6a734e75f0720cedd8bad4df0ceff4f6cf13be39))
+* update provider version constraints in README and extra-guardrails policy ([1a160eb](https://github.com/kpeacocke/terraform-github-repo/commit/1a160eba44fe6c9083ff9f4885ec65f692eda834))
+
+### 📚 Documentation
+
+* update changelog for v1.8.4 ([6735fcb](https://github.com/kpeacocke/terraform-github-repo/commit/6735fcba04227dfd50b235e982cf7ff06c50af91))
+* update terraform-docs [skip ci] ([d945ecc](https://github.com/kpeacocke/terraform-github-repo/commit/d945ecc9a3b773e670e3df0e54529693fd778d68))
+
+Generating notes for 1.8.5
+
 ## [1.8.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.3...v1.8.4) (2025-06-23)
 
 ### 🐛 Bug Fixes
