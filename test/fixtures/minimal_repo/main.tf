@@ -41,11 +41,21 @@ variable "name" {
 variable "owners" {
   description = "List of GitHub users or orgs for CODEOWNERS."
   type        = list(string)
+
+  validation {
+    condition     = length(var.owners) > 0
+    error_message = "Missing required variable 'owners'"
+  }
 }
 variable "visibility" {
   description = "Whether the repository should be 'private' or 'public'."
   type        = string
   default     = "private"
+
+  validation {
+    condition     = contains(["private", "public"], var.visibility)
+    error_message = "Visibility must be either 'private' or 'public'."
+  }
 }
 variable "languages" {
   description = "List of languages for CodeQL analysis and templates."
