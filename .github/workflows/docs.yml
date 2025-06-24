@@ -103,6 +103,7 @@ jobs:
           pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --no-cache-dir -r docs/requirements.txt
           
           # Ensure core dependencies are installed, even if requirements.txt changes
+          # Using mike 2.0.0 which doesn't support the --force flag
           pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --no-cache-dir --no-deps mike==2.0.0
           
           # Show detailed dependency information for debugging
@@ -303,28 +304,28 @@ jobs:
             
             # Don't use multiple steps for mike - execute a single reliable command
             echo "Deploying version ${{ steps.version.outputs.version }} and updating aliases..."
-            mike deploy --force --push --update-aliases ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}" || {
+            mike deploy --push --update-aliases ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}" || {
               echo "::error::Failed to deploy documentation with mike, retrying with verbose output"
-              mike deploy --force --push --update-aliases ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}" --verbose
+              mike deploy --push --update-aliases ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}" --verbose
             }
             
             # Set as latest alias in a single operation
             echo "Setting version ${{ steps.version.outputs.version }} as 'latest' alias..."
-            mike alias --force --push --update ${{ steps.version.outputs.version }} latest
+            mike alias --push --update ${{ steps.version.outputs.version }} latest
           else
             # For main branch, update latest documentation
             echo "Deploying latest documentation from main branch..."
             
             # Single command to deploy latest 
-            mike deploy --force --push --update-aliases latest --title "Latest (main)" || {
+            mike deploy --push --update-aliases latest --title "Latest (main)" || {
               echo "::error::Failed to deploy latest documentation with mike, retrying with verbose output"
-              mike deploy --force --push --update-aliases latest --title "Latest (main)" --verbose
+              mike deploy --push --update-aliases latest --title "Latest (main)" --verbose
             }
           fi
           
-          # Set default version in a single command with force flag
+          # Set default version in a single command
           echo "Setting 'latest' as the default version..."
-          mike set-default --force --push latest
+          mike set-default --push latest
           
           # Enhanced deployment verification
           echo "Deployment complete. Running enhanced verification..."
