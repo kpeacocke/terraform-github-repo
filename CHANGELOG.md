@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.10.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.9.2...v1.10.0) (2025-06-24)
+
+### 🚀 Features
+
+* add validation for 'owners' and 'visibility' variables in Terraform module ([7277e9e](https://github.com/kpeacocke/terraform-github-repo/commit/7277e9ec06447d34692dbe53a9c5c23c5e8c22f8))
+
+### 🐛 Bug Fixes
+
+* update GitHub and null provider versions in README ([b854e31](https://github.com/kpeacocke/terraform-github-repo/commit/b854e31b1b4532adac413fac55da917b6248f085))
+
+### 📚 Documentation
+
+* update changelog for v1.9.2 ([78d107d](https://github.com/kpeacocke/terraform-github-repo/commit/78d107d10b45c7d64f98fa1ba0cd7e94ed5810b3))
+
+
+Generating notes for 1.10.0
+
 ## [1.9.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.9.1...v1.9.2) (2025-06-24)
 
 ### 🐛 Bug Fixes
