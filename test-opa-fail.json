@@ -1,0 +1,64 @@
+{
+  "format_version": "1.1",
+  "terraform_version": "1.2.0",
+  "provider_versions": {
+    "aws": {
+      "version": "*"
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.test",
+      "type": "aws_s3_bucket",
+      "type_name": "aws_s3_bucket",
+      "mode": "managed",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "acl": "public-read",
+          "bucket": "test-bucket",
+          "name": "test-bucket",
+          "force_destroy": true,
+          "tags": {
+            "Name": "test-bucket"
+          }
+        },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "aws_instance.test",
+      "type": "aws_instance",
+      "mode": "managed",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "associate_public_ip_address": true,
+          "region": "ap-east-1"
+        },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "aws_lb_listener.test",
+      "type": "aws_lb_listener",
+      "mode": "managed",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "protocol": "HTTP"
+        },
+        "after_unknown": {}
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "region"
+    }
+  ],
+  "infracost_total": 1500
+}

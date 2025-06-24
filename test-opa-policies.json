@@ -1,0 +1,51 @@
+{
+  "terraform_version": "1.6.0",
+  "provider_versions": {
+    "aws": {
+      "version": "4.67.0"
+    },
+    "random": {
+      "version": "3.5.1"
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.test",
+      "type": "aws_s3_bucket",
+      "change": {
+        "after": {
+          "acl": "private",
+          "bucket": "test-bucket-dev",
+          "name": "test-bucket-dev",
+          "force_destroy": false,
+          "tags": {
+            "Environment": "dev",
+            "Owner": "DevOps"
+          },
+          "versioning": {
+            "enabled": true
+          },
+          "server_side_encryption_configuration": {
+            "rule": {
+              "apply_server_side_encryption_by_default": {
+                "sse_algorithm": "AES256"
+              },
+              "bucket_key_enabled": true
+            }
+          },
+          "logging": {
+            "target_bucket": "log-bucket",
+            "target_prefix": "log/"
+          }
+        }
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "region",
+      "description": "AWS region to deploy resources"
+    }
+  ],
+  "infracost_total": 500
+}

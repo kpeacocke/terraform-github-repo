@@ -1,7 +1,7 @@
 package terraform.guardrails
 
 # 1. S3 must have server-side encryption
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_s3_bucket"
     after := rc.change.after
@@ -11,7 +11,7 @@ deny[msg] if {
 }
 
 # 2. S3 must not be public-read
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_s3_bucket"
     after := rc.change.after
@@ -21,7 +21,7 @@ deny[msg] if {
 }
 
 # 3. Security group rule must not allow 0.0.0.0/0
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_security_group_rule"
     after := rc.change.after
@@ -31,7 +31,7 @@ deny[msg] if {
 }
 
 # 4. IAM users are not allowed
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_iam_user"
     after := rc.change.after
@@ -40,7 +40,7 @@ deny[msg] if {
 }
 
 # 5. RDS must have storage encryption
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_db_instance"
     after := rc.change.after
@@ -50,7 +50,7 @@ deny[msg] if {
 }
 
 # 6. S3 must have required tags
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_s3_bucket"
     after := rc.change.after
@@ -59,7 +59,7 @@ deny[msg] if {
     msg := sprintf("S3 bucket %v must have tags.", [rc.address])
 }
 
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_s3_bucket"
     after := rc.change.after
@@ -68,7 +68,7 @@ deny[msg] if {
     msg := sprintf("S3 bucket %v must have an 'Environment' tag.", [rc.address])
 }
 
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_s3_bucket"
     after := rc.change.after
@@ -78,7 +78,7 @@ deny[msg] if {
 }
 
 # 7. RDS must have required tags
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_db_instance"
     after := rc.change.after
@@ -87,7 +87,7 @@ deny[msg] if {
     msg := sprintf("RDS instance %v must have tags.", [rc.address])
 }
 
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_db_instance"
     after := rc.change.after
@@ -96,7 +96,7 @@ deny[msg] if {
     msg := sprintf("RDS instance %v must have an 'Owner' tag.", [rc.address])
 }
 
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_db_instance"
     after := rc.change.after
@@ -106,7 +106,7 @@ deny[msg] if {
 }
 
 # 8. S3 must have versioning enabled
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_s3_bucket"
     after := rc.change.after
@@ -116,7 +116,7 @@ deny[msg] if {
 }
 
 # 9. S3 must not use force_destroy
-deny[msg] if {
+deny contains msg if {
     rc := input.resource_changes[_]
     rc.type == "aws_s3_bucket"
     after := rc.change.after
