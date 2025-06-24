@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.8.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.6...v1.8.7) (2025-06-24)
+
+### 📚 Documentation
+
+* update changelog for v1.8.6 ([0b1a8ff](https://github.com/kpeacocke/terraform-github-repo/commit/0b1a8ff33c7f00e798b1412cb47c3695adeab63f))
+
+### ♻️ Code Refactoring
+
+* simplify validation checks by removing helper function in guardrails policy ([896854b](https://github.com/kpeacocke/terraform-github-repo/commit/896854b8e1104236b9dc28acf177cdfd41bcbc2f))
+
+Generating notes for 1.8.7
+
 ## [1.8.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.8.5...v1.8.6) (2025-06-24)
 
 ### 🐛 Bug Fixes
