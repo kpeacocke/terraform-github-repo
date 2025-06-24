@@ -97,7 +97,7 @@ jobs:
           sudo mv opa /usr/local/bin/
 
       - name: Lint OPA policies
-        run: opa fmt -w policy/ && opa lint policy/
+        run: opa fmt -w policy/ && opa check policy/
 
       - name: Check for drift (no unexpected resource changes)
         run: bash scripts/ci-check-drift.sh
@@ -168,12 +168,15 @@ jobs:
         with:
           go-version: '1.21'
 
-      - name: Install OpenTofu
+      - name: Install OpenTofu (apt)
         run: |
-          wget https://github.com/opentofu/opentofu/releases/download/v1.6.2/opentofu_1.6.2_linux_amd64.tar.gz
-          tar -xzf opentofu_1.6.2_linux_amd64.tar.gz
-          sudo mv opentofu /usr/local/bin/
-          opentofu version
+          sudo apt-get update
+          sudo apt-get install -y wget gpg
+          wget -qO - https://apt.opentofu.org/opentofu.gpg | sudo gpg --dearmor -o /usr/share/keyrings/opentofu-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/opentofu-archive-keyring.gpg] https://apt.opentofu.org stable main" | sudo tee /etc/apt/sources.list.d/opentofu.list
+          sudo apt-get update
+          sudo apt-get install -y opentofu
+          tofu version
 
       - name: Install Terraform
         run: |

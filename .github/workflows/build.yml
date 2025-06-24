@@ -138,8 +138,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     permissions:
-       contents: write
+      contents: write
     steps:
+      # Always check out the main branch, never gh-pages
       - name: Checkout main branch
         uses: actions/checkout@v4
         with:
