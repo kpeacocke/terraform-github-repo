@@ -31,6 +31,12 @@
   Report bugs or request features
 - 💬 [Discussions](https://github.com/kpeacocke/terraform-github-repo/discussions)  
   Community support and Q&A
+- 📝 [Contributing](./CONTRIBUTING.md)  
+  How to contribute to this project
+- 🐛 [Issues](https://github.com/kpeacocke/terraform-github-repo/issues)  
+  Report bugs or request features
+- 💬 [Discussions](https://github.com/kpeacocke/terraform-github-repo/discussions)  
+  Community support and Q&A
 
 ---
 
@@ -48,18 +54,9 @@ and automated DevOps workflows.
 `repository-management` • `gitops` • `automation` • `best-practices` • `branch-protection`  
 `codeql` • `dependabot`
 
-### 🔗 Quick Links
+### Module Features
 
-| Resource | Description |
-|----------|-------------|
-| 📖 [**Terraform Registry**](https://registry.terraform.io/modules/kpeacocke/terraform-github-repo/latest) | Official module page with usage examples |
-| 🚀 [**Getting Started Guide**](#-usage) | Jump to basic usage examples |
-| 📋 [**Examples**](./examples) | Complete real-world usage scenarios |
-| 🔐 [**Security Features**](#%EF%B8%8F-compliance-guardrails--policy-enforcement) | Security scanning and compliance |
-| 🧪 [**Testing Guide**](#-local-testing) | How to test the module locally |
-| 📝 [**Contributing**](./CONTRIBUTING.md) | How to contribute to this project |
-| 🐛 [**Issues**](https://github.com/kpeacocke/terraform-github-repo/issues) | Report bugs or request features |
-| 💬 [**Discussions**](https://github.com/kpeacocke/terraform-github-repo/discussions) | Community support and Q&A |
+This module provides comprehensive GitHub repository configuration with focus on security and best practices.
 
 ## 📦 Features
 
@@ -76,7 +73,7 @@ and automated DevOps workflows.
 - ☑️ Security features (secret scanning, push protection, Dependabot alerts)
 - ☑️ **Auto-approve and auto-merge Dependabot PRs**
 
-## �‍💻 Development
+## 👨‍💻 Development
 
 This repository includes a comprehensive set of guidance for developers:
 
@@ -85,7 +82,7 @@ This repository includes a comprehensive set of guidance for developers:
 - 📗 [**Contributing Guide**](./CONTRIBUTING.md) - How to contribute to this project
 - 🧪 [**Testing Guide**](./docs/development/testing.md) - How to run tests locally
 
-## �🔧 Requirements
+## 🔧 Requirements
 
 | Name      | Version |
 |-----------|---------|
@@ -185,8 +182,8 @@ See the [examples](./examples) directory for complete usage scenarios.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_github"></a> [github](#provider\_github) | ~> 6.6 |
-| <a name="provider_null"></a> [null](#provider\_null) | ~> 3.2 |
+| <a name="provider_github"></a> [github](#provider\_github) | 6.6.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
 
 ## Modules
 
