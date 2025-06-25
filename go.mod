@@ -48,7 +48,7 @@ require (
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/spf13/cast v1.9.2 // indirect
 	github.com/tmccombs/hcl2json v0.6.4 // indirect
-	github.com/ulikunitz/xz v0.5.10 // indirect
+	github.com/ulikunitz/xz v0.5.12 // indirect
 	github.com/zclconf/go-cty v1.15.0 // indirect
 	golang.org/x/crypto v0.39.0 // indirect
 	golang.org/x/mod v0.25.0 // indirect
