@@ -1,0 +1,112 @@
+{
+	"version": "2.0.0",
+  "tasks": [
+	{
+	  "type": "shell",
+	  "label": "Go Test Coverage",
+	  "command": "set -a; source .env; set +a; go test -coverprofile=coverage.out ./test/... -timeout 5m -v",
+	  "group": { "kind": "test", "isDefault": false },
+	  "problemMatcher": ["$go"],
+	  "presentation": { "reveal": "always" }
+	},
+	{
+	  "label": "Go Test with Long Timeout",
+	  "type": "shell",
+	  "command": "set -a; source .env; set +a; go test -v -timeout 5m ./test/...",
+	  "group": { "kind": "test", "isDefault": true },
+	  "problemMatcher": ["$go"],
+	  "presentation": { "reveal": "always" }
+	},
+	{
+	  "label": "OPA Format",
+	  "type": "shell",
+	  "command": "opa fmt --v0-v1 -w policy/",
+	  "group": { "kind": "test", "isDefault": false },
+	  "presentation": { "reveal": "always" },
+	  "problemMatcher": []
+	},
+	{
+	  "label": "OPA Check",
+	  "type": "shell",
+	  "command": "opa check --v0-v1 policy/",
+	  "group": "test",
+	  "presentation": { "reveal": "always" },
+	  "problemMatcher": []
+	},
+	{
+	  "label": "Kitchen Test - Plan",
+	  "type": "shell",
+	  "command": "bundle exec kitchen test --no-destroy",
+	  "group": { "kind": "test", "isDefault": false },
+	  "presentation": { "reveal": "always" },
+	  "problemMatcher": [],
+	  "detail": "Run Kitchen-Terraform plan tests with InSpec"
+	},
+	{
+	  "label": "Kitchen Verify - Integration Tests",
+	  "type": "shell", 
+	  "command": "bundle exec kitchen verify",
+	  "group": { "kind": "test", "isDefault": false },
+	  "presentation": { "reveal": "always" },
+	  "problemMatcher": [],
+	  "detail": "Run only the InSpec integration tests"
+	},
+	{
+	  "label": "Kitchen Destroy",
+	  "type": "shell",
+	  "command": "bundle exec kitchen destroy",
+	  "group": "test",
+	  "presentation": { "reveal": "always" },
+	  "problemMatcher": [],
+	  "detail": "Clean up Kitchen-Terraform test environment"
+	},
+	{
+	  "label": "Integration Tests (RSpec Wrapper)",
+	  "type": "shell",
+	  "command": "bundle exec rspec spec/integration_spec.rb",
+	  "group": { "kind": "test", "isDefault": false },
+	  "presentation": { "reveal": "always" },
+	  "problemMatcher": [],
+	  "detail": "Run integration tests through RSpec wrapper for test explorer"
+	},
+	{
+	  "label": "CodeQL Database Create",
+	  "type": "shell",
+	  "command": "codeql database create codeql-db --language=go --source-root=.",
+	  "group": { "kind": "build", "isDefault": false },
+	  "presentation": { "reveal": "always" },
+	  "problemMatcher": [],
+	  "detail": "Create CodeQL database for Go code analysis"
+	},
+	{
+	  "label": "Test CodeQL CLI Path",
+	  "type": "shell",
+	  "command": "/opt/homebrew/Caskroom/codeql/2.22.0/codeql/codeql",
+	  "args": ["version"],
+	  "group": "test",
+	  "presentation": { "reveal": "always" },
+	  "problemMatcher": [],
+	  "detail": "Test if CodeQL CLI is accessible from the configured path"
+	},
+	{
+	  "label": "CodeQL Analyze",
+	  "type": "shell",
+	  "command": "codeql database analyze codeql-db --format=csv --output=codeql-results.csv codeql/go-queries/security",
+	  "group": { "kind": "test", "isDefault": false },
+	  "presentation": { "reveal": "always" },
+	  "problemMatcher": [],
+	  "detail": "Analyze Go code with CodeQL security queries",
+	  "dependsOn": "CodeQL Database Create"
+	},
+	{
+	  "label": "CodeQL Custom Queries",
+	  "type": "shell",
+	  "command": "codeql database analyze codeql-db --format=sarif-latest --output=codeql-custom-results.sarif .github/codeql/queries/",
+	  "group": { "kind": "test", "isDefault": false },
+	  "presentation": { "reveal": "always" },
+	  "problemMatcher": [],
+	  "detail": "Run custom CodeQL queries on the project",
+	  "dependsOn": "CodeQL Database Create"
+	}
+  ]
+}

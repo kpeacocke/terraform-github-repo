@@ -25,7 +25,7 @@ test/tmp/
 test/fixtures/.terraform/
 
 # === VSCode / IDEs ===
-.vscode/
+# (Allow .vscode/ to be tracked for portable tasks and customizations)
 .idea/
 *.swp
 

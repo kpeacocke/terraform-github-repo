@@ -1,0 +1,40 @@
+{
+  "go.testEnvFile": "${workspaceFolder}/.env",
+  "go.testTimeout": "5m",
+  "go.testFlags": ["-timeout", "5m", "./test/..."],
+  "go.testExplorerEnabled": true,
+  "go.testExplorerOnStart": true,
+  
+  // Ruby Test Explorer configuration
+  "rubyTestExplorer.testFramework": "rspec",
+  "rubyTestExplorer.testDirectory": "./spec",
+  "rubyTestExplorer.rspecCommand": "bundle exec rspec",
+  "rubyTestExplorer.filePattern": ["**/*_spec.rb"],
+  
+  // File associations for better InSpec support
+  "files.associations": {
+    "*.rb": "ruby",
+    "*_spec.rb": "ruby",
+    "*.md": "markdown",
+    "CODEOWNERS": "plaintext"
+  },
+  
+  // Test discovery patterns
+  "testExplorer.useNativeTesting": true,
+  "testExplorer.onStart": "reset",
+  
+  // CodeQL extension settings
+  "codeQL.cli.executablePath": "/opt/homebrew/Caskroom/codeql/2.22.0/codeql/codeql",
+  "codeQL.githubDatabase.download": "never",
+  
+  // Documentation development
+  "markdownlint.config": {
+    "MD033": false,
+    "MD013": false
+  },
+  "python.defaultInterpreterPath": "/usr/bin/python3",
+  "sonarlint.connectedMode.project": {
+    "connectionId": "kpeacocke",
+    "projectKey": "kpeacocke_terraform-github-repo"
+  }
+}

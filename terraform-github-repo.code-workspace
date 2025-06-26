@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.rb": "ruby",
+			"*_spec.rb": "ruby",
+			"*.md": "markdown",
+			"CODEOWNERS": "plaintext"
+		},
+		"codeQL.githubDatabase.download": "never"
+	}
+}
