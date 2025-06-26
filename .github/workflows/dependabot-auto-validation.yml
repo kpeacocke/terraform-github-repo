@@ -23,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      security-events: write
     outputs:
       is-dependabot: ${{ steps.check.outputs.is-dependabot }}
     steps:
@@ -37,6 +38,7 @@ jobs:
     uses: ./.github/workflows/reusable-terraform-validation.yml
     permissions:
       contents: read
+      security-events: write
     with:
       terraform_version: "1.5.0"
       working_directory: "."
@@ -49,6 +51,7 @@ jobs:
     uses: ./.github/workflows/reusable-terraform-validation.yml
     permissions:
       contents: read
+      security-events: write
     with:
       terraform_version: "1.6.0"
       working_directory: "."
@@ -61,6 +64,7 @@ jobs:
     uses: ./.github/workflows/reusable-terraform-validation.yml
     permissions:
       contents: read
+      security-events: write
     with:
       terraform_version: "1.7.0"
       working_directory: "."
