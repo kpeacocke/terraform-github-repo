@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.11.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.10.7...v1.11.0) (2025-06-28)
+
+### 🚀 Features
+
+* **workflow:** add security-events permission for Dependabot validation jobs ([3b4e7c7](https://github.com/kpeacocke/terraform-github-repo/commit/3b4e7c73437207a7168689916d906dd1e01f159a))
+* **vscode:** add settings and tasks for Go and Ruby testing ([784479b](https://github.com/kpeacocke/terraform-github-repo/commit/784479b909f47f1f996a26f5adbfb9002da42446))
+
+### 📚 Documentation
+
+* update changelog for v1.10.7 ([dfb6cbf](https://github.com/kpeacocke/terraform-github-repo/commit/dfb6cbfa39ec1607d4b0ddf401bc8184605f29b0))
+
+Generating notes for 1.11.0
+
 ## [1.10.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.10.6...v1.10.7) (2025-06-24)
 
 ### 🐛 Bug Fixes
