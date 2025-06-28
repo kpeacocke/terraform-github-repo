@@ -1,9 +1,15 @@
 {
   "go.testEnvFile": "${workspaceFolder}/.env",
   "go.testTimeout": "5m",
-  "go.testFlags": ["-timeout", "5m", "./test/..."],
+  "go.testFlags": ["-cover", "-timeout", "5m", "./test/..."],
   "go.testExplorerEnabled": true,
   "go.testExplorerOnStart": true,
+
+  // Show Go coverage in the editor gutter and Testing UI
+  "go.coverageDecorator": {
+    "type": "gutter"
+  },
+  "go.coverOnTestPackage": true,
   
   // Ruby Test Explorer configuration
   "rubyTestExplorer.testFramework": "rspec",
