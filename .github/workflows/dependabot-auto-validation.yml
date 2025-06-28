@@ -35,7 +35,7 @@ jobs:
   terraform-validation-1-5:
     needs: check-dependabot
     if: needs.check-dependabot.outputs.is-dependabot == 'true'
-    uses: ./.github/workflows/reusable-terraform-validation.yml
+    uses: github/workflows/reusable-terraform-validation.yml
     permissions:
       contents: read
       security-events: write
@@ -61,7 +61,7 @@ jobs:
   terraform-validation-1-7:
     needs: check-dependabot
     if: needs.check-dependabot.outputs.is-dependabot == 'true'
-    uses: ./.github/workflows/reusable-terraform-validation.yml
+    uses: github/workflows/reusable-terraform-validation.yml
     permissions:
       contents: read
       security-events: write
@@ -74,7 +74,7 @@ jobs:
   terraform-validation-latest:
     needs: check-dependabot
     if: needs.check-dependabot.outputs.is-dependabot == 'true'
-    uses: ./.github/workflows/reusable-terraform-validation.yml
+    uses: github/workflows/reusable-terraform-validation.yml
     permissions:
       contents: read
     with:
@@ -159,7 +159,7 @@ jobs:
   security-scan:
     needs: check-dependabot
     if: needs.check-dependabot.outputs.is-dependabot == 'true'
-    uses: ./.github/workflows/reusable-security-scan.yml
+    uses: github/workflows/reusable-security-scan.yml
     permissions:
       contents: read
       security-events: write
