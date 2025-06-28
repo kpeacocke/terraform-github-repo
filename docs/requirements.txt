@@ -10,7 +10,7 @@ mkdocs-minify-plugin==0.8.0
 mike==2.0.0
 
 # Extensions and dependencies
-pymdown-extensions==10.3.1
+pymdown-extensions==10.16
 pygments==2.16.1
 
 # Critical dependencies - these must be installed in this exact order
