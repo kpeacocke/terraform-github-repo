@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.12.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.12.1...v1.12.2) (2025-06-29)
+
+### 🐛 Bug Fixes
+
+* ensure latest gh-pages branch is fetched and rebased before deployment ([d57afe5](https://github.com/kpeacocke/terraform-github-repo/commit/d57afe516aa4227d790505d4df36c52f252fc126))
+
+### 📚 Documentation
+
+* update changelog for v1.12.1 ([bb4886b](https://github.com/kpeacocke/terraform-github-repo/commit/bb4886bd598a498c6a569218a09a50b3c8c4cfd7))
+
+
+Generating notes for 1.12.2
+
 ## [1.12.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.12.0...v1.12.1) (2025-06-29)
 
 ### 🐛 Bug Fixes
