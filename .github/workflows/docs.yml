@@ -313,6 +313,18 @@ jobs:
               cd $GITHUB_WORKSPACE
               echo "Moved back to GITHUB_WORKSPACE: $(pwd)"
             fi
+          # Fetch and merge/rebase latest gh-pages before deploying
+          echo "Fetching and merging/rebasing latest gh-pages branch before deploying..."
+          git fetch origin gh-pages || true
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git checkout gh-pages || git checkout -b gh-pages origin/gh-pages
+            git pull origin gh-pages || true
+            git checkout main
+            git merge gh-pages || true
+          else
+            echo "No remote gh-pages branch to merge."
+          fi
+
             
             echo "gh-pages branch created successfully"
           else
@@ -323,23 +335,17 @@ jobs:
           rm -rf .mike 2>/dev/null || true
           
           # Store current git status for debugging
-          echo "Current git status before mike operations:"
-          git status
-          
-          # Define and export the mike config directly to avoid configuration errors
-          export MIKE_REMOTE_NAME=origin
-          export MIKE_BRANCH=gh-pages
-          export MIKE_MESSAGE="docs: update documentation for @{version} [skip ci]"
-          
-          # Force reload remote to ensure git operations can succeed
+            # Don't use multiple steps for mike - execute a single reliable command
+            echo "Deploying version ${{ steps.version.outputs.version }} and updating aliases..."
+            mike deploy --push --update-aliases ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}"
+            # Set as latest alias in a single operation
+            echo "Setting version ${{ steps.version.outputs.version }} as 'latest' alias..."
+            mike alias --push --update ${{ steps.version.outputs.version }} latest
           git fetch --all
           
           # Deploy based on event type with more reliable error handling
-          if [[ "${{ steps.version.outputs.is_release }}" == "true" ]]; then
-            # For releases, create a versioned deployment
-            echo "Deploying versioned documentation for release ${{ steps.version.outputs.version }}..."
-            
-            # Don't use multiple steps for mike - execute a single reliable command
+            # Single command to deploy latest 
+            mike deploy --push --update-aliases latest --title "Latest (main)"
             echo "Deploying version ${{ steps.version.outputs.version }} and updating aliases..."
             mike deploy --push --update-aliases ${{ steps.version.outputs.version }} --title "${{ steps.version.outputs.version }}" || {
               echo "::error::Failed to deploy documentation with mike, retrying with verbose output"
