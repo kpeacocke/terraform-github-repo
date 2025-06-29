@@ -416,16 +416,18 @@ jobs:
               # Return to temp directory
               popd
             else
-              echo "⚠️ Failed to access gh-pages check directory"
-            fi
-            
-            # Return to workspace directory
-            popd
-            
-            # Clean up temporary directory
-            rm -rf $TEMP_DIR
+
+          # Ensure we have the latest gh-pages from origin before pushing
+          echo "Fetching and rebasing latest gh-pages branch before deploying..."
+          git fetch origin gh-pages
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git checkout gh-pages || git checkout -b gh-pages origin/gh-pages
+            git pull origin gh-pages --rebase
+            git checkout main
+            # Optionally: merge gh-pages into main (if needed)
+            # git merge gh-pages
           else
-            echo "⚠️ gh-pages branch does not exist in remote repository!"
+            echo "No remote gh-pages branch to rebase."
           fi
           
           # Restore original state
