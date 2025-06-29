@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.12.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.12.0...v1.12.1) (2025-06-29)
+
+### 🐛 Bug Fixes
+
+* update workflow paths to use local reusable workflows ([af7f2cc](https://github.com/kpeacocke/terraform-github-repo/commit/af7f2ccb70312ce1e31d77e59dbb1f33a5d3905e))
+
+### 📚 Documentation
+
+* **deps:** bump markupsafe from 2.1.3 to 3.0.2 in /docs ([9ad6ecf](https://github.com/kpeacocke/terraform-github-repo/commit/9ad6ecfc1d42fcf458540fd01e712b43b2f32a61))
+* **deps:** bump pymdown-extensions from 10.3.1 to 10.16 in /docs ([d1af6a9](https://github.com/kpeacocke/terraform-github-repo/commit/d1af6a96b4e53c75eee1db5ce25e48369e1ba2f3))
+* **deps:** bump pyyaml from 6.0.1 to 6.0.2 in /docs ([712b5d0](https://github.com/kpeacocke/terraform-github-repo/commit/712b5d018bdf268f33e9c306b06a93da5a81848d))
+* update changelog for v1.12.0 ([492a670](https://github.com/kpeacocke/terraform-github-repo/commit/492a67039ce1f1a9da448ec5f64a81eb885e28ef))
+* update provider versions in README for clarity ([a4fe915](https://github.com/kpeacocke/terraform-github-repo/commit/a4fe9155006b47ab1957ad064a058e1e628c8624))
+* update terraform-docs [skip ci] ([54bf4be](https://github.com/kpeacocke/terraform-github-repo/commit/54bf4be23f28bff150dea0fcfd10aae8a08ed0aa))
+* update terraform-docs [skip ci] ([299016f](https://github.com/kpeacocke/terraform-github-repo/commit/299016f8fa0538d37737ca2080818adb98d800a7))
+* update terraform-docs [skip ci] ([d3ca72f](https://github.com/kpeacocke/terraform-github-repo/commit/d3ca72fcc18c7477a5e39d8d55fe38113fd54d79))
+
+
+Generating notes for 1.12.1
+
 ## [1.12.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.11.0...v1.12.0) (2025-06-28)
 
 ### 🚀 Features
