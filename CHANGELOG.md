@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.14.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.13.1...v1.14.0) (2025-07-04)
+
+### 🚀 Features
+
+* add github_owner and github_token variables for API access ([25648f6](https://github.com/kpeacocke/terraform-github-repo/commit/25648f664d39b94cd4ce81ab3b5f383f6471e56b))
+
+### 📚 Documentation
+
+* update changelog for v1.13.1 ([1425006](https://github.com/kpeacocke/terraform-github-repo/commit/1425006010c05e26cd17c9f0eec3a0bb6f1ab0e8))
+
+
+Generating notes for 1.14.0
+
 ## [1.13.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.13.0...v1.13.1) (2025-07-04)
 
 ### 🐛 Bug Fixes
