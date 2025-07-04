@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.12.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.12.4...v1.12.5) (2025-07-04)
+
+### 🐛 Bug Fixes
+
+* update security scanning workflow to use conditional Trivy commands and improve README update process ([448850f](https://github.com/kpeacocke/terraform-github-repo/commit/448850fd6ce5915c601ec093f5c2120cb9e27f17))
+
+### 📚 Documentation
+
+* **deps:** bump mkdocs-git-revision-date-localized-plugin in /docs ([d7c1c62](https://github.com/kpeacocke/terraform-github-repo/commit/d7c1c62fe5fa9c1695882eb3837786d57109836d))
+* **deps:** bump pygments from 2.16.1 to 2.19.2 in /docs ([f0c4089](https://github.com/kpeacocke/terraform-github-repo/commit/f0c40896539349e35d88d03818d30f7036e1460b))
+* update changelog for v1.12.4 ([f6e134f](https://github.com/kpeacocke/terraform-github-repo/commit/f6e134f5578e2eba1810be5b74591d2f9f030f81))
+* update terraform-docs [skip ci] ([fe90b09](https://github.com/kpeacocke/terraform-github-repo/commit/fe90b09fecdf658f581b02c31e1abf8aeb8b02a0))
+* update terraform-docs [skip ci] ([b2906fb](https://github.com/kpeacocke/terraform-github-repo/commit/b2906fb9304d3b53773ebc84ea8b38424863f8fd))
+
+
+Generating notes for 1.12.5
+
 ## [1.12.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.12.3...v1.12.4) (2025-07-04)
 
 ### 🐛 Bug Fixes
