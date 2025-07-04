@@ -77,6 +77,7 @@ jobs:
     uses: ./.github/workflows/reusable-terraform-validation.yml
     permissions:
       contents: read
+      security-events: write
     with:
       terraform_version: "latest"
       working_directory: "."
