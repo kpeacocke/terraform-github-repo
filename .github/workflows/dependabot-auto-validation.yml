@@ -113,7 +113,7 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TF_VAR_github_owner: ${{ github.repository_owner }}
+          TF_VAR_owner: ${{ github.repository_owner }}
           TF_VAR_repository_name: ${{ github.event.repository.name }}
           TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
 
