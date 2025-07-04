@@ -1,11 +1,13 @@
 module "github_repo" {
   source = "../.."
 
-  name       = var.name
-  owners     = [var.owner]
-  visibility = var.visibility
-  license    = "MIT"
-  languages  = ["go", "python"]
+  name         = var.name
+  owners       = [var.owner]
+  visibility   = var.visibility
+  license      = "MIT"
+  languages    = ["go", "python"]
+  github_owner = var.github_owner
+  github_token = var.github_token
 
   enforce_gitflow                        = var.enforce_gitflow
   enforce_tests                          = var.enforce_tests

@@ -1,3 +1,13 @@
+variable "github_owner" {
+  type        = string
+  description = "The GitHub owner (user or org) for API access."
+}
+
+variable "github_token" {
+  type        = string
+  description = "GitHub token for API access."
+  sensitive   = true
+}
 variable "name" {
   type        = string
   description = "The name of the GitHub repository."
