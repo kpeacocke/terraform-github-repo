@@ -157,7 +157,7 @@ jobs:
           go mod tidy
           go test -v -timeout 10m ./test
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
         working-directory: ${{ github.workspace }}
 
       - name: Run Go tests with race detection
@@ -166,7 +166,7 @@ jobs:
           go mod tidy
           go test -race -v -timeout 15m ./test
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
         working-directory: ${{ github.workspace }}
 
   # Security scanning using reusable workflow
