@@ -90,6 +90,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_owner: ${{ github.repository_owner }}
+          TF_VAR_repository_name: ${{ github.event.repository.name }}
+          TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -111,11 +116,7 @@ jobs:
               cd - > /dev/null
             fi
           done
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TF_VAR_owner: ${{ github.repository_owner }}
-          TF_VAR_repository_name: ${{ github.event.repository.name }}
-          TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
+        
 
   # Run Go tests for Terratest
   go-tests:
