@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.13.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.12.5...v1.13.0) (2025-07-04)
+
+### 🚀 Features
+
+* add TF_VAR_visibility variable to dependabot workflow and update Trivy installation steps in security scan ([917f5a3](https://github.com/kpeacocke/terraform-github-repo/commit/917f5a331077bd95b75fa482725596ca3b20b1b7))
+
+### 🐛 Bug Fixes
+
+* rename TF_VAR_github_owner to TF_VAR_owner for consistency in workflow ([5a15901](https://github.com/kpeacocke/terraform-github-repo/commit/5a159016fbb0bba7156a02d80e2af0872b9bad41))
+
+### 📚 Documentation
+
+* update changelog for v1.12.5 ([7f61ee0](https://github.com/kpeacocke/terraform-github-repo/commit/7f61ee0ef5f5a7e0d26622fc886cd100861413fd))
+
+Generating notes for 1.13.0
+
 ## [1.12.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.12.4...v1.12.5) (2025-07-04)
 
 ### 🐛 Bug Fixes
