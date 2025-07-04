@@ -1,0 +1,21 @@
+# Core MkDocs packages
+mkdocs>=1.6.0,<1.7.0
+mkdocs-material==9.6.14
+mkdocs-material-extensions==1.3.1
+
+# Plugins
+mkdocs-git-revision-date-localized-plugin==1.4.7
+mkdocs-git-committers-plugin-2==1.2.0
+mkdocs-minify-plugin==0.8.0
+mike==2.0.0
+
+# Extensions and dependencies
+pymdown-extensions==10.16
+pygments==2.19.2
+
+# Critical dependencies - these must be installed in this exact order
+pyyaml==6.0.2
+mergedeep==1.3.4
+markupsafe==3.0.2
+jinja2==3.1.6
+packaging==23.2
