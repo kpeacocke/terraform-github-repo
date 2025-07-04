@@ -11,7 +11,7 @@ mike==2.0.0
 
 # Extensions and dependencies
 pymdown-extensions==10.16
-pygments==2.16.1
+pygments==2.19.2
 
 # Critical dependencies - these must be installed in this exact order
 pyyaml==6.0.2
