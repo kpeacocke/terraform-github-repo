@@ -40,7 +40,16 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      
+
+      - name: Install Trivy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+          wget -qO- https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -cs) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install -y trivy
+
       - name: Run Trivy vulnerability scanner
         run: |
           if [ "${{ inputs.target_type }}" = "image" ]; then
@@ -48,7 +57,6 @@ jobs:
           else
             trivy ${{ inputs.target_type }} --skip-version-check --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
           fi
-          skip-version-check: true
       
       - name: Upload Trivy scan results to GitHub Security tab
         if: inputs.upload_to_security_tab == true && inputs.format == 'sarif'

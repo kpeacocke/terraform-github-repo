@@ -126,6 +126,7 @@ jobs:
       contents: read
     env:
       GITHUB_OWNER: ${{ github.repository_owner }}
+      TF_VAR_visibility: private
     
     steps:
       - name: Checkout code
