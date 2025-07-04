@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.12.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.12.3...v1.12.4) (2025-07-04)
+
+### 🐛 Bug Fixes
+
+* add security-events permission for latest Terraform validation job ([7b102ad](https://github.com/kpeacocke/terraform-github-repo/commit/7b102ad161a3b8761f347545844e143475700a47))
+
+### 📚 Documentation
+
+* update changelog for v1.12.3 ([860e76a](https://github.com/kpeacocke/terraform-github-repo/commit/860e76a5321fa583695bbcab572322dcd5fc91a6))
+
+Generating notes for 1.12.4
+
 ## [1.12.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.12.2...v1.12.3) (2025-07-02)
 
 ### 🐛 Bug Fixes
