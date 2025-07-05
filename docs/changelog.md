@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.14.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.0...v1.14.1) (2025-07-05)
+
+### 🐛 Bug Fixes
+
+* update GITHUB_TOKEN to use GIT_COMMITTERS_TOKEN for Go tests ([298f164](https://github.com/kpeacocke/terraform-github-repo/commit/298f164a732de23f056fcd3e0e4961ab50e2f7ef))
+
+### 📚 Documentation
+
+* update changelog for v1.14.0 ([8189bdb](https://github.com/kpeacocke/terraform-github-repo/commit/8189bdb9eb1ef0c3d951c0496c1c2b80a14c45d2))
+
+Generating notes for 1.14.1
+
 ## [1.14.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.13.1...v1.14.0) (2025-07-04)
 
 ### 🚀 Features
