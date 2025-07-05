@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.14.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.1...v1.14.2) (2025-07-05)
+
+### 🐛 Bug Fixes
+
+* update GITHUB_TOKEN usage and improve Trivy exit code handling in workflows ([73e9bcb](https://github.com/kpeacocke/terraform-github-repo/commit/73e9bcb25e6cac33e0dc79e400df35b62bf35af0))
+
+### 📚 Documentation
+
+* update changelog for v1.14.1 ([c5eeece](https://github.com/kpeacocke/terraform-github-repo/commit/c5eeeceb482f0695e8c5db71a0304836dce9d8f9))
+
+
+Generating notes for 1.14.2
+
 ## [1.14.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.0...v1.14.1) (2025-07-05)
 
 ### 🐛 Bug Fixes
