@@ -1,0 +1,3 @@
+# Ignore test patterns for CodeQL secret detection
+.github/codeql/queries/go-hardcoded-credentials.go
+.github/codeql/queries/go-hardcoded-credentials.ql.expected

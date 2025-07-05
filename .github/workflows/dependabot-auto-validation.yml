@@ -93,7 +93,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TF_VAR_owner: ${{ github.repository_owner }}
-      TF_VAR_repository_name: ${{ github.event.repository.name }}
+      TF_VAR_name: ${{ github.event.repository.name }}
       TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
       TF_VAR_github_owner: ${{ github.repository_owner }}
     steps:
@@ -111,9 +111,9 @@ jobs:
             if [ -d "$example" ]; then
               echo "Validating example: $example"
               cd "$example"
-              terraform init
-              terraform validate
-              terraform plan
+              terraform init -input=false
+              terraform validate -no-color
+              terraform plan -input=false -var-file=terraform.tfvars
               cd - > /dev/null
             fi
           done
@@ -129,7 +129,7 @@ jobs:
     env:
       GITHUB_OWNER: ${{ github.repository_owner }}
       TF_VAR_visibility: private
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
 
     steps:
       - name: Checkout code
