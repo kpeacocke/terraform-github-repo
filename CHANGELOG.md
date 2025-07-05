@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.14.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.2...v1.14.3) (2025-07-05)
+
+### 🐛 Bug Fixes
+
+* update environment variable names and improve Terraform command options in Dependabot workflow ([6465066](https://github.com/kpeacocke/terraform-github-repo/commit/64650662b8538876f8399e907398c8fb56ad1dfa))
+
+### 📚 Documentation
+
+* update changelog for v1.14.2 ([66b1880](https://github.com/kpeacocke/terraform-github-repo/commit/66b18802ac84c86b284d32744974f4854ceb839d))
+
+
+Generating notes for 1.14.3
+
 ## [1.14.2](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.1...v1.14.2) (2025-07-05)
 
 ### 🐛 Bug Fixes
