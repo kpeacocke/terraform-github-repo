@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.14.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.4...v1.14.5) (2025-07-06)
+
+### 🐛 Bug Fixes
+
+* update GitHub token variable in Dependabot workflow and enhance .trivyignore for CodeQL tests ([5213ee2](https://github.com/kpeacocke/terraform-github-repo/commit/5213ee24e037d8dc2e35a9b6dd1fc7f5b22a6d16))
+
+### 📚 Documentation
+
+* update changelog for v1.14.4 ([eae4252](https://github.com/kpeacocke/terraform-github-repo/commit/eae42524fb059e3c9ef9764ed9eb3e6528a75be7))
+
+
+Generating notes for 1.14.5
+
 ## [1.14.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.3...v1.14.4) (2025-07-06)
 
 ### 🐛 Bug Fixes
