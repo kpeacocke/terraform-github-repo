@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.14.7](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.6...v1.14.7) (2025-07-06)
+
+### 🐛 Bug Fixes
+
+* update trivy.yaml to change filePatterns to skip-files ([e9c233e](https://github.com/kpeacocke/terraform-github-repo/commit/e9c233ecfa9e9f8fde7daf8540023fdb2a7dbb4b))
+
+### 📚 Documentation
+
+* update changelog for v1.14.6 ([3f696a1](https://github.com/kpeacocke/terraform-github-repo/commit/3f696a1f491a278ef6940a0ca163d4f725064b55))
+
+Generating notes for 1.14.7
+
 ## [1.14.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.5...v1.14.6) (2025-07-06)
 
 ### 🐛 Bug Fixes
