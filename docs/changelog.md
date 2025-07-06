@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.14.4](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.3...v1.14.4) (2025-07-06)
+
+### 🐛 Bug Fixes
+
+* enhance security scanning by adding .trivyignore support and conditional Terraform plan execution ([18636f2](https://github.com/kpeacocke/terraform-github-repo/commit/18636f2be20816ecff201a6eec12fc5e7509cbe8))
+
+### 📚 Documentation
+
+* update changelog for v1.14.3 ([5befdea](https://github.com/kpeacocke/terraform-github-repo/commit/5befdea1f3707de4db6559b733d754c7c7d67b6c))
+
+Generating notes for 1.14.4
+
 ## [1.14.3](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.2...v1.14.3) (2025-07-05)
 
 ### 🐛 Bug Fixes
