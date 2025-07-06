@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.14.6](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.5...v1.14.6) (2025-07-06)
+
+### 🐛 Bug Fixes
+
+* update Trivy configuration and remove obsolete ignore patterns ([2337c4e](https://github.com/kpeacocke/terraform-github-repo/commit/2337c4ee8cc9c32c2becedd9c02680811e9a9d82))
+
+### 📚 Documentation
+
+* update changelog for v1.14.5 ([458f566](https://github.com/kpeacocke/terraform-github-repo/commit/458f5667c73d5b37af3583d9f70fff52309e550f))
+
+Generating notes for 1.14.6
+
 ## [1.14.5](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.4...v1.14.5) (2025-07-06)
 
 ### 🐛 Bug Fixes
