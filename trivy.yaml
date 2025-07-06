@@ -1,0 +1,3 @@
+filePatterns:
+  - pattern: ".github/codeql/queries/go-hardcoded-credentials.go"
+  - pattern: ".github/codeql/queries/go-hardcoded-credentials.ql.expected"

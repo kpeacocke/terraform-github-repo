@@ -50,12 +50,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y trivy
 
+
       - name: Run Trivy vulnerability scanner
         run: |
           if [ "${{ inputs.target_type }}" = "image" ]; then
-            trivy image --skip-version-check --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 0 --ignore-unfixed --ignorefile .trivyignore "${{ inputs.working_directory }}"
+            trivy image --skip-version-check --config trivy.yaml --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
           else
-            trivy ${{ inputs.target_type }} --skip-version-check --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 0 --ignore-unfixed --ignorefile .trivyignore "${{ inputs.working_directory }}"
+            trivy ${{ inputs.target_type }} --skip-version-check --config trivy.yaml --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
           fi
           echo "\n--- Trivy Findings Causing Failure (Top 100) ---"
           if command -v jq >/dev/null 2>&1; then
@@ -66,9 +67,9 @@ jobs:
           echo "--- End Trivy Findings ---\n"
           # Now rerun with exit code 1 for CI fail if there are findings
           if [ "${{ inputs.target_type }}" = "image" ]; then
-            trivy image --skip-version-check --format ${{ inputs.format }} --output /dev/null --severity ${{ inputs.severity }} --exit-code 1 --ignore-unfixed --ignorefile .trivyignore "${{ inputs.working_directory }}"
+            trivy image --skip-version-check --config trivy.yaml --format ${{ inputs.format }} --output /dev/null --severity ${{ inputs.severity }} --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
           else
-            trivy ${{ inputs.target_type }} --skip-version-check --format ${{ inputs.format }} --output /dev/null --severity ${{ inputs.severity }} --exit-code 1 --ignore-unfixed --ignorefile .trivyignore "${{ inputs.working_directory }}"
+            trivy ${{ inputs.target_type }} --skip-version-check --config trivy.yaml --format ${{ inputs.format }} --output /dev/null --severity ${{ inputs.severity }} --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
           fi
       
       - name: Upload Trivy scan results to GitHub Security tab

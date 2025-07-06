@@ -1,4 +1,0 @@
-# Ignore test PATs in CodeQL tests
-
-github-pat:.github/codeql/queries/go-hardcoded-credentials.go
-github-pat:.github/codeql/queries/go-hardcoded-credentials.ql.expected
