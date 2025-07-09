@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.14.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.8...v1.14.9) (2025-07-09)
+
+### 🐛 Bug Fixes
+
+* update Trivy commands to skip CodeQL queries and specify provider versions in README ([bb1b5de](https://github.com/kpeacocke/terraform-github-repo/commit/bb1b5de5392831f6e8ddde6c441847ae273c0408))
+
+### 📚 Documentation
+
+* update changelog for v1.14.8 ([34245fb](https://github.com/kpeacocke/terraform-github-repo/commit/34245fbdcc9ecea7291709504ae6fb46c81ea9bd))
+
+Generating notes for 1.14.9
+
 ## [1.14.8](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.7...v1.14.8) (2025-07-09)
 
 ### 🐛 Bug Fixes
