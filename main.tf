@@ -52,6 +52,19 @@ resource "github_repository" "this" {
   has_wiki         = false
   allow_auto_merge = var.allow_auto_merge
 }
+// Mute notifications on new repo to suppress creation and workflow emails
+resource "null_resource" "mute_notifications" {
+  depends_on = [github_repository.this]
+  provisioner "local-exec" {
+    command = <<EOT
+      curl -s -X PUT \
+        -H "Authorization: token ${var.github_token}" \
+        -H "Accept: application/vnd.github.v3+json" \
+        -d '{"subscribed":false,"ignored":true}' \
+        https://api.github.com/repos/${var.github_owner}/${github_repository.this.name}/subscription
+    EOT
+  }
+}
 
 resource "github_actions_repository_permissions" "repo_perms" {
   count      = var.disable_actions_until_provisioning ? 0 : 1
