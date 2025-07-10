@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * update changelog for v1.14.9 ([31f9c0d](https://github.com/kpeacocke/terraform-github-repo/commit/31f9c0d5baf179c9bc69ee38f2eab47fdffe299c))
 
-
 Generating notes for 1.14.10
 
 ## [1.14.9](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.8...v1.14.9) (2025-07-09)
