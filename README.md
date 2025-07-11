@@ -182,8 +182,8 @@ See the [examples](./examples) directory for complete usage scenarios.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_github"></a> [github](#provider\_github) | 6.6.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
+| <a name="provider_github"></a> [github](#provider\_github) | ~> 6.6 |
+| <a name="provider_null"></a> [null](#provider\_null) | ~> 3.2 |
 
 ## Modules
 
@@ -218,8 +218,8 @@ No modules.
 | [github_repository_file.security](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
 | [github_repository_file.stale](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
 | [github_repository_file.traceability](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
-| [github_repository_subscription.no_notifications](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_subscription) | resource |
 | [null_resource.files_created](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.mute_notifications](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.wait_for_github_repo](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 
 ## Inputs
