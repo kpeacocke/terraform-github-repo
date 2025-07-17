@@ -193,7 +193,9 @@ func TestE2EGitHubRepoModule(t *testing.T) {
 	// Mute notifications on this repo to suppress emails for creation and workflow runs
 	subscription := &github.Subscription{Ignored: github.Bool(true), Subscribed: github.Bool(false)}
 	_, _, err = client.Activity.SetRepositorySubscription(ctx, owner, repoName, subscription)
-	require.NoError(t, err, "Failed to mute notifications on test repo")
+	if err != nil {
+		t.Logf("[WARN] Failed to mute notifications on test repo: %v", err)
+	}
 
 	// Wait for GitHub repository to be available
 	waitForGitHubRepo(t, tc, owner, repoName)
