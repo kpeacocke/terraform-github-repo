@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.14.11](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.10...v1.14.11) (2025-07-17)
+
+### 🐛 Bug Fixes
+
+* update notification muting logic in end-to-end tests to log warnings on failure ([3165e3d](https://github.com/kpeacocke/terraform-github-repo/commit/3165e3d2650c89a92a817aa2048ff701e8fe1417))
+
+### 📚 Documentation
+
+* update changelog for v1.14.10 ([4560de4](https://github.com/kpeacocke/terraform-github-repo/commit/4560de457aecc959ad520962e585d64af0743f2a))
+
+
+Generating notes for 1.14.11
+
 ## [1.14.10](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.9...v1.14.10) (2025-07-10)
 
 ### 🐛 Bug Fixes
