@@ -233,6 +233,10 @@ jobs:
           git-push: false
           fail-on-diff: false
 
+      - name: Fix permissions for git
+        run: |
+          sudo chown -R $(whoami) .git
+
       - name: Commit and push updated README if changed
         run: |
           if [[ -n "$(git status --porcelain README.md)" ]]; then
