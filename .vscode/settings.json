@@ -42,5 +42,8 @@
   "sonarlint.connectedMode.project": {
     "connectionId": "kpeacocke",
     "projectKey": "kpeacocke_terraform-github-repo"
-  }
+  },
+  "cSpell.words": [
+    "hmarr"
+  ]
 }

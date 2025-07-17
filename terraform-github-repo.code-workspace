@@ -11,6 +11,9 @@
 			"*.md": "markdown",
 			"CODEOWNERS": "plaintext"
 		},
-		"codeQL.githubDatabase.download": "never"
+		"codeQL.githubDatabase.download": "never",
+		"cSpell.words": [
+			"mkdocs"
+		]
 	}
 }
