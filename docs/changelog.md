@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.14.12](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.11...v1.14.12) (2025-07-17)
+
+### 🐛 Bug Fixes
+
+* update git permissions in Dependabot workflow to ensure proper ownership ([451028a](https://github.com/kpeacocke/terraform-github-repo/commit/451028acc1869a4737c5a28ddbee5c9a3d573451))
+
+### 📚 Documentation
+
+* update changelog for v1.14.11 ([8cf02b3](https://github.com/kpeacocke/terraform-github-repo/commit/8cf02b3b76da5df54827f2189f8f221b86353643))
+
+Generating notes for 1.14.12
+
 ## [1.14.11](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.10...v1.14.11) (2025-07-17)
 
 ### 🐛 Bug Fixes
