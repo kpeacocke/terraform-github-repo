@@ -58,7 +58,7 @@ jobs:
       id-token: write  # For deployment authentication
     steps:
       - name: Checkout Main Branch
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v4
         with:
           fetch-depth: 0  # Needed for git-revision-date-localized plugin
           # Force checkout of main branch to ensure docs are always built from main, regardless of trigger
