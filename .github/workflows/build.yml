@@ -47,7 +47,7 @@ jobs:
         run: terraform validate -no-color
       
       - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v6.1.0
+        uses: terraform-linters/setup-tflint@v6.2.0
         with:
           tflint_version: latest
       
