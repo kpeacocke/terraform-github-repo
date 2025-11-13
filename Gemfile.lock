@@ -484,7 +484,7 @@ GEM
       tty-table (~> 0.10)
     io-console (0.8.1)
     jmespath (1.6.2)
-    json (2.15.2)
+    json (2.16.0)
     jsonpath (1.1.5)
       multi_json
     jwt (2.10.2)
