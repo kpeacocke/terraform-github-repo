@@ -1,13 +1,11 @@
 module github.com/kpeacocke/terraform-github-repo
 
-go 1.24.1
-
-toolchain go1.24.4
+go 1.25.0
 
 require (
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/google/go-github/v55 v55.0.0
-	github.com/gruntwork-io/terratest v0.54.0
+	github.com/gruntwork-io/terratest v0.55.0
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/oauth2 v0.35.0
@@ -51,7 +49,6 @@ require (
 	github.com/zclconf/go-cty v1.17.0 // indirect
 	golang.org/x/crypto v0.48.0 // indirect
 	golang.org/x/mod v0.33.0 // indirect
-	golang.org/x/net v0.50.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.41.0 // indirect
 	golang.org/x/text v0.34.0 // indirect
