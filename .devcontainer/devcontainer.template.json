@@ -1,0 +1,100 @@
+{
+  "name": "Terraform GitHub Repo Dev - Customized",
+  "dockerfile": "Dockerfile",
+  "context": ".",
+  "build": {
+    "args": {
+      "UBUNTU_VERSION": "jammy",
+      "GO_VERSION": "1.25.0",
+      "TERRAFORM_VERSION": "1.5.7"
+    }
+  },
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,readonly",
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,readonly"
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "hashicorp.terraform",
+        "ms-vscode.go",
+        "rebornix.ruby",
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "ms-vscode.makefile-tools",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+        "GitHub.copilot",
+        "eamodio.gitlens",
+        "ms-vscode.remote-explorer",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "go.useLanguageServer": true,
+        "go.lintOnSave": "package",
+        "go.lintTool": "golangci-lint",
+        "go.lintFlags": [
+          "--fast"
+        ],
+        "go.formatOnSave": true,
+        "go.coverageDecorator": {
+          "type": "gutter",
+          "coveredHighlightColor": "rgba(64, 128, 128, 0.5)",
+          "uncoveredHighlightColor": "rgba(128, 64, 64, 0.25)",
+          "coveredBorderColor": "rgba(64, 128, 128, 0.8)",
+          "uncoveredBorderColor": "rgba(128, 64, 64, 0.8)"
+        },
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "ruby.lint": {
+          "rubocop": true,
+          "reek": true,
+          "ruby": true
+        },
+        "[terraform]": {
+          "editor.defaultFormatter": "hashicorp.terraform",
+          "editor.formatOnSave": true
+        },
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.python",
+          "editor.formatOnSave": true
+        },
+        "[go]": {
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+          }
+        }
+      }
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "bash .devcontainer/post-start.sh",
+  "shutdownAction": "stopContainer",
+  "forwardPorts": [
+    8000,
+    8080,
+    3000
+  ],
+  "portsAttributes": {
+    "8000": {
+      "label": "MkDocs",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Development Server",
+      "onAutoForward": "notify"
+    },
+    "3000": {
+      "label": "Node Server",
+      "onAutoForward": "notify"
+    }
+  }
+}

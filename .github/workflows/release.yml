@@ -84,8 +84,9 @@ jobs:
         run: |
           export GO111MODULE=on
           go mod tidy
-          # Run only template rendering tests that don't require external dependencies
-          go test -v -timeout 10m -run "TestPrintWorkingDirectory|TestRenderDependabotTemplate|TestRenderCodeQLTemplate|TestRenderCIEnforcementTemplate" ./test
+          # Run only template rendering tests that don't require external dependencies or repo creation
+          # Skip E2E tests to avoid creating real GitHub repos and triggering notifications
+          go test -v -timeout 10m -skip TestE2EGitHubRepoModule ./test
         working-directory: ${{ github.workspace }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

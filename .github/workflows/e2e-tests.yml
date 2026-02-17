@@ -1,0 +1,63 @@
+name: E2E Tests (Manual)
+
+# Description: Manual workflow for running end-to-end tests that create real GitHub repositories.
+# These tests are NOT run during CI/PR validation to avoid creating test repositories and triggering notifications.
+# Run this workflow manually only when needed.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  e2e-tests:
+    name: "End-to-End Tests"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    environment:
+      name: e2e-testing
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "latest"
+
+      - name: Install tofu
+        run: |
+          curl -s https://install.opentofu.org | sh
+          echo "$HOME/.opentofu/bin" >> $GITHUB_PATH
+
+      - name: Setup Go
+        uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v5
+        with:
+          go-version: '1.24.1'
+          cache: true
+
+      - name: Download Go modules
+        run: go mod tidy
+        working-directory: ${{ github.workspace }}
+
+      - name: Run E2E Tests
+        run: |
+          export GO111MODULE=on
+          go mod tidy
+          # Run ONLY E2E tests that create real GitHub repos
+          go test -v -timeout 30m -run TestE2EGitHubRepoModule ./test
+        working-directory: ${{ github.workspace }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+        
+      - name: Notify on success
+        if: success()
+        run: echo "✅ E2E tests completed successfully. Check logs for details on created and cleaned up repositories."
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "❌ E2E tests failed. Check logs and manually clean up any test repositories that may have been created."

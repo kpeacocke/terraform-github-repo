@@ -114,24 +114,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Check SonarCloud Configuration
-        id: check_sonar
-        run: |
-          if [[ -n "${{ secrets.SONAR_TOKEN }}" ]]; then
-            echo "sonar_enabled=true" >> $GITHUB_OUTPUT
-            echo "::notice title=SonarCloud::SONAR_TOKEN configured - running SonarCloud analysis"
-          else
-            echo "sonar_enabled=false" >> $GITHUB_OUTPUT
-            echo "::notice title=SonarCloud::SONAR_TOKEN not configured - skipping SonarCloud analysis"
-            echo "To enable SonarCloud analysis, configure SONAR_TOKEN as a repository secret"
-          fi
-
       - name: SonarCloud Scan
-        if: steps.check_sonar.outputs.sonar_enabled == 'true'
+        if: secrets.SONAR_TOKEN != ''
         uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9 # v7.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      
+      - name: Skip SonarCloud (no token configured)
+        if: secrets.SONAR_TOKEN == ''
+        run: echo "::notice title=SonarCloud::SONAR_TOKEN not configured - skipping SonarCloud analysis. To enable, configure SONAR_TOKEN as a repository secret."
           
   mkdocs-deploy:
     name: "MkDocs Build and Deploy"

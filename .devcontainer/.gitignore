@@ -1,0 +1,29 @@
+# Dev container temporary files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Local development environment variables (use .env files in workspace root instead)
+.env.local
+.env.*.local
+
+# Build artifacts
+build/
+dist/
+*.o
+*.a
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+
+# OS
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Docker
+.dockerignore

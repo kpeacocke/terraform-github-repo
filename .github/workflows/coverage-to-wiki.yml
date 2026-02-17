@@ -42,7 +42,11 @@ jobs:
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git wiki
+          # Attempt to clone wiki, but skip if it doesn't exist (wiki must be enabled first)
+          if ! git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git wiki 2>/dev/null; then
+            echo "Wiki repository not found. Enable the wiki in repository settings and run this workflow again."
+            exit 0
+          fi
           cp coverage.html coverage.svg wiki/
           cd wiki
           git add coverage.html coverage.svg

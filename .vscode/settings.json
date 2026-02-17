@@ -45,5 +45,6 @@
   },
   "cSpell.words": [
     "hmarr"
-  ]
+  ],
+  "snyk.advanced.autoSelectOrganization": true
 }

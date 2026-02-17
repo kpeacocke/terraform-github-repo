@@ -167,17 +167,34 @@ func TestE2EGitHubRepoModule(t *testing.T) {
 		t.Log("Waiting 30 seconds before Terraform destroy to allow for GitHub propagation...")
 		time.Sleep(30 * time.Second)
 		t.Log("Starting Terraform destroy...")
-		_, err := terraform.DestroyE(t, tfOptions)
-		if err != nil {
-			if strings.Contains(err.Error(), "Could not resolve to a node with the global id") {
-				t.Logf("[WARN] Ignoring destroy error: %v", err)
+
+		// Attempt destroy with retries in case of eventual consistency issues
+		maxDestroyAttempts := 3
+		var destroyErr error
+		for attempt := 1; attempt <= maxDestroyAttempts; attempt++ {
+			_, destroyErr = terraform.DestroyE(t, tfOptions)
+			if destroyErr == nil {
+				t.Log("Terraform destroy succeeded")
+				break
+			}
+
+			if strings.Contains(destroyErr.Error(), "Could not resolve to a node with the global id") {
+				t.Logf("[WARN] Ignoring destroy error (attempt %d/%d): %v", attempt, maxDestroyAttempts, destroyErr)
+				destroyErr = nil
+				break
+			}
+
+			if attempt < maxDestroyAttempts {
+				t.Logf("[WARN] Destroy attempt %d failed, retrying in 10 seconds: %v", attempt, destroyErr)
+				time.Sleep(10 * time.Second)
 			} else {
-				t.Errorf("Terraform destroy failed: %v", err)
+				t.Errorf("[ERROR] Terraform destroy failed after %d attempts: %v", maxDestroyAttempts, destroyErr)
 			}
 		}
+
 		// Clean up state files after destroy
 		CleanTerraformState(t, rootDir)
-		t.Log("Terraform destroy completed.")
+		t.Log("Terraform destroy cleanup completed.")
 	}()
 
 	// Apply Terraform configuration
@@ -194,7 +211,11 @@ func TestE2EGitHubRepoModule(t *testing.T) {
 	subscription := &github.Subscription{Ignored: github.Bool(true), Subscribed: github.Bool(false)}
 	_, _, err = client.Activity.SetRepositorySubscription(ctx, owner, repoName, subscription)
 	if err != nil {
-		t.Logf("[WARN] Failed to mute notifications on test repo: %v", err)
+		// This is a best-effort operation - don't fail the test if it can't mute notifications
+		t.Logf("[WARN] Failed to mute notifications on test repo %s/%s: %v", owner, repoName, err)
+		t.Log("[WARN] GitHub notifications for this test repo will be sent. Please mute manually or clean up the repo afterwards.")
+	} else {
+		t.Logf("[INFO] Successfully muted notifications on test repo %s/%s", owner, repoName)
 	}
 
 	// Wait for GitHub repository to be available
