@@ -23,6 +23,9 @@ go-test-long.log
 test/__pycache__/
 test/tmp/
 test/fixtures/.terraform/
+coverage.html
+coverage.svg
+pct.txt
 
 # === VSCode / IDEs ===
 # (Allow .vscode/ to be tracked for portable tasks and customizations)
