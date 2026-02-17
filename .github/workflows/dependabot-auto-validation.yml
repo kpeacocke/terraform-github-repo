@@ -91,16 +91,16 @@ jobs:
     permissions:
       contents: read
     env:
-      GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TF_VAR_owner: ${{ github.repository_owner }}
       TF_VAR_name: ${{ github.event.repository.name }}
-      TF_VAR_github_token: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+      TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
       TF_VAR_github_owner: ${{ github.repository_owner }}
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
         with:
-          token: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.head_ref }}
           fetch-depth: 0
 
@@ -138,7 +138,7 @@ jobs:
     env:
       GITHUB_OWNER: ${{ github.repository_owner }}
       TF_VAR_visibility: private
-      GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -171,7 +171,7 @@ jobs:
           go test -v -timeout 10m -run "TestPrintWorkingDirectory|TestRenderDependabotTemplate|TestRenderCodeQLTemplate|TestRenderCIEnforcementTemplate|TestMissingOwnersVariableError" ./test
         working-directory: ${{ github.workspace }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Go tests with race detection (excluding E2E)
         run: |
@@ -181,7 +181,7 @@ jobs:
           go test -race -v -timeout 15m -run "TestPrintWorkingDirectory|TestRenderDependabotTemplate|TestRenderCodeQLTemplate|TestRenderCIEnforcementTemplate|TestMissingOwnersVariableError" ./test
         working-directory: ${{ github.workspace }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Security scanning using reusable workflow
   security-scan:
@@ -210,7 +210,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
         with:
-          token: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.head_ref }}
           fetch-depth: 0
 
@@ -228,7 +228,7 @@ jobs:
         run: |
           mkdocs build --strict
         env:
-          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate terraform-docs (update README if needed)
         uses: terraform-docs/gh-actions@6de6da0cefcc6b4b7a5cbea4d79d97060733093c # v1
