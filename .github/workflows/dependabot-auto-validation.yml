@@ -167,8 +167,8 @@ jobs:
         run: |
           export GO111MODULE=on
           go mod tidy
-          # Skip E2E tests in CI to avoid creating real GitHub repos and triggering notifications
-          go test -v -timeout 10m -skip TestE2EGitHubRepoModule ./test
+          # Run only template rendering tests that don't create real GitHub repos
+          go test -v -timeout 10m -run "TestPrintWorkingDirectory|TestRenderDependabotTemplate|TestRenderCodeQLTemplate|TestRenderCIEnforcementTemplate|TestMissingOwnersVariableError" ./test
         working-directory: ${{ github.workspace }}
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
@@ -177,8 +177,8 @@ jobs:
         run: |
           export GO111MODULE=on
           go mod tidy
-          # Skip E2E tests in CI to avoid creating real GitHub repos and triggering notifications
-          go test -race -v -timeout 15m -skip TestE2EGitHubRepoModule ./test
+          # Run only template rendering tests that don't create real GitHub repos
+          go test -race -v -timeout 15m -run "TestPrintWorkingDirectory|TestRenderDependabotTemplate|TestRenderCodeQLTemplate|TestRenderCIEnforcementTemplate|TestMissingOwnersVariableError" ./test
         working-directory: ${{ github.workspace }}
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
