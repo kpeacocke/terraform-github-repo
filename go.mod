@@ -46,7 +46,7 @@ require (
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/tmccombs/hcl2json v0.6.8 // indirect
 	github.com/ulikunitz/xz v0.5.15 // indirect
-	github.com/zclconf/go-cty v1.17.0 // indirect
+	github.com/zclconf/go-cty v1.18.0 // indirect
 	golang.org/x/crypto v0.48.0 // indirect
 	golang.org/x/mod v0.33.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
