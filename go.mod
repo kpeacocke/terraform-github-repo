@@ -1,11 +1,11 @@
 module github.com/kpeacocke/terraform-github-repo
 
-go 1.25.0
+go 1.26
 
 require (
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/google/go-github/v55 v55.0.0
-	github.com/gruntwork-io/terratest v0.55.0
+	github.com/gruntwork-io/terratest v0.56.0
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/oauth2 v0.35.0
