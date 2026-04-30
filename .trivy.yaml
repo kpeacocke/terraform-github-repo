@@ -61,6 +61,12 @@ policy-namespaces:
 format: table
 output: ""
 
+# Suppress verbose download progress bars for cleaner CI/local output
+no-progress: true
+
+# Suppress version check notices during scans
+skip-version-check: true
+
 # Secret scanning configuration
 secret:
   # Skip test files for secret scanning

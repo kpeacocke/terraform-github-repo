@@ -1,3 +1,9 @@
 skip-files:
   - .github/codeql/queries/go-hardcoded-credentials.go
   - .github/codeql/queries/go-hardcoded-credentials.ql.expected
+
+# Suppress verbose download progress bars for cleaner CI output
+no-progress: true
+
+# Suppress version check notices during scans
+skip-version-check: true
