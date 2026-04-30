@@ -70,12 +70,11 @@ jobs:
           else
             trivy ${{ inputs.target_type }} --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
           fi
-          echo "✅ Trivy scan complete. Reviewing findings..."
           echo ""
           echo "--- Trivy Findings (Top 100) ---"
-          if command -v jq >/dev/null 2>&1; then
+          if [ -f "trivy-results.sarif" ] && command -v jq >/dev/null 2>&1; then
             jq '.runs[].results[] | select(.level=="error" or .level=="warning")' trivy-results.sarif 2>/dev/null | head -100 || true
-          else
+          elif [ -f "trivy-results.sarif" ]; then
             grep -E '"level": "(error|warning)"' trivy-results.sarif 2>/dev/null | head -100 || true
           fi
           echo "--- End Trivy Findings ---"
