@@ -79,37 +79,7 @@ jobs:
 
       - name: Install MkDocs dependencies
         run: |
-          # Upgrade pip first
-          python -m pip install --upgrade pip setuptools wheel
-          
-          # Clear pip cache to ensure clean environment
-          pip cache purge
-          
-          # Install with certificate verification configured during build
-          export PYTHONHTTPSVERIFY=0
-          export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-          export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
-          
-          # Install critical dependencies first with specific versions
-          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --no-cache-dir pyyaml==6.0.1 mergedeep==1.3.4 markupsafe==2.1.3 jinja2==3.1.2 packaging==23.2
-          
-          # Wait a moment to ensure dependencies are properly registered
-          sleep 2
-          
-          # Install requirements from file with SSL handling
-          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --no-cache-dir -r docs/requirements.txt
-          
-          # Ensure core dependencies are installed, even if requirements.txt changes
-          # Using mike 2.0.0 which doesn't support the --force flag
-          pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --no-cache-dir --no-deps mike==2.0.0
-          
-          # Show detailed dependency information for debugging
-          echo "Key package versions:"
-          pip list | grep -E "mergedeep|pyyaml|mkdocs|mike|jinja2|markupsafe"
-          
-          # List all installed packages for debugging
-          echo "All installed packages:"
-          pip list
+          pip install --only-binary :all: -r docs/requirements.txt
 
       - name: Apply Python SSL fixes
         run: |

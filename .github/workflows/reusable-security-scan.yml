@@ -63,12 +63,17 @@ jobs:
           sudo apt-get install -y trivy
 
       - name: Run Trivy vulnerability scanner
+        env:
+          TRIVY_TARGET_TYPE: ${{ inputs.target_type }}
+          TRIVY_FORMAT: ${{ inputs.format }}
+          TRIVY_SEVERITY: ${{ inputs.severity }}
+          TRIVY_WORKING_DIR: ${{ inputs.working_directory }}
         run: |
-          echo "🔍 Starting Trivy security scan (severity: ${{ inputs.severity }})..."
-          if [ "${{ inputs.target_type }}" = "image" ]; then
-            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${{ inputs.format }}" --output "trivy-results.${{ inputs.format }}" --severity "${{ inputs.severity }}" --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
+          echo "🔍 Starting Trivy security scan (severity: ${TRIVY_SEVERITY})..."
+          if [ "${TRIVY_TARGET_TYPE}" = "image" ]; then
+            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${TRIVY_FORMAT}" --output "trivy-results.${TRIVY_FORMAT}" --severity "${TRIVY_SEVERITY}" --exit-code 0 --ignore-unfixed "${TRIVY_WORKING_DIR}"
           else
-            trivy "${{ inputs.target_type }}" --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${{ inputs.format }}" --output "trivy-results.${{ inputs.format }}" --severity "${{ inputs.severity }}" --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
+            trivy "${TRIVY_TARGET_TYPE}" --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${TRIVY_FORMAT}" --output "trivy-results.${TRIVY_FORMAT}" --severity "${TRIVY_SEVERITY}" --exit-code 0 --ignore-unfixed "${TRIVY_WORKING_DIR}"
           fi
           echo ""
           echo "--- Trivy Findings (Top 100) ---"
@@ -80,10 +85,10 @@ jobs:
           echo "--- End Trivy Findings ---"
           echo ""
           # Now rerun with exit code 1 for CI fail if there are findings
-          if [ "${{ inputs.target_type }}" = "image" ]; then
-            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${{ inputs.format }}" --output /dev/null --severity "${{ inputs.severity }}" --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
+          if [ "${TRIVY_TARGET_TYPE}" = "image" ]; then
+            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${TRIVY_FORMAT}" --output /dev/null --severity "${TRIVY_SEVERITY}" --exit-code 1 --ignore-unfixed "${TRIVY_WORKING_DIR}"
           else
-            trivy "${{ inputs.target_type }}" --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${{ inputs.format }}" --output /dev/null --severity "${{ inputs.severity }}" --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
+            trivy "${TRIVY_TARGET_TYPE}" --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${TRIVY_FORMAT}" --output /dev/null --severity "${TRIVY_SEVERITY}" --exit-code 1 --ignore-unfixed "${TRIVY_WORKING_DIR}"
           fi
       
       - name: Upload Trivy scan results to GitHub Security tab
