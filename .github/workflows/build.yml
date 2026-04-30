@@ -86,7 +86,6 @@ jobs:
           output: 'trivy-results.sarif'
           severity: 'MEDIUM,HIGH,CRITICAL'
           ignore-unfixed: true
-          trivy-flags: '--no-progress --skip-version-check'
       
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@89a39a4e59826350b863aa6b6252a07ad50cf83e # v4.32.4
@@ -165,7 +164,7 @@ jobs:
           python-version: '3.x'
       - name: Install MkDocs, Material theme, and plugins
         run: |
-          pip install mkdocs mkdocs-material mkdocs-minify-plugin mkdocs-git-revision-date-localized-plugin mkdocs-git-committers-plugin-2
+          pip install --only-binary :all: -r docs/requirements.txt
       - name: Build documentation
         env:
           MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
