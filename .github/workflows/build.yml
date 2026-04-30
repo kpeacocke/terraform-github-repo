@@ -65,6 +65,18 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Get current date for cache key
+        id: date
+        run: echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+
+      - name: Cache Trivy vulnerability database
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/trivy
+          key: trivy-db-${{ runner.os }}-${{ steps.date.outputs.date }}
+          restore-keys: |
+            trivy-db-${{ runner.os }}-
       
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@e368e328979b113139d6f9068e03accaed98a518 # master
@@ -75,6 +87,7 @@ jobs:
           output: 'trivy-results.sarif'
           severity: 'MEDIUM,HIGH,CRITICAL'
           ignore-unfixed: true
+          trivy-flags: '--no-progress --skip-version-check'
       
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@89a39a4e59826350b863aa6b6252a07ad50cf83e # v4.32.4
