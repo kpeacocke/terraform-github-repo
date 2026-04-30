@@ -39,7 +39,19 @@ jobs:
     
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Get current date for cache key
+        id: date
+        run: echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+
+      - name: Cache Trivy vulnerability database
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/trivy
+          key: trivy-db-${{ runner.os }}-${{ steps.date.outputs.date }}
+          restore-keys: |
+            trivy-db-${{ runner.os }}-
 
       - name: Install Trivy
         run: |
@@ -50,37 +62,39 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y trivy
 
-
       - name: Run Trivy vulnerability scanner
         run: |
+          echo "🔍 Starting Trivy security scan (severity: ${{ inputs.severity }})..."
           if [ "${{ inputs.target_type }}" = "image" ]; then
-            trivy image --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
+            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
           else
-            trivy ${{ inputs.target_type }} --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
+            trivy ${{ inputs.target_type }} --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
           fi
-          echo "\n--- Trivy Findings Causing Failure (Top 100) ---"
-          if command -v jq >/dev/null 2>&1; then
-            jq '.runs[].results[] | select(.level=="error" or .level=="warning")' trivy-results.sarif | head -100
-          else
-            grep -E '"level": "(error|warning)"' trivy-results.sarif | head -100
+          echo ""
+          echo "--- Trivy Findings (Top 100) ---"
+          if [ -f "trivy-results.sarif" ] && command -v jq >/dev/null 2>&1; then
+            jq '.runs[].results[] | select(.level=="error" or .level=="warning")' trivy-results.sarif 2>/dev/null | head -100 || true
+          elif [ -f "trivy-results.sarif" ]; then
+            grep -E '"level": "(error|warning)"' trivy-results.sarif 2>/dev/null | head -100 || true
           fi
-          echo "--- End Trivy Findings ---\n"
+          echo "--- End Trivy Findings ---"
+          echo ""
           # Now rerun with exit code 1 for CI fail if there are findings
           if [ "${{ inputs.target_type }}" = "image" ]; then
-            trivy image --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output /dev/null --severity ${{ inputs.severity }} --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
+            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output /dev/null --severity ${{ inputs.severity }} --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
           else
-            trivy ${{ inputs.target_type }} --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output /dev/null --severity ${{ inputs.severity }} --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
+            trivy ${{ inputs.target_type }} --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output /dev/null --severity ${{ inputs.severity }} --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
           fi
       
       - name: Upload Trivy scan results to GitHub Security tab
         if: inputs.upload_to_security_tab == true && inputs.format == 'sarif'
-        uses: github/codeql-action/upload-sarif@5d4e8d1aca955e8d8589aabd499c5cae939e33c7 # v4.31.9
+        uses: github/codeql-action/upload-sarif@89a39a4e59826350b863aa6b6252a07ad50cf83e # v4.32.4
         with:
           sarif_file: 'trivy-results.sarif'
       
       - name: Upload scan results as artifact
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: trivy-scan-results
           path: trivy-results.*

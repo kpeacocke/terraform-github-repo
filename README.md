@@ -77,10 +77,30 @@ This module provides comprehensive GitHub repository configuration with focus on
 
 This repository includes a comprehensive set of guidance for developers:
 
+- � [**Dev Container Setup**](./.devcontainer/README.md)  
+  Complete development environment with all tools (Docker Desktop required)
 - 🔑 [**Security Credentials Guide**](./docs/development/security-credentials.md)  
   Important guidance on handling credentials securely
 - 📗 [**Contributing Guide**](./CONTRIBUTING.md) - How to contribute to this project
 - 🧪 [**Testing Guide**](./docs/development/testing.md) - How to run tests locally
+
+### Quick Start: Dev Container
+
+The easiest way to set up a development environment is using the provided dev container:
+
+```bash
+# 1. Install Docker Desktop and VS Code Dev Containers extension
+# 2. Open project in VS Code
+# 3. Run: "Dev Containers: Reopen in Container"
+# 4. Container automatically installs all dependencies
+
+# Or manually setup environment variables:
+cp .env.template .env
+```
+
+The dev container includes Go, Terraform, Python, Ruby, OPA, AWS CLI, and all testing tools.
+
+For detailed instructions, see [.devcontainer/README.md](./.devcontainer/README.md)
 
 ## 🔧 Requirements
 

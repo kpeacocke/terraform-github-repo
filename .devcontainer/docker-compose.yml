@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UBUNTU_VERSION: noble
+        GO_VERSION: 1.25.0
+        TERRAFORM_VERSION: 1.5.7
+    container_name: terraform-github-repo-dev
+    volumes:
+      - ..:/workspace:cached
+      - vscode-extensions:/home/vscode/.vscode-server/extensions
+      - vscode-insiders-extensions:/home/vscode/.vscode-server-insiders/extensions
+      - go-cache:/home/vscode/.cache/go-build
+      - go-pkg:/home/vscode/go/pkg
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - WORKSPACE=/workspace
+      - GO111MODULE=on
+      - GOPATH=/home/vscode/go
+      - PATH=/usr/local/go/bin:/home/vscode/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    ports:
+      - "8000:8000"  # MkDocs
+      - "8080:8080"  # Development
+      - "3000:3000"  # Node.js
+    stdin_open: true
+    tty: true
+    networks:
+      - development
+
+volumes:
+  vscode-extensions:
+  vscode-insiders-extensions:
+  go-cache:
+  go-pkg:
+
+networks:
+  development:
+    driver: bridge

@@ -21,28 +21,32 @@ tasks:
   trivy:
     desc: Run Trivy security scanning (replaces tfsec)
     cmds:
-      - sh -c "trivy fs --format json --output trivy-report.json . || true"
+      - echo "🔍 Running Trivy vulnerability scan (this may download the vulnerability database on first run)..."
+      - sh -c "trivy fs --no-progress --skip-version-check --format json --output trivy-report.json . || true"
+      - echo "✅ Trivy scan complete. Results saved to trivy-report.json"
   trivy:terraform:
     desc: Run Trivy Terraform-specific security scan
     cmds:
-      - trivy config --format table .
+      - trivy config --no-progress --skip-version-check --format table .
   trivy:secrets:
     desc: Scan for secrets and sensitive information
     cmds:
-      - trivy fs --scanners secret --format table .
+      - trivy fs --no-progress --skip-version-check --scanners secret --format table .
   trivy:vuln:
     desc: Scan for vulnerabilities in dependencies
     cmds:
-      - trivy fs --scanners vuln --format table .
+      - trivy fs --no-progress --skip-version-check --scanners vuln --format table .
   trivy:all:
     desc: Run comprehensive Trivy security scan
     cmds:
-      - trivy fs --format table .
-      - trivy fs --format json --output trivy-report.json .
+      - echo "🔍 Running comprehensive Trivy scan..."
+      - trivy fs --no-progress --skip-version-check --format table .
+      - trivy fs --no-progress --skip-version-check --format json --output trivy-report.json .
+      - echo "✅ Trivy scan complete."
   trivy:sarif:
     desc: Generate SARIF report for GitHub Security tab
     cmds:
-      - trivy fs --format sarif --output trivy-results.sarif .
+      - trivy fs --no-progress --skip-version-check --format sarif --output trivy-results.sarif .
   lint:
     desc: Run fmt, validate, trivy, and tflint (ensures security scan runs before lint failures)
     cmds:

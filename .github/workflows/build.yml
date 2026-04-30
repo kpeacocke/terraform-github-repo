@@ -26,10 +26,10 @@ jobs:
     
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
         with:
           terraform_version: "latest"
       
@@ -64,10 +64,22 @@ jobs:
     
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Get current date for cache key
+        id: date
+        run: echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+
+      - name: Cache Trivy vulnerability database
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/trivy
+          key: trivy-db-${{ runner.os }}-${{ steps.date.outputs.date }}
+          restore-keys: |
+            trivy-db-${{ runner.os }}-
       
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # master
+        uses: aquasecurity/trivy-action@e368e328979b113139d6f9068e03accaed98a518 # master
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -75,9 +87,10 @@ jobs:
           output: 'trivy-results.sarif'
           severity: 'MEDIUM,HIGH,CRITICAL'
           ignore-unfixed: true
+          trivy-flags: '--no-progress --skip-version-check'
       
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@5d4e8d1aca955e8d8589aabd499c5cae939e33c7 # v4.31.9
+        uses: github/codeql-action/upload-sarif@89a39a4e59826350b863aa6b6252a07ad50cf83e # v4.32.4
         with:
           sarif_file: 'trivy-results.sarif'
   
@@ -89,17 +102,17 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up Go
-        uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v5
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v5
         with:
           go-version: 1.24.1
           cache: true
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
         with:
           terraform_version: latest
       
@@ -108,7 +121,7 @@ jobs:
           export GO111MODULE=on
           go mod tidy
           # Run template rendering tests that don't require external dependencies
-          go test -coverprofile=coverage.out -run "TestPrintWorkingDirectory|TestRenderDependabotTemplate|TestRenderCodeQLTemplate|TestRenderCIEnforcementTemplate" ./test
+          go test -coverprofile=coverage.out -run "TestPrintWorkingDirectory|TestRenderDependabotTemplate|TestRenderCodeQLTemplate|TestRenderCIEnforcementTemplate|TestMissingOwnersVariableError" ./test
           go tool cover -func=coverage.out > coverage.txt
         working-directory: ${{ github.workspace }}
         env:
@@ -118,20 +131,21 @@ jobs:
         id: check_sonar
         run: |
           if [[ -n "${{ secrets.SONAR_TOKEN }}" ]]; then
-            echo "sonar_enabled=true" >> $GITHUB_OUTPUT
-            echo "::notice title=SonarCloud::SONAR_TOKEN configured - running SonarCloud analysis"
+            echo "has_token=true" >> $GITHUB_OUTPUT
           else
-            echo "sonar_enabled=false" >> $GITHUB_OUTPUT
-            echo "::notice title=SonarCloud::SONAR_TOKEN not configured - skipping SonarCloud analysis"
-            echo "To enable SonarCloud analysis, configure SONAR_TOKEN as a repository secret"
+            echo "has_token=false" >> $GITHUB_OUTPUT
           fi
-
+          
       - name: SonarCloud Scan
-        if: steps.check_sonar.outputs.sonar_enabled == 'true'
+        if: steps.check_sonar.outputs.has_token == 'true'
         uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9 # v7.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      
+      - name: Skip SonarCloud (no token configured)
+        if: steps.check_sonar.outputs.has_token == 'false'
+        run: echo "::notice title=SonarCloud::SONAR_TOKEN not configured - skipping SonarCloud analysis. To enable, configure SONAR_TOKEN as a repository secret."
           
   mkdocs-deploy:
     name: "MkDocs Build and Deploy"
@@ -142,12 +156,12 @@ jobs:
     steps:
       # Always check out the main branch, never gh-pages
       - name: Checkout main branch
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
         with:
           ref: main
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v6.1.0
+        uses: actions/setup-python@v6.2.0
         with:
           python-version: '3.x'
       - name: Install MkDocs, Material theme, and plugins

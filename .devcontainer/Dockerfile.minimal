@@ -1,0 +1,52 @@
+# Minimal multi-platform Dockerfile for Terraform development
+# Uses a smaller base image and focuses on essentials only
+ARG UBUNTU_VERSION=noble
+FROM ubuntu:${UBUNTU_VERSION}
+
+# Install minimal base dependencies
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    curl \
+    wget \
+    git \
+    unzip \
+    build-essential \
+    sudo \
+    locales \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configure locale
+RUN locale-gen en_US.UTF-8 && \
+    update-locale LANG=en_US.UTF-8
+ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
+
+# Install Go
+ARG GO_VERSION=1.25.0
+RUN curl -fsSL https://go.dev/dl/go${GO_VERSION}.linux-$(dpkg --print-architecture).tar.gz | \
+    tar -xzf - -C /usr/local
+ENV PATH="/usr/local/go/bin:${PATH}"
+
+# Install Terraform
+ARG TERRAFORM_VERSION=1.5.7
+RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_$(dpkg --print-architecture).zip -o /tmp/terraform.zip && \
+    unzip /tmp/terraform.zip -d /usr/local/bin && rm /tmp/terraform.zip
+
+# Install Python 3
+RUN apt-get update && apt-get install -y \
+    python3 python3-pip python3-venv && \
+    rm -rf /var/lib/apt/lists*
+
+# Install Ruby
+RUN apt-get update && apt-get install -y \
+    ruby ruby-dev bundler && \
+    rm -rf /var/lib/apt/lists*
+
+# Create non-root user
+RUN useradd -m -s /bin/bash vscode && \
+    usermod -aG sudo vscode && \
+    echo "vscode ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/vscode && \
+    chmod 0440 /etc/sudoers.d/vscode
+
+WORKDIR /workspace
+USER vscode
+ENTRYPOINT ["/bin/bash"]

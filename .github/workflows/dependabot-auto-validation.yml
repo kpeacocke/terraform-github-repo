@@ -91,21 +91,21 @@ jobs:
     permissions:
       contents: read
     env:
-      GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TF_VAR_owner: ${{ github.repository_owner }}
       TF_VAR_name: ${{ github.event.repository.name }}
-      TF_VAR_github_token: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+      TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
       TF_VAR_github_owner: ${{ github.repository_owner }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
         with:
-          token: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
         with:
           terraform_version: "latest"
 
@@ -138,14 +138,14 @@ jobs:
     env:
       GITHUB_OWNER: ${{ github.repository_owner }}
       TF_VAR_visibility: private
-      GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
 
       - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
 
       - name: Install tofu
         run: |
@@ -153,7 +153,7 @@ jobs:
           echo "$HOME/.opentofu/bin" >> $GITHUB_PATH
 
       - name: Setup Go
-        uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v5
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v5
         with:
           go-version: '1.24.1'
           cache: true
@@ -163,24 +163,25 @@ jobs:
         working-directory: ${{ github.workspace }}
 
 
-      - name: Run Go tests
+      - name: Run Go tests (excluding E2E)
         run: |
           export GO111MODULE=on
           go mod tidy
-          go test -v -timeout 10m ./test
+          # Run only template rendering tests that don't create real GitHub repos
+          go test -v -timeout 10m -run "TestPrintWorkingDirectory|TestRenderDependabotTemplate|TestRenderCodeQLTemplate|TestRenderCIEnforcementTemplate|TestMissingOwnersVariableError" ./test
         working-directory: ${{ github.workspace }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-
-      - name: Run Go tests with race detection
+      - name: Run Go tests with race detection (excluding E2E)
         run: |
           export GO111MODULE=on
           go mod tidy
-          go test -race -v -timeout 15m ./test
+          # Run only template rendering tests that don't create real GitHub repos
+          go test -race -v -timeout 15m -run "TestPrintWorkingDirectory|TestRenderDependabotTemplate|TestRenderCodeQLTemplate|TestRenderCIEnforcementTemplate|TestMissingOwnersVariableError" ./test
         working-directory: ${{ github.workspace }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Security scanning using reusable workflow
   security-scan:
@@ -207,14 +208,14 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
         with:
-          token: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: Setup Python
-        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -227,7 +228,7 @@ jobs:
         run: |
           mkdocs build --strict
         env:
-          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GIT_COMMITTERS_TOKEN }}
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate terraform-docs (update README if needed)
         uses: terraform-docs/gh-actions@6de6da0cefcc6b4b7a5cbea4d79d97060733093c # v1
