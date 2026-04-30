@@ -25,11 +25,8 @@ on:
     types: [published]
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
-  pull-requests: write
+# Default to no permissions; each job defines what it needs explicitly
+permissions: {}
 
 concurrency:
   group: "pages-${{ github.ref }}"

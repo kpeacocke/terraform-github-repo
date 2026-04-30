@@ -4,9 +4,8 @@ name: Build
 # validates Terraform code, and performs security scanning.
 # Key actions: Go setup, test coverage analysis, SonarCloud scanning, Terraform validation
 
-# Minimal permissions for security hardening
-permissions:
-  contents: read
+# Default to no permissions; each job defines what it needs explicitly
+permissions: {}
 
 on:
   push:
@@ -184,6 +183,8 @@ jobs:
     needs: [terraform-validation, security-scan, sonarcloud]
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Generate Build Summary
         run: |

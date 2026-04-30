@@ -14,11 +14,8 @@ on:
       - 'policy/**'
   workflow_dispatch:
 
-# Least-privilege permissions for the entire workflow
-permissions:
-  contents: read          # Read repository contents
-  security-events: write  # Upload SARIF security results
-  actions: read          # Read workflow information
+# Default to no permissions; each job defines what it needs explicitly
+permissions: {}
 
 jobs:
   # Using reusable workflow for Terraform validation
