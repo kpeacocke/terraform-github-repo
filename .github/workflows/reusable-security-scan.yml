@@ -66,9 +66,9 @@ jobs:
         run: |
           echo "🔍 Starting Trivy security scan (severity: ${{ inputs.severity }})..."
           if [ "${{ inputs.target_type }}" = "image" ]; then
-            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
+            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${{ inputs.format }}" --output "trivy-results.${{ inputs.format }}" --severity "${{ inputs.severity }}" --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
           else
-            trivy ${{ inputs.target_type }} --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output trivy-results.${{ inputs.format }} --severity ${{ inputs.severity }} --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
+            trivy "${{ inputs.target_type }}" --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${{ inputs.format }}" --output "trivy-results.${{ inputs.format }}" --severity "${{ inputs.severity }}" --exit-code 0 --ignore-unfixed "${{ inputs.working_directory }}"
           fi
           echo ""
           echo "--- Trivy Findings (Top 100) ---"
@@ -81,9 +81,9 @@ jobs:
           echo ""
           # Now rerun with exit code 1 for CI fail if there are findings
           if [ "${{ inputs.target_type }}" = "image" ]; then
-            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output /dev/null --severity ${{ inputs.severity }} --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
+            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${{ inputs.format }}" --output /dev/null --severity "${{ inputs.severity }}" --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
           else
-            trivy ${{ inputs.target_type }} --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format ${{ inputs.format }} --output /dev/null --severity ${{ inputs.severity }} --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
+            trivy "${{ inputs.target_type }}" --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${{ inputs.format }}" --output /dev/null --severity "${{ inputs.severity }}" --exit-code 1 --ignore-unfixed "${{ inputs.working_directory }}"
           fi
       
       - name: Upload Trivy scan results to GitHub Security tab

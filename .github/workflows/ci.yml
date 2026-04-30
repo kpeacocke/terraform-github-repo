@@ -18,7 +18,6 @@ on:
 permissions:
   contents: read          # Read repository contents
   security-events: write  # Upload SARIF security results
-  pull-requests: write    # Comment on PRs and auto-commit
   actions: read          # Read workflow information
 
 jobs:
