@@ -193,7 +193,7 @@ See the [examples](./examples) directory for complete usage scenarios.
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_github"></a> [github](#requirement\_github) | ~> 6.6 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.2 |
@@ -201,9 +201,9 @@ See the [examples](./examples) directory for complete usage scenarios.
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
-| <a name="provider_github"></a> [github](#provider\_github) | 6.6.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.2.4 |
+|------|---------|
+| <a name="provider_github"></a> [github](#provider\_github) | ~> 6.6 |
+| <a name="provider_null"></a> [null](#provider\_null) | ~> 3.2 |
 
 ## Modules
 
@@ -212,7 +212,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [github_actions_repository_permissions.repo_perms](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_repository_permissions) | resource |
 | [github_branch_protection.release](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection) | resource |
 | [github_repository.this](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository) | resource |
@@ -245,7 +245,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_allow_auto_merge"></a> [allow\_auto\_merge](#input\_allow\_auto\_merge) | Allow auto-merge for pull requests (including Dependabot). | `bool` | `true` | no |
 | <a name="input_bootstrap_with_templates"></a> [bootstrap\_with\_templates](#input\_bootstrap\_with\_templates) | If true, initialize the repo with standard files like README.md, LICENSE, SECURITY.md. | `bool` | `true` | no |
 | <a name="input_branch"></a> [branch](#input\_branch) | The branch to commit files to. | `string` | `"main"` | no |
@@ -292,7 +292,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_branch_protection_enforcement"></a> [branch\_protection\_enforcement](#output\_branch\_protection\_enforcement) | Map of branch patterns to admin enforcement status. |
 | <a name="output_branch_protection_patterns"></a> [branch\_protection\_patterns](#output\_branch\_protection\_patterns) | List of protected branch patterns and their status. |
 | <a name="output_branch_protection_rule_ids"></a> [branch\_protection\_rule\_ids](#output\_branch\_protection\_rule\_ids) | List of branch protection rule resource IDs for each release branch. |
