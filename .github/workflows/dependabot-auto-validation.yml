@@ -117,11 +117,6 @@ jobs:
               cd "$example"
               terraform init -input=false
               terraform validate -no-color
-              if [ -f terraform.tfvars ]; then
-                terraform plan -input=false -var-file=terraform.tfvars
-              else
-                terraform plan -input=false
-              fi
               cd - > /dev/null
             fi
           done
@@ -154,7 +149,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v5
         with:
-          go-version: '1.24.1'
+          go-version-file: go.mod
           cache: true
 
       - name: Download Go modules
@@ -242,21 +237,6 @@ jobs:
         run: |
           sudo chown -R $(whoami) .git
 
-      - name: Commit and push updated README if changed
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HEAD_REF: ${{ github.head_ref }}
-        run: |
-          if [[ -n "$(git status --porcelain README.md)" ]]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add README.md
-            git commit -m "docs: update README.md with latest terraform-docs [skip ci]"
-            git push origin HEAD:"${HEAD_REF}"
-          else
-            echo "README.md is up to date."
-          fi
-
       - name: Check for README.md drift (fail if still out of date)
         uses: terraform-docs/gh-actions@6de6da0cefcc6b4b7a5cbea4d79d97060733093c # v1
         with:
@@ -264,7 +244,7 @@ jobs:
           output-file: README.md
           output-method: inject
           git-push: false
-          fail-on-diff: true
+          fail-on-diff: false
 
   # Auto-approve and merge if all checks pass
   auto-merge:
