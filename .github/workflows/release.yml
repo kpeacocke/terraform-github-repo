@@ -434,6 +434,8 @@ jobs:
         working-directory: ${{ github.workspace }}
 
       - name: Validate MkDocs setup
+        env:
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Validating MkDocs setup..."
           python3 ./scripts/validate_mkdocs.py || {
