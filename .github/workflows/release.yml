@@ -339,7 +339,9 @@ jobs:
 
       - name: Apply Python SSL fixes
         run: |
-          source ./scripts/fix-python-ssl.sh
+          echo "PYTHONHTTPSVERIFY=0" >> $GITHUB_ENV
+          echo "REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt" >> $GITHUB_ENV
+          echo "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt" >> $GITHUB_ENV
 
       - name: Fix Mike alias conflicts
         run: |

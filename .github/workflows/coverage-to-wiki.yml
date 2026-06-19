@@ -24,6 +24,11 @@ jobs:
         with:
           go-version-file: go.mod
 
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
+        with:
+          terraform_version: latest
+
       - name: Generate coverage report and badge
         run: |
           # Ensure we're in the right directory and Go modules are available
