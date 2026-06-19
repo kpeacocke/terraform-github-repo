@@ -60,7 +60,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * update terraform-docs [skip ci] ([30f849a](https://github.com/kpeacocke/terraform-github-repo/commit/30f849ad94cca0a102a30444819064df4c310413))
 * update terraform-docs [skip ci] ([f5f4ff3](https://github.com/kpeacocke/terraform-github-repo/commit/f5f4ff35e3fb608035d78bd5e4a8fb2832a42c9f))
 
-
 Generating notes for 1.15.0
 
 # Changelog
