@@ -7,6 +7,70 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdownlint-disable MD024 -->
 
+## [1.15.0](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.12...v1.15.0) (2026-06-19)
+
+### 🚀 Features
+
+* suppress Trivy download progress bars and cache vulnerability DB ([#505](https://github.com/kpeacocke/terraform-github-repo/issues/505)) ([6fd6c57](https://github.com/kpeacocke/terraform-github-repo/commit/6fd6c57b984f5ef264d4d4ed109854d0b7e029d6))
+
+### 🐛 Bug Fixes
+
+* add coverage report files to .gitignore ([07b69c1](https://github.com/kpeacocke/terraform-github-repo/commit/07b69c1e354a21f1ebc505aa9294284dd3fb40cb))
+* correct SonarCloud conditional syntax in build workflow ([10ab696](https://github.com/kpeacocke/terraform-github-repo/commit/10ab696f8efc454cc4c2a8dffc699d68945241e5))
+* format go.mod for improved readability and consistency ([d6111d6](https://github.com/kpeacocke/terraform-github-repo/commit/d6111d6fa6d8fa3bad7c2e6e542990602952e493))
+* Remove invalid trivy-flags input and pin pip dependencies ([7ed494a](https://github.com/kpeacocke/terraform-github-repo/commit/7ed494ae2a35447532ec1b0a8c17ac2cd7df0afb))
+* resolve workflow authentication and version issues ([c83f43b](https://github.com/kpeacocke/terraform-github-repo/commit/c83f43ba41fa0bfef0b8058a9aadd1b6ea1ff8f4))
+* resolve workflow failures and suppress test repo notifications ([2fb5908](https://github.com/kpeacocke/terraform-github-repo/commit/2fb59080a1a057fa8b89e97d150ca760dbeb815f))
+* use explicit test selection instead of skip to avoid unintended test execution ([81bfadc](https://github.com/kpeacocke/terraform-github-repo/commit/81bfadc49c5dca7b6702afc6f26be215554fcd32))
+
+### 📚 Documentation
+
+* **deps:** bump markupsafe from 3.0.2 to 3.0.3 in /docs ([#354](https://github.com/kpeacocke/terraform-github-repo/issues/354)) ([b2ec134](https://github.com/kpeacocke/terraform-github-repo/commit/b2ec1346313cf57ead3ea7e8f04b474eacf22f52))
+* **deps:** bump mike from 2.0.0 to 2.1.3 in /docs ([3ea52e0](https://github.com/kpeacocke/terraform-github-repo/commit/3ea52e0c05e2b4b186285437ffc8d0d739990997))
+* **deps:** bump mike from 2.1.3 to 2.1.4 in /docs ([#498](https://github.com/kpeacocke/terraform-github-repo/issues/498)) ([3f57cda](https://github.com/kpeacocke/terraform-github-repo/commit/3f57cdae8e083909865159a7b40a7d9f25708a6c))
+* **deps:** bump mike from 2.1.4 to 2.2.0 in /docs ([#509](https://github.com/kpeacocke/terraform-github-repo/issues/509)) ([3d0c58c](https://github.com/kpeacocke/terraform-github-repo/commit/3d0c58c16716bbcfb8e65cd7982ffaf9ca1bde4c))
+* **deps:** bump mkdocs-git-committers-plugin-2 in /docs ([9564f2d](https://github.com/kpeacocke/terraform-github-repo/commit/9564f2df1c82065423ac0ed8eaef6d57aa8754f6))
+* **deps:** bump mkdocs-git-revision-date-localized-plugin in /docs ([#387](https://github.com/kpeacocke/terraform-github-repo/issues/387)) ([802cc19](https://github.com/kpeacocke/terraform-github-repo/commit/802cc192fc16df793dd3991bf87a4f36f38a76fe))
+* **deps:** bump mkdocs-git-revision-date-localized-plugin in /docs ([8b43f1e](https://github.com/kpeacocke/terraform-github-repo/commit/8b43f1eb97747d4aff35f4a0037151132712ffb7))
+* **deps:** bump mkdocs-material from 9.6.14 to 9.6.15 in /docs ([87eeb2d](https://github.com/kpeacocke/terraform-github-repo/commit/87eeb2d85fcc8054b642c294f413b8fa01e5dce5))
+* **deps:** bump mkdocs-material from 9.6.15 to 9.6.16 in /docs ([#277](https://github.com/kpeacocke/terraform-github-repo/issues/277)) ([750886a](https://github.com/kpeacocke/terraform-github-repo/commit/750886a6e9d8ee953a8dc53fce3bf871523d9c4b))
+* **deps:** bump mkdocs-material from 9.6.16 to 9.6.18 in /docs ([#296](https://github.com/kpeacocke/terraform-github-repo/issues/296)) ([47c0a19](https://github.com/kpeacocke/terraform-github-repo/commit/47c0a19830624ca4219bd7bf56d0503b10efe002))
+* **deps:** bump mkdocs-material from 9.6.18 to 9.6.19 in /docs ([#323](https://github.com/kpeacocke/terraform-github-repo/issues/323)) ([65bda5f](https://github.com/kpeacocke/terraform-github-repo/commit/65bda5f4b2903d1da77d51e909c5b4d7c6f055e2))
+* **deps:** bump mkdocs-material from 9.6.19 to 9.6.20 in /docs ([a31e2e2](https://github.com/kpeacocke/terraform-github-repo/commit/a31e2e2cde2b008776f958debb5eca9784d6c34e))
+* **deps:** bump mkdocs-material from 9.6.20 to 9.6.21 in /docs ([#353](https://github.com/kpeacocke/terraform-github-repo/issues/353)) ([ce2d992](https://github.com/kpeacocke/terraform-github-repo/commit/ce2d99219b90a6fdba127c029df128b1afd7c4a5))
+* **deps:** bump mkdocs-material from 9.6.21 to 9.6.22 in /docs ([#368](https://github.com/kpeacocke/terraform-github-repo/issues/368)) ([0b91a32](https://github.com/kpeacocke/terraform-github-repo/commit/0b91a32e9e84ebdefdd1a812a978e37bbde6788c))
+* **deps:** bump mkdocs-material from 9.6.22 to 9.6.23 in /docs ([#386](https://github.com/kpeacocke/terraform-github-repo/issues/386)) ([9b378b1](https://github.com/kpeacocke/terraform-github-repo/commit/9b378b1aa52feaf9b2c4136c85bef08b8e2debdd))
+* **deps:** bump mkdocs-material from 9.6.23 to 9.7.0 in /docs ([#395](https://github.com/kpeacocke/terraform-github-repo/issues/395)) ([423ef37](https://github.com/kpeacocke/terraform-github-repo/commit/423ef3762e7e99377dbca4e5f3976f1c96cc05ae))
+* **deps:** bump mkdocs-material from 9.7.0 to 9.7.1 in /docs ([08458f3](https://github.com/kpeacocke/terraform-github-repo/commit/08458f371f3d138a0368afab80a2374055fa25b7))
+* **deps:** bump mkdocs-material from 9.7.1 to 9.7.2 in /docs ([e4d9aed](https://github.com/kpeacocke/terraform-github-repo/commit/e4d9aed5713b5db6c8fb9142e1e52eadfd78a91c))
+* **deps:** bump mkdocs-material from 9.7.2 to 9.7.6 in /docs ([#507](https://github.com/kpeacocke/terraform-github-repo/issues/507)) ([5a64287](https://github.com/kpeacocke/terraform-github-repo/commit/5a6428733af15aa243c6a4d544fd96bf957b4262))
+* **deps:** bump packaging from 25.0 to 26.0 in /docs ([c44639f](https://github.com/kpeacocke/terraform-github-repo/commit/c44639f6cf6141c144e28e9452dfdec95a9d0ef0))
+* **deps:** bump packaging from 26.0 to 26.2 in /docs ([#508](https://github.com/kpeacocke/terraform-github-repo/issues/508)) ([e223d0e](https://github.com/kpeacocke/terraform-github-repo/commit/e223d0ec1dbeb176a37b5222d3f755eec1315bfb))
+* **deps:** bump pymdown-extensions from 10.16 to 10.16.1 in /docs ([#276](https://github.com/kpeacocke/terraform-github-repo/issues/276)) ([12d18e1](https://github.com/kpeacocke/terraform-github-repo/commit/12d18e1a70f918697fd1602967a1290a9f900ba4))
+* **deps:** bump pymdown-extensions from 10.16.1 to 10.17.1 in /docs ([#394](https://github.com/kpeacocke/terraform-github-repo/issues/394)) ([b954645](https://github.com/kpeacocke/terraform-github-repo/commit/b9546453c88d8697b4ea2b721ae524326e51686b))
+* **deps:** bump pymdown-extensions from 10.17.1 to 10.17.2 in /docs ([#410](https://github.com/kpeacocke/terraform-github-repo/issues/410)) ([6384b97](https://github.com/kpeacocke/terraform-github-repo/commit/6384b974bdcd7b28e2c7cde68a3a6a69d847aa03))
+* **deps:** bump pymdown-extensions from 10.17.2 to 10.19 in /docs ([#424](https://github.com/kpeacocke/terraform-github-repo/issues/424)) ([1756248](https://github.com/kpeacocke/terraform-github-repo/commit/175624800c9a95df3f170ebede7d8769757d9623))
+* **deps:** bump pymdown-extensions from 10.19 to 10.19.1 in /docs ([#429](https://github.com/kpeacocke/terraform-github-repo/issues/429)) ([39ebc71](https://github.com/kpeacocke/terraform-github-repo/commit/39ebc71c48fa35a92b0326a5782ddfa164a8fc4b))
+* **deps:** bump pymdown-extensions from 10.19.1 to 10.20.1 in /docs ([bc02ee6](https://github.com/kpeacocke/terraform-github-repo/commit/bc02ee629d5225346aa8c9285c968e842671c39c))
+* **deps:** bump pymdown-extensions from 10.20.1 to 10.21 in /docs ([#486](https://github.com/kpeacocke/terraform-github-repo/issues/486)) ([c53c44a](https://github.com/kpeacocke/terraform-github-repo/commit/c53c44a6e732f6a19f7c26ee485867f4760dcd24))
+* **deps:** bump pyyaml from 6.0.2 to 6.0.3 in /docs ([e0c7330](https://github.com/kpeacocke/terraform-github-repo/commit/e0c7330ba4ba17e3db9cd53b8ef926baa07b18a2))
+* update changelog for v1.14.12 ([5c79bf6](https://github.com/kpeacocke/terraform-github-repo/commit/5c79bf690c17e4ed2a173c07e3e71dad8c65c8e1))
+* update README.md with latest terraform-docs [skip ci] ([89c22d3](https://github.com/kpeacocke/terraform-github-repo/commit/89c22d303cfd149ef6e478a197cf8f08ef6e8b14))
+* update terraform-docs [skip ci] ([7f31abc](https://github.com/kpeacocke/terraform-github-repo/commit/7f31abc0b3b99c5faaefbe3c46498631d8094085))
+* update terraform-docs [skip ci] ([30f849a](https://github.com/kpeacocke/terraform-github-repo/commit/30f849ad94cca0a102a30444819064df4c310413))
+* update terraform-docs [skip ci] ([f5f4ff3](https://github.com/kpeacocke/terraform-github-repo/commit/f5f4ff35e3fb608035d78bd5e4a8fb2832a42c9f))
+
+Generating notes for 1.15.0
+
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+<!-- markdownlint-disable MD024 -->
+
 ## [1.14.12](https://github.com/kpeacocke/terraform-github-repo/compare/v1.14.11...v1.14.12) (2025-07-17)
 
 ### 🐛 Bug Fixes
