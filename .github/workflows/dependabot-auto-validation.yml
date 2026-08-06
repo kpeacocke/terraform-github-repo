@@ -52,7 +52,7 @@ jobs:
       contents: read
       security-events: write
     with:
-      terraform_version: "1.6.0"
+      terraform_version: "1.6.6"
       working_directory: "."
     secrets:
       token: ${{ github.token }}
@@ -301,5 +301,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '❌ **Dependabot PR Validation Failed**\n\nOne or more validation checks failed. Please review the failed checks and fix any issues before merging.\n\n- Terraform Validation 1.5.0: ${{ needs.terraform-validation-1-5.result }}\n- Terraform Validation 1.6.0: ${{ needs.terraform-validation-1-6.result }}\n- Terraform Validation 1.7.0: ${{ needs.terraform-validation-1-7.result }}\n- Terraform Validation Latest: ${{ needs.terraform-validation-latest.result }}\n- Example Validation: ${{ needs.validate-examples.result }}\n- Go Tests: ${{ needs.go-tests.result }}\n- Security Scan: ${{ needs.security-scan.result }}\n- Documentation: ${{ needs.docs-validation.result }}'
+              body: '❌ **Dependabot PR Validation Failed**\n\nOne or more validation checks failed. Please review the failed checks and fix any issues before merging.\n\n- Terraform Validation 1.5.0: ${{ needs.terraform-validation-1-5.result }}\n- Terraform Validation 1.6.6: ${{ needs.terraform-validation-1-6.result }}\n- Terraform Validation 1.7.0: ${{ needs.terraform-validation-1-7.result }}\n- Terraform Validation Latest: ${{ needs.terraform-validation-latest.result }}\n- Example Validation: ${{ needs.validate-examples.result }}\n- Go Tests: ${{ needs.go-tests.result }}\n- Security Scan: ${{ needs.security-scan.result }}\n- Documentation: ${{ needs.docs-validation.result }}'
             })
