@@ -34,7 +34,12 @@ concurrency:
 
 jobs:
   update-terraform-docs:
-    if: github.event_name == 'pull_request'
+    # Dependabot-triggered pull_request events receive a read-only GITHUB_TOKEN with no
+    # access to secrets, so git-push would fail. Skip this job for Dependabot PRs;
+    # dependabot-auto-validation.yml handles docs validation for those PRs instead.
+    # Check the PR author (not github.actor) so this also skips correctly when a
+    # non-dependabot actor triggers the event (e.g. via the "update branch" API).
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
     uses: ./.github/workflows/reusable-terraform-docs.yml
     permissions:
       contents: write
@@ -79,7 +84,9 @@ jobs:
 
       - name: Install MkDocs dependencies
         run: |
-          pip install --only-binary :all: -r docs/requirements.txt
+          # jsmin and csscompressor (transitive deps of mkdocs-minify-plugin) only ship a
+          # source distribution on PyPI, so they must be excluded from --only-binary.
+          pip install --only-binary :all: --no-binary jsmin,csscompressor -r docs/requirements.txt
 
       - name: Apply Python SSL fixes
         run: |
@@ -417,7 +424,7 @@ jobs:
           GIT_COMMITTER_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v3
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v3
         with:
           path: site
 
@@ -436,4 +443,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
