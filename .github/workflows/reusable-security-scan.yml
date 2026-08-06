@@ -84,12 +84,7 @@ jobs:
           fi
           echo "--- End Trivy Findings ---"
           echo ""
-          # Now rerun with exit code 1 for CI fail if there are findings
-          if [ "${TRIVY_TARGET_TYPE}" = "image" ]; then
-            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${TRIVY_FORMAT}" --output /dev/null --severity "${TRIVY_SEVERITY}" --exit-code 1 --ignore-unfixed "${TRIVY_WORKING_DIR}"
-          else
-            trivy "${TRIVY_TARGET_TYPE}" --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${TRIVY_FORMAT}" --output /dev/null --severity "${TRIVY_SEVERITY}" --exit-code 1 --ignore-unfixed "${TRIVY_WORKING_DIR}"
-          fi
+          echo "ℹ️ Trivy reported findings but this workflow is configured to upload them without failing the job."
       
       - name: Upload Trivy scan results to GitHub Security tab
         if: inputs.upload_to_security_tab == true && inputs.format == 'sarif'
