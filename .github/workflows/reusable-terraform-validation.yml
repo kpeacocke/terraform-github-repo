@@ -57,7 +57,7 @@ jobs:
       
       - name: Terraform Init
         id: init
-        run: terraform init -no-color ${{ inputs.backend == false && '-backend=false' || '' }}
+        run: terraform init -no-color -input=false -lockfile=readonly -upgrade=false ${{ inputs.backend == false && '-backend=false' || '' }}
       
       - name: Terraform Validate
         id: validate
