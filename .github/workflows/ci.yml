@@ -33,13 +33,13 @@ jobs:
       token: ${{ github.token }}
 
   terraform-validation-1-6:
-    name: "Terraform Validation (1.6.0)"
+    name: "Terraform Validation (1.6.6)"
     uses: ./.github/workflows/reusable-terraform-validation.yml
     permissions:
       contents: read
       security-events: write
     with:
-      terraform_version: "1.6.0"
+      terraform_version: "1.6.6"
       working_directory: "."
       backend: false
     secrets:
@@ -59,7 +59,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
         with:
-          terraform_version: "1.6.0"
+          terraform_version: "1.6.6"
       
       - name: Terraform init
         run: terraform init -input=false -upgrade=false -backend=false
@@ -182,8 +182,8 @@ jobs:
 
       - name: Install Terraform
         run: |
-          wget https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_linux_amd64.zip
-          unzip terraform_1.6.0_linux_amd64.zip
+          wget https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip
+          unzip terraform_1.6.6_linux_amd64.zip
           sudo mv terraform /usr/local/bin/
           terraform version
 
@@ -209,7 +209,7 @@ jobs:
           echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
           echo "| --- | ------ |" >> $GITHUB_STEP_SUMMARY
           echo "| Terraform Validation (1.5.0) | ${{ needs.terraform-validation-1-5.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Terraform Validation (1.6.0) | ${{ needs.terraform-validation-1-6.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Terraform Validation (1.6.6) | ${{ needs.terraform-validation-1-6.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Additional Terraform Checks | ${{ needs.terraform-additional-checks.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Security Scanning | ${{ needs.security-scan.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Terraform Docs | ${{ needs.terraform-docs.result }} |" >> $GITHUB_STEP_SUMMARY
