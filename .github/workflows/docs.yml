@@ -34,7 +34,10 @@ concurrency:
 
 jobs:
   update-terraform-docs:
-    if: github.event_name == 'pull_request'
+    # Dependabot-triggered pull_request events receive a read-only GITHUB_TOKEN with no
+    # access to secrets, so git-push would fail. Skip this job for Dependabot PRs;
+    # dependabot-auto-validation.yml handles docs validation for those PRs instead.
+    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
     uses: ./.github/workflows/reusable-terraform-docs.yml
     permissions:
       contents: write
@@ -79,7 +82,9 @@ jobs:
 
       - name: Install MkDocs dependencies
         run: |
-          pip install --only-binary :all: -r docs/requirements.txt
+          # jsmin and csscompressor (transitive deps of mkdocs-minify-plugin) only ship a
+          # source distribution on PyPI, so they must be excluded from --only-binary.
+          pip install --only-binary :all: --no-binary jsmin,csscompressor -r docs/requirements.txt
 
       - name: Apply Python SSL fixes
         run: |

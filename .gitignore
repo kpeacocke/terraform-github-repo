@@ -2,7 +2,7 @@
 *.tfstate
 *.tfstate.*
 .terraform/
-.terraform.lock.hcl
+# .terraform.lock.hcl is intentionally tracked to pin provider versions for CI
 crash.log
 *.backup
 *.tfvars
