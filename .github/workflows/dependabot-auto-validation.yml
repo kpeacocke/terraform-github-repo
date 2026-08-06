@@ -115,7 +115,7 @@ jobs:
             if [ -d "$example" ]; then
               echo "Validating example: $example"
               cd "$example"
-              terraform init -input=false
+              terraform init -input=false -lockfile=readonly -upgrade=false
               terraform validate -no-color
               cd - > /dev/null
             fi
