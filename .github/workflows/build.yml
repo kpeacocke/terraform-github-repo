@@ -25,7 +25,7 @@ jobs:
     
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
@@ -63,7 +63,7 @@ jobs:
     
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Trivy
         run: |
@@ -93,7 +93,7 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up Go
@@ -148,7 +148,7 @@ jobs:
     steps:
       # Always check out the main branch, never gh-pages
       - name: Checkout main branch
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
         with:
           ref: main
           fetch-depth: 0
