@@ -97,7 +97,7 @@ jobs:
       TF_VAR_github_owner: ${{ github.repository_owner }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
         with:
           token: ${{ github.token }}
           ref: ${{ github.head_ref }}
@@ -136,7 +136,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v4.0.1
@@ -202,7 +202,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
         with:
           token: ${{ github.token }}
           ref: ${{ github.head_ref }}
