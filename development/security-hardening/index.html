@@ -10,7 +10,7 @@
 </span><span id=__span-2-4><a id=__codelineno-2-4 name=__codelineno-2-4 href=#__codelineno-2-4></a><span class=w>    </span><span class=nt>steps</span><span class=p>:</span>
 </span><span id=__span-2-5><a id=__codelineno-2-5 name=__codelineno-2-5 href=#__codelineno-2-5></a><span class=w>      </span><span class=c1># Inherits all permissions</span>
 </span></code></pre></div> <p><strong>After (explicit minimal permissions):</strong></p> <div class="language-yaml highlight"><pre><span></span><code><span id=__span-3-1><a id=__codelineno-3-1 name=__codelineno-3-1 href=#__codelineno-3-1></a><span class=nt>permissions</span><span class=p>:</span>
-</span><span id=__span-3-2><a id=__codelineno-3-2 name=__codelineno-3-2 href=#__codelineno-3-2></a><span class=w>  </span><span class=nt>contents</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">read</span><span class=w>          </span><span class=c1># Only what&#39;s needed</span>
+</span><span id=__span-3-2><a id=__codelineno-3-2 name=__codelineno-3-2 href=#__codelineno-3-2></a><span class=w>  </span><span class=nt>contents</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">read</span><span class=w>          </span><span class=c1># Only what's needed</span>
 </span><span id=__span-3-3><a id=__codelineno-3-3 name=__codelineno-3-3 href=#__codelineno-3-3></a><span class=w>  </span><span class=nt>security-events</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class=w>  </span><span class=c1># For SARIF uploads</span>
 </span><span id=__span-3-4><a id=__codelineno-3-4 name=__codelineno-3-4 href=#__codelineno-3-4></a>
 </span><span id=__span-3-5><a id=__codelineno-3-5 name=__codelineno-3-5 href=#__codelineno-3-5></a><span class=nt>jobs</span><span class=p>:</span>
@@ -86,10 +86,10 @@
 </span></code></pre></div> <ol> <li><strong>Workflow Failure</strong></li> </ol> <div class="language-bash highlight"><pre><span></span><code><span id=__span-15-1><a id=__codelineno-15-1 name=__codelineno-15-1 href=#__codelineno-15-1></a><span class=c1># Restore from backup</span>
 </span><span id=__span-15-2><a id=__codelineno-15-2 name=__codelineno-15-2 href=#__codelineno-15-2></a>./scripts/security-hardening.sh<span class=w> </span>restore
 </span></code></pre></div> <h3 id=validation-commands>Validation Commands<a class=headerlink href=#validation-commands title="Permanent link">&para;</a></h3> <div class="language-bash highlight"><pre><span></span><code><span id=__span-16-1><a id=__codelineno-16-1 name=__codelineno-16-1 href=#__codelineno-16-1></a><span class=c1># Check for unpinned actions</span>
-</span><span id=__span-16-2><a id=__codelineno-16-2 name=__codelineno-16-2 href=#__codelineno-16-2></a>grep<span class=w> </span>-r<span class=w> </span><span class=s2>&quot;uses:.*@v[0-9]&quot;</span><span class=w> </span>.github/workflows/
+</span><span id=__span-16-2><a id=__codelineno-16-2 name=__codelineno-16-2 href=#__codelineno-16-2></a>grep<span class=w> </span>-r<span class=w> </span><span class=s2>"uses:.*@v[0-9]"</span><span class=w> </span>.github/workflows/
 </span><span id=__span-16-3><a id=__codelineno-16-3 name=__codelineno-16-3 href=#__codelineno-16-3></a>
 </span><span id=__span-16-4><a id=__codelineno-16-4 name=__codelineno-16-4 href=#__codelineno-16-4></a><span class=c1># Check for missing permissions</span>
-</span><span id=__span-16-5><a id=__codelineno-16-5 name=__codelineno-16-5 href=#__codelineno-16-5></a>grep<span class=w> </span>-L<span class=w> </span><span class=s2>&quot;permissions:&quot;</span><span class=w> </span>.github/workflows/*.yml
+</span><span id=__span-16-5><a id=__codelineno-16-5 name=__codelineno-16-5 href=#__codelineno-16-5></a>grep<span class=w> </span>-L<span class=w> </span><span class=s2>"permissions:"</span><span class=w> </span>.github/workflows/*.yml
 </span><span id=__span-16-6><a id=__codelineno-16-6 name=__codelineno-16-6 href=#__codelineno-16-6></a>
 </span><span id=__span-16-7><a id=__codelineno-16-7 name=__codelineno-16-7 href=#__codelineno-16-7></a><span class=c1># Validate YAML syntax</span>
 </span><span id=__span-16-8><a id=__codelineno-16-8 name=__codelineno-16-8 href=#__codelineno-16-8></a>yamllint<span class=w> </span>.github/workflows/
