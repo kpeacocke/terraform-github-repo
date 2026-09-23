@@ -29,7 +29,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-safetemp v1.0.0 // indirect
 	github.com/hashicorp/go-version v1.9.0 // indirect
-	github.com/hashicorp/hcl/v2 v2.24.0 // indirect
+	github.com/hashicorp/hcl/v2 v2.25.0 // indirect
 	github.com/hashicorp/terraform-json v0.28.0 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/jinzhu/copier v0.4.0 // indirect
