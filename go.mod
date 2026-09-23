@@ -31,7 +31,7 @@ require (
 	github.com/hashicorp/go-version v1.9.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.24.0 // indirect
 	github.com/hashicorp/terraform-json v0.28.0 // indirect
-	github.com/huandu/xstrings v1.5.0 // indirect
+	github.com/huandu/xstrings v1.6.0 // indirect
 	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/klauspost/compress v1.20.0 // indirect
 	github.com/mattn/go-zglob v0.0.6 // indirect
