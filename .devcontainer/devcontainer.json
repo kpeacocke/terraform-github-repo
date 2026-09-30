@@ -12,13 +12,12 @@
     },
     "ghcr.io/devcontainers/features/ruby:1": {
       "version": "3.3"
+    },
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "version": "1.5.7"
     }
   },
   "remoteUser": "vscode",
-  "mounts": [
-    "source=${localEnv:USERPROFILE}/.aws,target=/home/vscode/.aws,type=bind,readonly",
-    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-  ],
   "customizations": {
     "vscode": {
       "extensions": [
