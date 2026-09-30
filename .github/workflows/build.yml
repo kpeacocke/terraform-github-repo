@@ -25,10 +25,10 @@ jobs:
     
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_version: "latest"
       
@@ -39,14 +39,14 @@ jobs:
       
       - name: Terraform Init
         id: init
-        run: terraform init -backend=false
+        run: terraform init -input=false -upgrade=false -backend=false
       
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
       
       - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v6.2.2
+        uses: terraform-linters/setup-tflint@v6.3.1
         with:
           tflint_version: latest
       
@@ -63,7 +63,7 @@ jobs:
     
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Trivy
         run: |
@@ -80,7 +80,7 @@ jobs:
             --severity MEDIUM,HIGH,CRITICAL --exit-code 0 --ignore-unfixed .
       
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@e46ed2cbd01164d986452f91f178727624ae40d7 # v4.35.3
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         continue-on-error: true
         with:
           sarif_file: 'trivy-results.sarif'
@@ -93,17 +93,17 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Set up Go
-        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v5
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v5
         with:
           go-version-file: go.mod
           cache: true
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_version: latest
       
@@ -116,7 +116,7 @@ jobs:
           go tool cover -func=coverage.out > coverage.txt
         working-directory: ${{ github.workspace }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
           
       - name: Check SonarCloud Configuration
         id: check_sonar
@@ -129,10 +129,10 @@ jobs:
           
       - name: SonarCloud Scan
         if: steps.check_sonar.outputs.has_token == 'true' && github.event_name == 'push'
-        uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9 # v7.0.0
+        uses: SonarSource/sonarqube-scan-action@ba9859eae8dd6bd29e412f25ddbbef3d032000f4 # v8.2.2
         continue-on-error: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ github.token }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       
       - name: Skip SonarCloud (no token configured)
@@ -148,12 +148,12 @@ jobs:
     steps:
       # Always check out the main branch, never gh-pages
       - name: Checkout main branch
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
         with:
           ref: main
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v6.2.0
+        uses: actions/setup-python@v7.0.0
         with:
           python-version: '3.11'
       - name: Install MkDocs, Material theme, and plugins
@@ -161,13 +161,14 @@ jobs:
           pip install -r docs/requirements.txt
       - name: Build documentation
         env:
-          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ secrets.GITHUB_TOKEN }}
+          MKDOCS_GIT_COMMITTERS_ENABLED: "true"
+          MKDOCS_GIT_COMMITTERS_APIKEY: ${{ github.token }}
         run: |
           mkdocs build --strict
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ github.token }}
           publish_dir: ./site
           publish_branch: gh-pages
           

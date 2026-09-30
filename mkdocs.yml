@@ -70,8 +70,10 @@ plugins:
       enable_creation_date: true
       type: timeago
   - git-committers:
+      enabled: !ENV [MKDOCS_GIT_COMMITTERS_ENABLED, false]
       repository: kpeacocke/terraform-github-repo
       branch: main
+      token: !ENV [MKDOCS_GIT_COMMITTERS_APIKEY, '']
 
 # Customization
 extra:

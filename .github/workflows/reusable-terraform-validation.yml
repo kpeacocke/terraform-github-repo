@@ -43,10 +43,10 @@ jobs:
     
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4.0.0
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
           terraform_version: ${{ inputs.terraform_version }}
       
@@ -57,14 +57,14 @@ jobs:
       
       - name: Terraform Init
         id: init
-        run: terraform init -no-color ${{ inputs.backend == false && '-backend=false' || '' }}
+        run: terraform init -no-color -input=false -upgrade=false ${{ inputs.backend == false && '-backend=false' || '' }}
       
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
       
       - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v6.2.2
+        uses: terraform-linters/setup-tflint@v6.3.0
         with:
           tflint_version: latest
       

@@ -286,11 +286,11 @@ GEM
       logging (>= 1.6.1, < 3.0)
       rubyzip (~> 2.0)
     coderay (1.1.3)
-    concurrent-ruby (1.3.6)
+    concurrent-ruby (1.3.7)
     connection_pool (3.0.2)
     cookstyle (8.5.3)
       rubocop (= 1.81.7)
-    csv (3.3.5)
+    csv (3.3.6)
     date (3.5.1)
     declarative (0.0.20)
     delegate (0.3.1)
@@ -343,8 +343,9 @@ GEM
     ed25519 (1.4.0)
     erb (6.0.1.1)
     erubi (1.13.1)
-    excon (0.112.0)
-    faraday (1.10.5)
+    excon (1.5.0)
+      logger
+    faraday (1.10.6)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
@@ -371,7 +372,7 @@ GEM
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
-    faraday-retry (1.0.3)
+    faraday-retry (1.0.4)
     faraday_middleware (1.2.1)
       faraday (~> 1.0)
     ffi (1.16.3)
@@ -463,17 +464,17 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     jmespath (1.6.2)
-    json (2.19.9)
+    json (2.21.2)
     jsonpath (1.1.5)
       multi_json
     jwt (2.10.3)
       base64
-    k8s-ruby (0.17.2)
+    k8s-ruby (0.18.0)
       base64
       dry-configurable
       dry-struct
       dry-types
-      excon (~> 0.71)
+      excon (~> 1.5)
       hashdiff (~> 1.0)
       jsonpath (~> 1.1)
       recursive-open-struct (~> 1.1, >= 1.1.3)

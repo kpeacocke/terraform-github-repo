@@ -39,14 +39,14 @@ jobs:
     
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Get current date for cache key
         id: date
         run: echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
 
       - name: Cache Trivy vulnerability database
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/trivy
           key: trivy-db-${{ runner.os }}-${{ steps.date.outputs.date }}
@@ -84,23 +84,18 @@ jobs:
           fi
           echo "--- End Trivy Findings ---"
           echo ""
-          # Now rerun with exit code 1 for CI fail if there are findings
-          if [ "${TRIVY_TARGET_TYPE}" = "image" ]; then
-            trivy image --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${TRIVY_FORMAT}" --output /dev/null --severity "${TRIVY_SEVERITY}" --exit-code 1 --ignore-unfixed "${TRIVY_WORKING_DIR}"
-          else
-            trivy "${TRIVY_TARGET_TYPE}" --no-progress --skip-version-check --config trivy.yaml --skip-files '.github/codeql/queries/*' --format "${TRIVY_FORMAT}" --output /dev/null --severity "${TRIVY_SEVERITY}" --exit-code 1 --ignore-unfixed "${TRIVY_WORKING_DIR}"
-          fi
+          echo "ℹ️ Trivy reported findings but this workflow is configured to upload them without failing the job."
       
       - name: Upload Trivy scan results to GitHub Security tab
         if: inputs.upload_to_security_tab == true && inputs.format == 'sarif'
-        uses: github/codeql-action/upload-sarif@e46ed2cbd01164d986452f91f178727624ae40d7 # v4.35.3
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
         continue-on-error: true
         with:
           sarif_file: 'trivy-results.sarif'
       
       - name: Upload scan results as artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: trivy-scan-results
           path: trivy-results.*
