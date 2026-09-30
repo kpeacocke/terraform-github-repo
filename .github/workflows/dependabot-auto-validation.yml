@@ -270,7 +270,13 @@ jobs:
           github-token: ${{ github.token }}
 
       - name: Enable auto-merge
-        run: gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}"
+        run: |
+          changed_files="$(gh pr diff "${{ github.event.pull_request.html_url }}" --name-only)"
+          if grep -q '^\.github/workflows/' <<< "$changed_files"; then
+            echo "::notice::Workflow changes require a user-authorized merge."
+          else
+            gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}"
+          fi
         env:
           GH_TOKEN: ${{ github.token }}
 
