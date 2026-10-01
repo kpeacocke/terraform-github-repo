@@ -34,42 +34,6 @@
 	  "problemMatcher": []
 	},
 	{
-	  "label": "Kitchen Test - Plan",
-	  "type": "shell",
-	  "command": "bundle exec kitchen test --no-destroy",
-	  "group": { "kind": "test", "isDefault": false },
-	  "presentation": { "reveal": "always" },
-	  "problemMatcher": [],
-	  "detail": "Run Kitchen-Terraform plan tests with InSpec"
-	},
-	{
-	  "label": "Kitchen Verify - Integration Tests",
-	  "type": "shell", 
-	  "command": "bundle exec kitchen verify",
-	  "group": { "kind": "test", "isDefault": false },
-	  "presentation": { "reveal": "always" },
-	  "problemMatcher": [],
-	  "detail": "Run only the InSpec integration tests"
-	},
-	{
-	  "label": "Kitchen Destroy",
-	  "type": "shell",
-	  "command": "bundle exec kitchen destroy",
-	  "group": "test",
-	  "presentation": { "reveal": "always" },
-	  "problemMatcher": [],
-	  "detail": "Clean up Kitchen-Terraform test environment"
-	},
-	{
-	  "label": "Integration Tests (RSpec Wrapper)",
-	  "type": "shell",
-	  "command": "bundle exec rspec spec/integration_spec.rb",
-	  "group": { "kind": "test", "isDefault": false },
-	  "presentation": { "reveal": "always" },
-	  "problemMatcher": [],
-	  "detail": "Run integration tests through RSpec wrapper for test explorer"
-	},
-	{
 	  "label": "CodeQL Database Create",
 	  "type": "shell",
 	  "command": "codeql database create codeql-db --language=go --source-root=.",

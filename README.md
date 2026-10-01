@@ -319,31 +319,11 @@ task test
 
 ## ⚙️ Integration Testing
 
-We use kitchen-terraform with Terragrunt and InSpec to run `terraform plan` in isolation against the root module  
-and verify its JSON output.
-
-Prerequisites:
-
-- Ruby (2.7+)
-- Bundler (`gem install bundler`)
-
-Install dependencies:
+Go integration tests use Terratest to validate Terraform plans and GitHub resources.
+They require `GITHUB_TOKEN` and `GITHUB_OWNER` in the environment.
 
 ```bash
-bundle install
-```
-
-Run tests:
-
-```bash
-bundle exec kitchen test
-```
-
-Or, to run kitchen directly without Bundler:
-
-```bash
-gem install kitchen-terraform inspec
-kitchen test
+go test -v -timeout 5m ./test/...
 ```
 
 ## 📜 License

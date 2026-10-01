@@ -43,11 +43,10 @@ go test -v -tags=integration ./test
 
 ## Running End-to-end Tests
 
-End-to-end tests use Kitchen-Terraform and InSpec:
+The Go tests include end-to-end coverage using real GitHub repositories:
 
 ```bash
-bundle install
-bundle exec kitchen test
+go test -v -timeout 5m ./test/...
 ```
 
 ## Test Coverage
@@ -82,7 +81,6 @@ When adding new features, please include appropriate tests:
   - `test_helpers.go` - Helper functions for tests
   - `*_test.go` - Unit and integration tests
   - `fixtures/` - Test fixtures and template files
-  - `integration/` - Integration test profiles for InSpec
 
 ### Test Best Practices
 

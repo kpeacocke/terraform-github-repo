@@ -22,10 +22,6 @@ go.sum @kpeacocke
 /docs/ @kpeacocke
 *.md @kpeacocke
 
-# Ruby/Kitchen-Terraform testing
-Gemfile @kpeacocke
-Gemfile.lock @kpeacocke
-
 # Python documentation dependencies
 requirements*.txt @kpeacocke
 

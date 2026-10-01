@@ -14,7 +14,7 @@ This directory contains the development container configuration for the Terrafor
 2. Press `F1` and search for "Dev Containers: Reopen in Container"
 3. Wait for the container to build and start (first time may take 5-10 minutes)
 4. Once started, the environment will automatically:
-   - Install all Go, Python, Ruby, and Terraform dependencies
+   - Install Go, Python, and Terraform dependencies
    - Verify all installations
    - Load environment variables from `.env` (if present)
 
@@ -25,7 +25,6 @@ The dev container includes:
 ### Languages & Runtimes
 - **Go** 1.25.0 - For testing with Terratest
 - **Python** 3.x - For documentation and automation scripts
-- **Ruby** - For Kitchen-Terraform and InSpec testing
 - **Node.js** - For additional tooling
 - **Terraform** 1.5.7 - Infrastructure as Code
 
@@ -100,9 +99,6 @@ Once in the container, you can run tasks via VS Code:
 - **Go Test with Long Timeout**: Runs all Go tests
 - **OPA Format**: Formats OPA policy files
 - **OPA Check**: Validates OPA policies
-- **Kitchen Test - Plan**: Runs Kitchen-Terraform plan tests
-- **Kitchen Verify - Integration Tests**: Runs InSpec integration tests
-- **Kitchen Destroy**: Cleans up test infrastructure
 
 Run tasks with `Ctrl+Shift+P` → "Tasks: Run Task"
 
@@ -162,10 +158,6 @@ This dev container is designed for multi-platform support:
 - Check internet connectivity
 - Try: `go clean -modcache` then `go mod download`
 
-### Ruby bundle install fails
-- Ensure Gemfile.lock is in version control
-- Try: `bundle install --local` first, then without `--local`
-
 ### Docker socket not accessible
 - Linux: Add vscode user to docker group: `sudo usermod -aG docker vscode`
 - Docker Desktop: Ensure "Expose daemon on tcp://localhost:2375 without TLS" is disabled
@@ -184,7 +176,6 @@ Edit `devcontainer.json` and add port numbers to `forwardPorts` array.
 ### Modifying Dependencies
 - **Python**: Update `docs/requirements.txt`
 - **Go**: Update `go.mod` and `go.sum`
-- **Ruby**: Update `Gemfile`
 - **System packages**: Modify `RUN apt-get install` in `Dockerfile`
 
 ## Performance Tips

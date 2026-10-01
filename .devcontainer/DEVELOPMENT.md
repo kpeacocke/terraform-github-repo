@@ -79,7 +79,7 @@ task "Go Test Coverage"
 task "OPA Check"
 
 # Run integration tests
-task "Kitchen Verify - Integration Tests"
+task "Go Test with Long Timeout"
 ```
 
 Or use keyboard shortcut: `Ctrl+Shift+P` → "Tasks: Run Task"
@@ -122,19 +122,6 @@ go test -cover ./test/...
 
 # Build binary
 go build -o myapp ./cmd/main.go
-```
-
-### Ruby/Kitchen Testing
-
-```bash
-# List test instances
-bundle exec kitchen list
-
-# Run specific test
-bundle exec kitchen verify
-
-# Destroy test infrastructure
-bundle exec kitchen destroy
 ```
 
 ## Environment Variables
@@ -323,14 +310,6 @@ sudo systemctl restart docker
 go clean -modcache
 go mod download
 go mod verify
-```
-
-### Bundle install hangs
-
-```bash
-# Clear bundle cache
-rm Gemfile.lock
-bundle install --verbose
 ```
 
 ### Python dependencies conflict

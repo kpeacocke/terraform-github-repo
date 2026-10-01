@@ -97,25 +97,6 @@ updates:
       - "ci"
       - "automated"
 
-  # Ruby dependencies for Kitchen-Terraform testing
-  - package-ecosystem: "bundler"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "thursday"
-      time: "09:00"
-      timezone: "America/New_York"
-    open-pull-requests-limit: 3
-    target-branch: "main"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "ruby"
-      - "kitchen-terraform"
-      - "automated"
-
   # Python dependencies for documentation
   - package-ecosystem: "pip"
     directory: "/docs"

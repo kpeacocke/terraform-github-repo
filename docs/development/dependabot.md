@@ -10,7 +10,6 @@ Dependabot is configured to automatically:
 - Update Go dependencies (for Terratest)
 - Update GitHub Actions
 - Update Python dependencies (for documentation)
-- Update Ruby dependencies (for Kitchen-Terraform)
 - Update NPM dependencies (if any)
 
 ## Configuration Files
@@ -23,7 +22,6 @@ The main Dependabot configuration file that defines update schedules and setting
 - **Go modules**: Weekly updates on Wednesdays for test dependencies
 - **GitHub Actions**: Weekly updates on Mondays for CI/CD workflows
 - **Python (pip)**: Weekly updates on Fridays for documentation dependencies
-- **Ruby (bundler)**: Weekly updates on Thursdays for Kitchen-Terraform
 - **NPM**: Weekly updates on Fridays for any Node.js dependencies
 
 ### `.github/workflows/dependabot-auto-validation.yml`

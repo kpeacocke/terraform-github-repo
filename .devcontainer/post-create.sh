@@ -39,12 +39,6 @@ if [ -f "go.mod" ]; then
     fi
 fi
 
-# Install Ruby dependencies
-echo "Installing Ruby dependencies..."
-if [ -f "Gemfile" ]; then
-    bundle install --quiet 2>/dev/null || echo "Warning: Bundle install had issues"
-fi
-
 # Verify installations
 echo ""
 echo "✓ Verifying installations..."

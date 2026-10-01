@@ -11,16 +11,8 @@
   },
   "go.coverOnTestPackage": true,
   
-  // Ruby Test Explorer configuration
-  "rubyTestExplorer.testFramework": "rspec",
-  "rubyTestExplorer.testDirectory": "./spec",
-  "rubyTestExplorer.rspecCommand": "bundle exec rspec",
-  "rubyTestExplorer.filePattern": ["**/*_spec.rb"],
-  
-  // File associations for better InSpec support
+  // File associations
   "files.associations": {
-    "*.rb": "ruby",
-    "*_spec.rb": "ruby",
     "*.md": "markdown",
     "CODEOWNERS": "plaintext"
   },
