@@ -33,7 +33,7 @@ require (
 	github.com/hashicorp/terraform-json v0.29.0 // indirect
 	github.com/huandu/xstrings v1.6.2 // indirect
 	github.com/jinzhu/copier v0.4.0 // indirect
-	github.com/klauspost/compress v1.20.1 // indirect
+	github.com/klauspost/compress v1.20.3 // indirect
 	github.com/mattn/go-zglob v0.0.8 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
