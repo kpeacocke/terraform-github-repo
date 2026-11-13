@@ -43,7 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * update changelog for v1.15.1 ([3b59fea](https://github.com/kpeacocke/terraform-github-repo/commit/3b59fea16d1e61cd8885ca286a8b7d27153405c1))
 * **deps:** update mkdocs requirement from <1.7.0,>=1.6.0 to >=1.6.1,<1.7.0 in /docs ([#540](https://github.com/kpeacocke/terraform-github-repo/issues/540)) ([16030c1](https://github.com/kpeacocke/terraform-github-repo/commit/16030c14df58cf8d42767350ea6239e5b0e3003f))
 
-
 Generating notes for 1.15.2
 
 ## [1.15.1](https://github.com/kpeacocke/terraform-github-repo/compare/v1.15.0...v1.15.1) (2026-08-06)
