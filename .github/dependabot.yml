@@ -96,6 +96,10 @@ updates:
       - "github-actions"
       - "ci"
       - "automated"
+    groups:
+      codeql-actions:
+        patterns:
+          - "github/codeql-action/*"
 
   # Python dependencies for documentation
   - package-ecosystem: "pip"
